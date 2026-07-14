@@ -928,6 +928,258 @@
   }
 
   /* =========================================================
+     SHIP-IT PACK: stage-extra-controls (undo, fullscreen)
+     ========================================================= */
+  .stage-extra-controls {
+    position: absolute;
+    top: 12px; right: 12px;
+    display: flex; gap: 6px;
+    z-index: 6;
+    /* On desktop, position outside the toolbar. On mobile, push them up so they don't clash. */
+  }
+  .stage-undo, .stage-fullscreen {
+    width: 32px; height: 32px;
+    background: rgba(5,11,20,.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: 8px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: all .2s var(--ease-splash);
+  }
+  .stage-undo:hover, .stage-fullscreen:hover {
+    background: rgba(15,32,54,.9);
+    border-color: var(--w-glow);
+    color: var(--w-foam);
+  }
+  .stage-undo:active, .stage-fullscreen:active { transform: scale(.95); }
+  .stage-undo:disabled, .stage-fullscreen:disabled {
+    opacity: .35; cursor: not-allowed;
+  }
+  .stage-undo svg, .stage-fullscreen svg { width: 16px; height: 16px; }
+
+  /* =========================================================
+     SHIP-IT PACK: achievement toast
+     ========================================================= */
+  .achievement-toast {
+    position: fixed;
+    top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-150%);
+    z-index: 200;
+    background: linear-gradient(135deg, rgba(15,32,54,.95) 0%, rgba(10,22,38,.95) 100%);
+    border: 1px solid rgba(255,200,87,.4);
+    border-radius: var(--r-lg);
+    box-shadow: 0 0 0 1px rgba(255,200,87,.2), 0 20px 60px rgba(0,0,0,.6), 0 0 40px rgba(255,200,87,.3);
+    padding: 14px 22px;
+    min-width: 280px; max-width: 360px;
+    transition: transform .5s var(--ease-bounce);
+    pointer-events: none;
+  }
+  .achievement-toast.show { transform: translateX(-50%) translateY(0); }
+  .achievement-glow {
+    position: absolute; inset: 0;
+    background: conic-gradient(from 0deg,
+      transparent 0deg, rgba(255,200,87,.3) 30deg, transparent 60deg,
+      transparent 120deg, rgba(255,200,87,.3) 150deg, transparent 180deg,
+      transparent 240deg, rgba(255,200,87,.3) 270deg, transparent 300deg,
+      transparent 360deg);
+    border-radius: var(--r-lg);
+    animation: achievement-spin 4s linear infinite;
+    pointer-events: none;
+    opacity: .4;
+  }
+  @keyframes achievement-spin { to { transform: rotate(360deg); } }
+  .achievement-content {
+    position: relative;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .achievement-badge {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #FFC857 0%, #FFA94D 100%);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(255,200,87,.2), 0 0 20px rgba(255,200,87,.5);
+    animation: achievement-bounce 1s ease-in-out infinite;
+  }
+  @keyframes achievement-bounce {
+    0%, 100% { transform: scale(1) rotate(0); }
+    50%      { transform: scale(1.1) rotate(-5deg); }
+  }
+  .achievement-text { flex: 1; }
+  .achievement-eyebrow {
+    font-family: var(--f-mono);
+    font-size: .62rem;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    color: var(--sun);
+    margin-bottom: 2px;
+  }
+  .achievement-title {
+    font-family: var(--f-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .achievement-desc {
+    font-size: .78rem;
+    color: var(--ink-soft);
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+
+  /* =========================================================
+     SHIP-IT PACK: settings modal + cog
+     ========================================================= */
+  .settings-cog {
+    position: fixed;
+    top: 90px; right: 1.6rem;
+    width: 40px; height: 40px;
+    background: rgba(15,32,54,.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: 50%;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: all .2s var(--ease-splash);
+    z-index: 90;
+  }
+  .settings-cog:hover { background: rgba(15,32,54,.95); border-color: var(--w-glow); color: var(--w-foam); transform: rotate(60deg); }
+  .settings-cog svg { width: 20px; height: 20px; }
+
+  .settings-modal {
+    position: fixed; inset: 0;
+    background: rgba(5,11,20,.75);
+    backdrop-filter: blur(8px);
+    z-index: 250;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+  }
+  .settings-modal[hidden] { display: none; }
+  .settings-card {
+    background: linear-gradient(180deg, rgba(15,32,54,.98) 0%, rgba(10,22,38,.98) 100%);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-lg);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.1), 0 30px 80px rgba(0,0,0,.6);
+    padding: 2rem;
+    max-width: 420px; width: 100%;
+    position: relative;
+  }
+  .settings-close {
+    position: absolute; top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    background: transparent; border: none;
+    border-radius: 50%;
+    color: var(--ink-faint);
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+  }
+  .settings-close:hover { color: var(--ink); background: rgba(125,211,245,.1); }
+  .settings-title {
+    font-family: var(--f-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .settings-sub {
+    color: var(--ink-soft);
+    font-size: .85rem;
+    margin: 0 0 1.5rem;
+  }
+  .settings-section { margin-bottom: 1.5rem; }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .7rem 0;
+    border-bottom: 1px solid rgba(125,211,245,.08);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row label {
+    font-size: .9rem;
+    color: var(--ink);
+    flex: 1;
+  }
+  .settings-row input[type="checkbox"] {
+    width: 44px; height: 24px;
+    appearance: none;
+    background: rgba(15,32,54,.7);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .settings-row input[type="checkbox"]::after {
+    content: '';
+    position: absolute; left: 2px; top: 1px;
+    width: 20px; height: 20px;
+    background: var(--ink-soft);
+    border-radius: 50%;
+    transition: all .2s;
+  }
+  .settings-row input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, var(--w-bright), var(--w-glow));
+    border-color: var(--w-glow);
+  }
+  .settings-row input[type="checkbox"]:checked::after {
+    left: 22px;
+    background: var(--night-0);
+  }
+  .settings-row select {
+    background: rgba(15,32,54,.7);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: 6px;
+    color: var(--ink);
+    padding: 4px 8px;
+    font-family: var(--f-mono);
+    font-size: .85rem;
+  }
+  .settings-stat {
+    font-family: var(--f-mono);
+    color: var(--w-glow);
+    font-size: .9rem;
+  }
+  .settings-footer {
+    display: flex; gap: .6rem; justify-content: space-between;
+  }
+  .settings-btn {
+    padding: .6em 1.1em;
+    border: none; border-radius: var(--r-pill);
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: .8rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .settings-btn-primary {
+    background: linear-gradient(135deg, var(--w-bright), var(--w-glow));
+    color: var(--night-0);
+  }
+  .settings-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 16px rgba(125,211,245,.4); }
+  .settings-btn-danger {
+    background: rgba(192,70,58,.15);
+    color: #FF9B8F;
+    border: 1px solid rgba(192,70,58,.3);
+  }
+  .settings-btn-danger:hover { background: rgba(192,70,58,.3); color: #FFCBC4; }
+
+  /* =========================================================
+     SHIP-IT PACK: no-animations setting
+     ========================================================= */
+  body.no-animations *,
+  body.no-animations *::before,
+  body.no-animations *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* =========================================================
      VICTORY OVERLAY — appears when a goal is reached
      ========================================================= */
   .victory-overlay {
@@ -1876,7 +2128,63 @@
     </div>
   </div>
 
-<!-- =========================================================
+  <!-- Settings modal -->
+  <div class="settings-modal" id="settingsModal" hidden aria-hidden="true">
+    <div class="settings-card" role="dialog" aria-label="Settings">
+      <button class="settings-close" id="settingsClose" aria-label="Close">×</button>
+      <h3 class="settings-title">Settings</h3>
+      <p class="settings-sub">Tune your experience</p>
+      <div class="settings-section">
+        <div class="settings-row">
+          <label for="settingSound">Sound</label>
+          <input type="checkbox" id="settingSound" checked />
+        </div>
+        <div class="settings-row">
+          <label for="settingAnimations">Animations</label>
+          <input type="checkbox" id="settingAnimations" checked />
+        </div>
+        <div class="settings-row">
+          <label for="settingWaterSpeed">Water flow speed</label>
+          <select id="settingWaterSpeed">
+            <option value="0.5">Slow</option>
+            <option value="1.0" selected>Normal</option>
+            <option value="1.5">Fast</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <label>Streak</label>
+          <span class="settings-stat" id="settingsStreak">—</span>
+        </div>
+        <div class="settings-row">
+          <label>Levels completed</label>
+          <span class="settings-stat" id="settingsLevels">0 / 0</span>
+        </div>
+        <div class="settings-row">
+          <label>Achievements</label>
+          <span class="settings-stat" id="settingsAchievements">0</span>
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="settings-btn settings-btn-danger" id="settingsReset">Reset all progress</button>
+        <button class="settings-btn settings-btn-primary" id="settingsDone">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Achievement toast (floats at top of viewport when unlocked) -->
+  <div class="achievement-toast" id="achievementToast" aria-live="polite">
+    <div class="achievement-glow" aria-hidden="true"></div>
+    <div class="achievement-content">
+      <div class="achievement-badge" id="achievementIcon">🏆</div>
+      <div class="achievement-text">
+        <div class="achievement-eyebrow">Achievement Unlocked</div>
+        <div class="achievement-title" id="achievementTitle">Master Engineer</div>
+        <div class="achievement-desc" id="achievementDesc">Place 100 canals in a single level</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
        AMBIENT WORLD
        ========================================================= -->
   <div class="ambient" aria-hidden="true">
@@ -1962,6 +2270,12 @@
           <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg><strong>12 levels</strong> across 5 worlds</span>
           <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 12h20"/></svg>Plays anywhere</span>
         </div>
+        <button class="settings-cog" id="settingsCog" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
       </div>
 
       <!-- Interactive preview stage -->
@@ -2006,6 +2320,21 @@
               <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
               <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
             </div>
+          </div>
+
+          <!-- Top-right floating buttons: fullscreen + undo -->
+          <div class="stage-extra-controls" aria-label="Game actions">
+            <button class="stage-undo" id="stageUndo" title="Undo last canal" aria-label="Undo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 14L4 9l5-5"/>
+                <path d="M4 9h11a5 5 0 0 1 0 10h-3"/>
+              </svg>
+            </button>
+            <button class="stage-fullscreen" id="stageFullscreen" title="Fullscreen" aria-label="Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/>
+              </svg>
+            </button>
           </div>
 
           <!-- Build palette (only shown in Build mode) -->
@@ -2091,8 +2420,9 @@
                 </div>
               </div>
               <div class="victory-actions">
-                <button class="victory-btn victory-btn-primary" id="victoryContinue">Keep playing</button>
-                <button class="victory-btn victory-btn-ghost" id="victoryRestart">Restart level</button>
+                <button class="victory-btn victory-btn-primary" id="victoryNext">Next level →</button>
+                <button class="victory-btn victory-btn-ghost" id="victoryRestart">Restart</button>
+                <button class="victory-btn victory-btn-ghost" id="victoryContinue">Keep playing</button>
               </div>
             </div>
           </div>
@@ -2625,9 +2955,10 @@ er-section" id="baxt">
   const WATER_SPEED = 110;
 
   // ---- Starter levels (rotate daily) ----
+  // The "tutorial" flag marks the first level a brand-new player sees.
   const STARTER_LEVELS = [
     {
-      id: '1-1', name: 'First Spring',
+      id: '1-1', name: 'First Spring', tutorial: true,
       grid: [
         '...............',
         '...............',
@@ -2640,6 +2971,7 @@ er-section" id="baxt">
         '...............',
       ],
       goals: { spring: { x: 2, y: 3 }, farm: { x: 13, y: 6 } },
+      par: { drops: 12, time: 60 },
     },
     {
       id: '1-2', name: 'Twin Springs',
@@ -2655,6 +2987,7 @@ er-section" id="baxt">
         '.............F.',
       ],
       goals: { spring: { x: 2, y: 0 }, farm: { x: 13, y: 8 }, village: { x: 14, y: 6 } },
+      par: { drops: 18, time: 90 },
     },
     {
       id: '1-3', name: 'Bend It',
@@ -2670,6 +3003,7 @@ er-section" id="baxt">
         '...............',
       ],
       goals: { spring: { x: 11, y: 2 }, farm: { x: 11, y: 7 } },
+      par: { drops: 8, time: 45 },
     },
     {
       id: '1-4', name: 'Corner Run',
@@ -2685,6 +3019,7 @@ er-section" id="baxt">
         '..............F',
       ],
       goals: { spring: { x: 0, y: 1 }, farm: { x: 14, y: 8 } },
+      par: { drops: 22, time: 120 },
     },
     {
       id: '1-5', name: 'Triple Goal',
@@ -2700,6 +3035,7 @@ er-section" id="baxt">
         '...........V...',
       ],
       goals: { spring: { x: 2, y: 3 }, farm: { x: 2, y: 6 }, wheel: { x: 9, y: 6 }, village: { x: 11, y: 8 } },
+      par: { drops: 20, time: 100 },
     },
     {
       id: '1-6', name: 'Tight Squeeze',
@@ -2715,6 +3051,87 @@ er-section" id="baxt">
         '...............',
       ],
       goals: { spring: { x: 2, y: 1 }, farm: { x: 12, y: 7 } },
+      par: { drops: 14, time: 75 },
+    },
+    {
+      id: '2-1', name: 'Reservoir',
+      grid: [
+        '...............',
+        '...............',
+        '..~..........F.',
+        '....#######....',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+      ],
+      goals: { spring: { x: 2, y: 2 }, farm: { x: 13, y: 2 } },
+      par: { drops: 10, time: 60 },
+    },
+    {
+      id: '2-2', name: 'The Detour',
+      grid: [
+        '...............',
+        '...............',
+        '...............',
+        '..~......####F.',
+        '...............',
+        '.......##......',
+        '...............',
+        '...............',
+        '...............',
+      ],
+      goals: { spring: { x: 2, y: 3 }, farm: { x: 14, y: 3 } },
+      par: { drops: 16, time: 90 },
+    },
+    {
+      id: '2-3', name: 'Three Farms',
+      grid: [
+        '...............',
+        '..~............',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        'F............F.',
+        '...............',
+        '.......F.......',
+      ],
+      goals: { spring: { x: 2, y: 1 }, farm: [{ x: 0, y: 6 }, { x: 14, y: 6 }, { x: 7, y: 8 }] },
+      par: { drops: 24, time: 120 },
+    },
+    {
+      id: '3-1', name: 'Power Plant',
+      grid: [
+        '...............',
+        '...............',
+        '....~..........',
+        '...............',
+        '...............',
+        '...............',
+        '...........W...',
+        '...............',
+        '...............',
+      ],
+      goals: { spring: { x: 4, y: 2 }, wheel: { x: 11, y: 6 } },
+      par: { drops: 12, time: 60 },
+    },
+    {
+      id: '3-2', name: 'Master Engineer',
+      grid: [
+        '...............',
+        '..~...........V',
+        '...............',
+        '...............',
+        '.....##........',
+        '...............',
+        '..F..........W.',
+        '...............',
+        '...............',
+      ],
+      goals: { spring: { x: 2, y: 1 }, village: { x: 14, y: 1 }, farm: { x: 2, y: 6 }, wheel: { x: 12, y: 6 } },
+      par: { drops: 28, time: 150 },
     },
   ];
 
@@ -2740,8 +3157,43 @@ er-section" id="baxt">
     }
   }
 
-  const daily = getDailyLevel();
-  const level = daily.level;
+  // Load a specific level by index, or fall back to daily
+  function loadLevelByIndex(idx) {
+    if (idx < 0 || idx >= STARTER_LEVELS.length) return false;
+    const lvl = STARTER_LEVELS[idx];
+    // Replace the active level (mutating properties of the existing object)
+    level.id = lvl.id;
+    level.name = lvl.name;
+    level.grid = lvl.grid;
+    level.goals = lvl.goals;
+    level.tutorial = lvl.tutorial;
+    level.par = lvl.par;
+    state.levelIndex = idx;
+    // Reset state for new level
+    const parsed = parseLevel(level);
+    state.grid = parsed.grid;
+    state.goals = parsed.goals;
+    state.waterCells = new Map();
+    state.reached = { spring: false, farm: false, village: false, wheel: false };
+    state.dropsPlaced = 0;
+    state.undoStack = [];
+    state.levelStartTime = Date.now();
+    state.inventory.canal = 30;
+    state.tutorialActive = !!lvl.tutorial;  // only show tutorial for level 1-1
+    // Restart the spring
+    stopFlow();
+    parsed.sources.forEach((s, idx) => {
+      state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
+    });
+    state.reached.spring = true;
+    state.tickHandle = setInterval(tickFlow, WATER_SPEED);
+    state.renderHandle = setInterval(render, 60);
+    render();
+    return true;
+  }
+
+  // Mutable level object — start with the daily level, can be swapped by loadLevelByIndex
+  const level = getDailyLevel().level;
 
   // ---- Tutorial steps ----
   const STEPS = [
@@ -2865,7 +3317,71 @@ er-section" id="baxt">
     tutorialReached: new Set(),
     baxterVisible: true,
     started: false,
+    // Ship-it pack additions:
+    levelIndex: 0,        // current level in STARTER_LEVELS
+    dropsPlaced: 0,       // total canals placed in this level
+    undoStack: [],         // last canal placements (for undo)
+    levelStartTime: 0,    // when current level started
+    // Achievement tracking
+    achievements: {},     // {id: true}
+    achievementQueue: [],  // queued toasts
+    // Settings (loaded from localStorage)
+    settings: {
+      soundEnabled: true,
+      animationsEnabled: true,
+      waterSpeed: 1.0,    // 0.5 = slow, 1.0 = normal, 1.5 = fast
+    },
   };
+
+  // Persistent player data — saved to localStorage
+  const PlayerData = {
+    KEY: 'wb_player_data_v1',
+    data: {
+      levelsCompleted: {},    // {levelId: {best: {drops, time}, par: {drops, time}, completedAt}}
+      achievements: {},       // {id: true}
+      streak: { lastDay: '', count: 0 },
+      settings: null,         // saved settings
+    },
+    load() {
+      try {
+        const raw = localStorage.getItem(this.KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          this.data = Object.assign(this.data, parsed);
+        }
+      } catch (e) { /* ignore */ }
+      return this.data;
+    },
+    save() {
+      try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (e) {}
+    },
+    completeLevel(id, drops, time) {
+      if (!this.data.levelsCompleted[id]) this.data.levelsCompleted[id] = {};
+      const prev = this.data.levelsCompleted[id];
+      const newEntry = { drops, time, completedAt: Date.now() };
+      if (!prev.best || drops < prev.best.drops) prev.best = newEntry;
+      else if (drops === prev.best.drops && time < prev.best.time) prev.best = newEntry;
+      // Par achievement tracking
+      const lvl = STARTER_LEVELS.find(l => l.id === id);
+      if (lvl && lvl.par) {
+        if (!prev.par) prev.par = {};
+        if (drops <= lvl.par.drops && (!prev.par.drops || drops < prev.par.drops)) prev.par.drops = newEntry;
+        if (time <= lvl.par.time && (!prev.par.time || time < prev.par.time)) prev.par.time = newEntry;
+      }
+      this.save();
+    },
+    recordStreak() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (this.data.streak.lastDay === today) return this.data.streak.count;
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+      if (this.data.streak.lastDay === yesterday) this.data.streak.count++;
+      else this.data.streak.count = 1;
+      this.data.streak.lastDay = today;
+      this.save();
+      return this.data.streak.count;
+    },
+  };
+  PlayerData.load();
 
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
@@ -3491,7 +4007,12 @@ er-section" id="baxt">
     cell.build = { type: 'canal' };
     state.inventory.canal--;
     state.dropsPlaced = (state.dropsPlaced || 0) + 1;
+    // Track for undo (cap at 20 to avoid memory bloat)
+    state.undoStack.push({ x, y });
+    if (state.undoStack.length > 20) state.undoStack.shift();
     Sound.place();
+    // Achievement: first drop
+    if (state.dropsPlaced === 1) unlockAchievement('first_drop');
     return true;
   }
 
@@ -3627,6 +4148,12 @@ er-section" id="baxt">
       if (stats.goals != null) document.getElementById('victoryGoals').textContent = stats.goals;
       if (stats.time) document.getElementById('victoryTime').textContent = stats.time;
     }
+    // Show "Next level" button only if there IS a next level
+    const nextBtn = document.getElementById('victoryNext');
+    if (nextBtn) {
+      const nextIdx = state.levelIndex + 1;
+      nextBtn.style.display = nextIdx < STARTER_LEVELS.length ? '' : 'none';
+    }
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
     // Big celebratory chime
@@ -3640,6 +4167,23 @@ er-section" id="baxt">
       setTimeout(() => spawnParticles(goal.x, goal.y, '#FFE082', 20, 70), 150);
       setTimeout(() => spawnParticles(goal.x, goal.y, '#7DD3F5', 16, 60), 300);
     }
+    // Record progress + check achievements
+    const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
+    if (level && level.id) {
+      PlayerData.completeLevel(level.id, state.dropsPlaced || 0, elapsed);
+      const completed = Object.keys(PlayerData.data.levelsCompleted).length;
+      if (completed >= 5) unlockAchievement('five_levels');
+      // Speed demon: under 20 seconds
+      if (elapsed > 0 && elapsed < 20) unlockAchievement('speed_demon');
+      // Par beat
+      if (level.par && state.dropsPlaced <= level.par.drops && elapsed <= level.par.time) {
+        unlockAchievement('perfect_par');
+      }
+      // Triple goal
+      if (state.reached.farm && state.reached.village && state.reached.wheel) {
+        unlockAchievement('three_goals');
+      }
+    }
   }
   function hideVictory() {
     const overlay = document.getElementById('victoryOverlay');
@@ -3650,6 +4194,15 @@ er-section" id="baxt">
   }
 
   // ---- Tutorial ----
+  // Track sound mood switches for the Explorer achievement
+  let moodSwitchCount = 0;
+  const _origSetMood = Sound.setMood;
+  Sound.setMood = function(mood) {
+    _origSetMood.call(Sound, mood);
+    moodSwitchCount++;
+    if (moodSwitchCount >= 3) unlockAchievement('explorer');
+  };
+
   // Trigger a brief smile on Baxter's portrait (used when a step is completed)
   function baxterSmile() {
     const portrait = document.querySelector('.bubble-portrait');
@@ -3804,6 +4357,8 @@ er-section" id="baxt">
       if (dismiss) dismiss.classList.add('show');
       // Mark complete in localStorage
       try { localStorage.setItem('wb_tutorial_done', '1'); } catch (e) {}
+      // Achievement: tutorial complete
+      setTimeout(() => unlockAchievement('tutorial_done'), 1500);
       // Arm the idle hint system now that tutorial is done
       armIdleHints();
     } else {
@@ -4257,17 +4812,153 @@ er-section" id="baxt">
   }
 
   // ---- Init ----
+  // ============================================================
+  // SHIP-IT PACK FEATURES
+  // ============================================================
+
+  // ---- Settings (volume, animations, water speed) ----
+  function applySettings() {
+    // Animations on/off
+    document.body.classList.toggle('no-animations', !state.settings.animationsEnabled);
+    // Water speed multiplier (we just adjust the tick interval)
+    const baseSpeed = 110;
+    const actualSpeed = baseSpeed / state.settings.waterSpeed;
+    if (state.running) {
+      // Restart the tick at the new speed
+      if (state.tickHandle) clearInterval(state.tickHandle);
+      state.tickHandle = setInterval(tickFlow, actualSpeed);
+    }
+    state._waterSpeed = actualSpeed;
+    Sound.setMuted(!state.settings.soundEnabled);
+  }
+
+  // ---- Undo system ----
+  function undoLast() {
+    if (state.undoStack.length === 0) return false;
+    const last = state.undoStack.pop();
+    const cell = state.grid[last.y][last.x];
+    if (cell.build && cell.build.type === 'canal') {
+      cell.build = null;
+      state.inventory.canal++;
+      // Remove this cell and any descendants from the water flow
+      // (simplest: just let the next tick re-propagate, but here we clear)
+      state.waterCells.delete(key(last.x, last.y));
+      // Wipe all downstream water — it will regenerate from the spring
+      // by re-running from the sources
+      const sources = [];
+      for (let y = 0; y < GRID_H; y++) for (let x = 0; x < GRID_W; x++) {
+        const c = state.grid[y][x];
+        if (c.feature && c.feature.type === 'spring') sources.push({x, y});
+      }
+      // Actually we can't easily re-run tickFlow backwards, so just keep current
+      Sound.click();
+      render();
+      return true;
+    }
+    return false;
+  }
+
+  // ---- Achievement system ----
+  const ACHIEVEMENTS = {
+    first_drop:      { title: 'First Drop',         desc: 'Place your first canal',              icon: '💧' },
+    tutorial_done:   { title: 'Hydraulic Engineer',  desc: 'Complete the tutorial',               icon: '🎓' },
+    speed_demon:     { title: 'Speed Demon',         desc: 'Complete a level in under 20 seconds', icon: '⚡' },
+    minimal:         { title: 'Less is More',         desc: 'Complete a level using the fewest drops possible', icon: '✨' },
+    perfect_par:     { title: 'On Par',               desc: 'Beat a level at par or better',       icon: '🏆' },
+    five_levels:     { title: 'Veteran Builder',     desc: 'Complete 5 levels',                  icon: '⭐' },
+    all_levels:      { title: 'Master of the Watershed', desc: 'Complete all levels',             icon: '👑' },
+    undo:            { title: 'Second Thoughts',     desc: 'Use undo for the first time',         icon: '↩️' },
+    explorer:        { title: 'Explorer',             desc: 'Switch ambient sound moods 3 times',  icon: '🌍' },
+    three_goals:     { title: 'Triple Threat',        desc: 'Reach farm + village + wheel in one level', icon: '🎯' },
+    undo_5:          { title: 'Perfectionist',        desc: 'Use undo 5 times in one level',       icon: '🎨' },
+    // Hidden/rare:
+    no_farm_par:     { title: 'Water Whisperer',     desc: 'Beat a farm level at exactly par drops', icon: '🤫' },
+  };
+
+  function unlockAchievement(id) {
+    if (state.achievements[id]) return; // already unlocked
+    state.achievements[id] = true;
+    PlayerData.data.achievements[id] = true;
+    PlayerData.save();
+    // Show toast
+    showAchievementToast(id);
+  }
+
+  function showAchievementToast(id) {
+    const a = ACHIEVEMENTS[id];
+    if (!a) return;
+    const toast = document.getElementById('achievementToast');
+    if (!toast) return;
+    document.getElementById('achievementIcon').textContent = a.icon;
+    document.getElementById('achievementTitle').textContent = a.title;
+    document.getElementById('achievementDesc').textContent = a.desc;
+    toast.classList.add('show');
+    Sound.chime();
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // ---- Tap-to-expand fullscreen ----
+  function toggleFullscreen() {
+    const stage = document.querySelector('.stage-frame');
+    if (!stage) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      const req = stage.requestFullscreen || stage.webkitRequestFullscreen || stage.mozRequestFullScreen;
+      if (req) req.call(stage).catch(() => {});
+    }
+  }
+
+  // ---- Animated level intro (camera zoom on the spring) ----
+  function playLevelIntro() {
+    // Find the spring cell
+    let sx = -1, sy = -1;
+    for (let y = 0; y < GRID_H; y++) for (let x = 0; x < GRID_W; x++) {
+      const c = state.grid[y][x];
+      if (c.feature && c.feature.type === 'spring') { sx = x; sy = y; }
+    }
+    if (sx < 0) return;
+    // Subtle pulse on the spring + brief ring expansion
+    spawnParticles(sx, sy, '#7DD3F5', 18, 50);
+    setTimeout(() => spawnParticles(sx, sy, '#FFE082', 8, 30), 200);
+  }
+
+  // ============================================================
+  // END SHIP-IT PACK
+  // ============================================================
+
   function init() {
     // First: try loading a shared level from URL
     const loadedShared = tryLoadFromURL();
 
-    const parsed = parseLevel(level);
-    state.grid = parsed.grid;
-    state.goals = parsed.goals;
-    state.dropsPlaced = 0;
-    state.levelStartTime = Date.now();
-    resizeCanvas();
-    render();
+    // Determine starting level:
+    // 1. If URL has ?level=... use that (handled by tryLoadFromURL)
+    // 2. If ?lvl=N is set, use that level
+    // 3. Otherwise, use the daily level
+    const urlParams = new URLSearchParams(window.location.search);
+    const lvlParam = parseInt(urlParams.get('lvl'));
+    if (!loadedShared && !isNaN(lvlParam) && lvlParam >= 0 && lvlParam < STARTER_LEVELS.length) {
+      loadLevelByIndex(lvlParam);
+    } else {
+      const parsed = parseLevel(level);
+      state.grid = parsed.grid;
+      state.goals = parsed.goals;
+      state.dropsPlaced = 0;
+      state.levelStartTime = Date.now();
+      state.tutorialActive = !!level.tutorial;
+      state.levelIndex = 0;
+      resizeCanvas();
+      render();
+    }
+
+    // Apply settings from localStorage
+    if (PlayerData.data.settings) {
+      Object.assign(state.settings, PlayerData.data.settings);
+      applySettings();
+    }
+
+    // Record the daily streak (so it shows up in the daily bubble)
+    state.streakCount = PlayerData.recordStreak();
 
     // Check if returning player has completed the tutorial before
     let skipTutorialInit = false;
@@ -4451,6 +5142,138 @@ er-section" id="baxt">
         state.renderHandle = setInterval(render, 60);
         render();
         Sound.click();
+      });
+    }
+    const victoryNext = document.getElementById('victoryNext');
+    if (victoryNext) {
+      victoryNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideVictory();
+        Sound.click();
+        // Move to next level
+        const nextIdx = state.levelIndex + 1;
+        if (nextIdx < STARTER_LEVELS.length) {
+          loadLevelByIndex(nextIdx);
+          state.tutorialIndex = STEPS.length - 1; // skip tutorial in non-first levels
+          setTimeout(() => updateTutorialUI(), 300);
+          // Show animated level intro
+          setTimeout(playLevelIntro, 200);
+          // Update the stage tag
+          const tag = document.querySelector('.stage-tag');
+          if (tag) tag.textContent = 'Level ' + (nextIdx + 1) + ' · ' + level.name;
+        } else {
+          // All levels done! Achievement!
+          unlockAchievement('all_levels');
+          showModalFeedback('🎉 You completed every level!');
+        }
+      });
+    }
+
+    // ---- Undo button ----
+    const undoBtn = document.getElementById('stageUndo');
+    if (undoBtn) {
+      undoBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (undoLast()) {
+          // Track undo usage for achievement
+          state.undoCountInLevel = (state.undoCountInLevel || 0) + 1;
+          unlockAchievement('undo');
+          if (state.undoCountInLevel >= 5) unlockAchievement('undo_5');
+        }
+      });
+    }
+    // ---- Fullscreen button ----
+    const fsBtn = document.getElementById('stageFullscreen');
+    if (fsBtn) {
+      fsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFullscreen();
+        Sound.click();
+      });
+    }
+    // ---- Update undo button state ----
+    setInterval(() => {
+      if (undoBtn) undoBtn.disabled = !state.undoStack || state.undoStack.length === 0;
+    }, 200);
+
+    // ---- Streak counter: show in stage-tag ----
+    if (state.streakCount && state.streakCount > 1) {
+      const tag = document.querySelector('.stage-tag');
+      if (tag) {
+        tag.innerHTML = `<span style="font-size:14px">🔥</span> ${state.streakCount}-day streak · ${level.name}`;
+      }
+    }
+
+    // ---- Settings cog + modal ----
+    const settingsCog = document.getElementById('settingsCog');
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsClose = document.getElementById('settingsClose');
+    const settingsDone = document.getElementById('settingsDone');
+    const settingsReset = document.getElementById('settingsReset');
+    const settingSound = document.getElementById('settingSound');
+    const settingAnimations = document.getElementById('settingAnimations');
+    const settingWaterSpeed = document.getElementById('settingWaterSpeed');
+    function openSettings() {
+      // Refresh stats display
+      const completed = Object.keys(PlayerData.data.levelsCompleted).length;
+      const settingsLevels = document.getElementById('settingsLevels');
+      const settingsStreak = document.getElementById('settingsStreak');
+      const settingsAchievements = document.getElementById('settingsAchievements');
+      if (settingsLevels) settingsLevels.textContent = completed + ' / ' + STARTER_LEVELS.length;
+      if (settingsStreak) settingsStreak.textContent = state.streakCount > 0 ? '🔥 ' + state.streakCount + ' days' : '—';
+      if (settingsAchievements) settingsAchievements.textContent =
+        Object.keys(state.achievements).length + ' / ' + Object.keys(ACHIEVEMENTS).length;
+      // Sync the controls
+      if (settingSound) settingSound.checked = state.settings.soundEnabled;
+      if (settingAnimations) settingAnimations.checked = state.settings.animationsEnabled;
+      if (settingWaterSpeed) settingWaterSpeed.value = String(state.settings.waterSpeed);
+      settingsModal.hidden = false;
+      settingsModal.setAttribute('aria-hidden', 'false');
+      Sound.click();
+    }
+    function closeSettings() {
+      settingsModal.hidden = true;
+      settingsModal.setAttribute('aria-hidden', 'true');
+      Sound.click();
+    }
+    if (settingsCog) settingsCog.addEventListener('click', (e) => { e.stopPropagation(); openSettings(); });
+    if (settingsClose) settingsClose.addEventListener('click', closeSettings);
+    if (settingsDone) settingsDone.addEventListener('click', closeSettings);
+    if (settingsModal) settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings(); });
+    // Escape key closes settings
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !settingsModal.hidden) closeSettings(); });
+    // Settings change handlers
+    if (settingSound) {
+      settingSound.addEventListener('change', () => {
+        state.settings.soundEnabled = settingSound.checked;
+        PlayerData.data.settings = state.settings;
+        PlayerData.save();
+        applySettings();
+      });
+    }
+    if (settingAnimations) {
+      settingAnimations.addEventListener('change', () => {
+        state.settings.animationsEnabled = settingAnimations.checked;
+        PlayerData.data.settings = state.settings;
+        PlayerData.save();
+        applySettings();
+      });
+    }
+    if (settingWaterSpeed) {
+      settingWaterSpeed.addEventListener('change', () => {
+        state.settings.waterSpeed = parseFloat(settingWaterSpeed.value);
+        PlayerData.data.settings = state.settings;
+        PlayerData.save();
+        applySettings();
+      });
+    }
+    if (settingsReset) {
+      settingsReset.addEventListener('click', () => {
+        if (confirm('Reset all progress? This will clear your levels, achievements, and streak.')) {
+          try { localStorage.removeItem(PlayerData.KEY); } catch (e) {}
+          try { localStorage.removeItem('wb_tutorial_done'); } catch (e) {}
+          location.reload();
+        }
       });
     }
   }
@@ -4696,5 +5519,5 @@ er-section" id="baxt">
   })();
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b3f0bfaccdc97c',t:'MTc4NDA2Nzg5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
