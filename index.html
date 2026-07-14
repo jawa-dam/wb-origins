@@ -130,6 +130,21 @@
 
     @keyframes gear-cw  { to { transform: rotate(360deg); } }
     @keyframes gear-ccw { to { transform: rotate(-360deg); } }
+    /* Hover-speed-up — when the user hovers the splash, all gears speed up */
+    .splash-gears:hover .splash-gear.g1,
+    .splash-gears.speeding .splash-gear.g1 { animation-duration: 4s; }
+    .splash-gears:hover .splash-gear.g2,
+    .splash-gears.speeding .splash-gear.g2 { animation-duration: 3s; }
+    .splash-gears:hover .splash-gear.g3,
+    .splash-gears.speeding .splash-gear.g3 { animation-duration: 5s; }
+    .splash-gears:hover .splash-gear.g4,
+    .splash-gears.speeding .splash-gear.g4 { animation-duration: 3.5s; }
+    .splash-gears:hover .splash-gear.g5,
+    .splash-gears.speeding .splash-gear.g5 { animation-duration: 2.5s; }
+    .splash-gear { transition: filter .3s; }
+    .splash-gears:hover .splash-gear { filter: drop-shadow(0 0 18px rgba(255,200,87,.5)) drop-shadow(0 4px 12px rgba(0,0,0,.6)); }
+    /* On touch devices, the whole splash counts as "hovered" when touched */
+    .splash-screen.touched .splash-gears { /* speeds up via the speeding class below */ }
 
     /* ===== Steam puffs rising from the gears ===== */
     .splash-steam { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -777,35 +792,206 @@
      don't overlap. Mute (left) | Sound picker (center) | Mode (right)
      ========================================================= */
   @media (max-width: 640px) {
+    /* Make the game stage taller and more usable on mobile */
+    .hero-stage { aspect-ratio: 4 / 3; max-width: 100%; }
+    .stage-frame { border-radius: 18px; }
+
+    /* All floating stage controls go to a single bottom toolbar */
     .stage-sound-picker {
-      top: auto; left: 50%; bottom: 56px;
+      top: auto; left: 50%; bottom: 8px;
       transform: translateX(-50%);
       gap: 2px; padding: 3px;
+      background: rgba(5,11,20,.85);
     }
-    .sp-btn { width: 28px; height: 28px; }
-    .sp-btn svg { width: 14px; height: 14px; }
+    .sp-btn { width: 32px; height: 32px; }
+    .sp-btn svg { width: 16px; height: 16px; }
+
     .stage-mode {
-      top: auto; right: 12px; bottom: 12px;
+      top: auto; right: 8px; bottom: 8px;
       padding: 2px;
     }
     .mode-btn {
-      padding: .35em .75em;
-      font-size: .62rem;
+      padding: .4em .85em;
+      font-size: .68rem;
     }
+
     .stage-mute {
-      top: auto; left: 12px; bottom: 12px;
-      width: 36px; height: 36px;
+      top: auto; left: 8px; bottom: 8px;
+      width: 40px; height: 40px;
     }
-    .stage-mute svg { width: 14px; height: 14px; }
+    .stage-mute svg { width: 18px; height: 18px; }
+
+    /* Build palette: hide the floating vertical bar; show as a small
+       horizontal strip just above the bottom toolbar */
+    .stage-palette {
+      position: absolute;
+      left: 50%; bottom: 56px;
+      top: auto; transform: translateX(-50%);
+      flex-direction: row;
+      padding: 4px;
+      gap: 4px;
+    }
+    .pal-btn { width: 36px; height: 36px; font-size: 1.1rem; }
+
     .stage-tag {
-      top: 12px; left: 12px;
+      top: 10px; left: 10px;
       bottom: auto;
       font-size: .58rem;
       padding: .3em .7em;
     }
-    .stage-hint { top: 12px; right: 12px; font-size: .58rem; }
-    .bubble-wrap { bottom: 110px; }
+    .stage-hint {
+      top: 10px; right: 10px;
+      font-size: .58rem;
+      max-width: 50%;
+      text-align: right;
+    }
+
+    /* Speech bubble sits above the bottom toolbar, with safe padding */
+    .bubble-wrap {
+      bottom: 120px; left: 10px; right: 10px;
+      max-width: none;
+      padding: .7rem .8rem;
+    }
+    .bubble-portrait { width: 38px; height: 38px; }
+    .bubble-portrait svg { width: 38px; height: 38px; }
+    .bubble-title { font-size: .9rem; }
+    .bubble-text { font-size: .8rem; }
+
+    /* Victory overlay: tighter on mobile */
+    .victory-stats { gap: .8rem; }
+    .victory-stat { min-width: 70px; padding: .6rem .8rem; }
+    .victory-stat-num { font-size: 1.4rem; }
   }
+
+  /* Extra-small phones (≤ 380px) — even tighter */
+  @media (max-width: 380px) {
+    .hero-stage { aspect-ratio: 3 / 4; }
+    .pal-btn { width: 32px; height: 32px; }
+    .mode-btn { padding: .35em .7em; font-size: .6rem; }
+    .bubble-wrap { bottom: 130px; }
+  }
+
+  /* =========================================================
+     VICTORY OVERLAY — appears when a goal is reached
+     ========================================================= */
+  .victory-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    background: radial-gradient(ellipse at center, rgba(255,200,87,.18) 0%, rgba(10,22,38,.85) 60%, rgba(5,11,20,.95) 100%);
+    backdrop-filter: blur(6px);
+    border-radius: var(--r-xl);
+    z-index: 60;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .5s var(--ease-splash);
+  }
+  .victory-overlay.show { opacity: 1; pointer-events: auto; }
+  .victory-rays {
+    position: absolute; inset: 0;
+    background: conic-gradient(from 0deg,
+      transparent 0deg, rgba(255,200,87,.18) 10deg, transparent 20deg,
+      transparent 80deg, rgba(255,200,87,.18) 90deg, transparent 100deg,
+      transparent 170deg, rgba(255,200,87,.18) 180deg, transparent 190deg,
+      transparent 260deg, rgba(255,200,87,.18) 270deg, transparent 280deg,
+      transparent 350deg, rgba(255,200,87,.18) 360deg);
+    animation: victory-spin 8s linear infinite;
+    border-radius: var(--r-xl);
+  }
+  @keyframes victory-spin { to { transform: rotate(360deg); } }
+  .victory-card {
+    position: relative; z-index: 2;
+    text-align: center;
+    max-width: 320px;
+    animation: victory-pop .6s var(--ease-bounce);
+  }
+  @keyframes victory-pop {
+    0%   { opacity: 0; transform: scale(.5) translateY(20px); }
+    60%  { opacity: 1; transform: scale(1.05) translateY(-4px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .victory-badge {
+    width: 72px; height: 72px; margin: 0 auto 14px;
+    background: linear-gradient(135deg, #FFC857 0%, #FFA94D 100%);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    box-shadow: 0 0 0 4px rgba(255,200,87,.2), 0 0 40px rgba(255,200,87,.5);
+    animation: victory-bounce 1s ease-in-out infinite;
+  }
+  @keyframes victory-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-6px) scale(1.05); }
+  }
+  .victory-badge svg { width: 36px; height: 36px; color: var(--night-0); }
+  .victory-title {
+    font-family: var(--f-display);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 600;
+    background: linear-gradient(135deg, #FFC857 0%, #FFE082 50%, #FFD27D 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0 0 8px;
+  }
+  .victory-sub {
+    font-family: var(--f-display);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    margin: 0 0 18px;
+  }
+  .victory-stats {
+    display: flex; gap: 1rem; justify-content: center;
+    margin-bottom: 18px;
+  }
+  .victory-stat {
+    background: rgba(15,32,54,.7);
+    border: 1px solid rgba(125,211,245,.15);
+    border-radius: var(--r-md);
+    padding: .7rem 1rem;
+    min-width: 90px;
+  }
+  .victory-stat-num {
+    font-family: var(--f-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--w-glow);
+    line-height: 1;
+  }
+  .victory-stat-label {
+    font-family: var(--f-mono);
+    font-size: .62rem;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    color: var(--ink-faint);
+    margin-top: 4px;
+  }
+  .victory-actions {
+    display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
+  }
+  .victory-btn {
+    padding: .55em 1.1em;
+    border: none;
+    border-radius: var(--r-pill);
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: .8rem;
+    cursor: pointer;
+    transition: all .2s var(--ease-bounce);
+  }
+  .victory-btn-primary {
+    background: linear-gradient(135deg, var(--w-bright) 0%, var(--w-glow) 100%);
+    color: var(--night-0);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.3), 0 0 24px rgba(125,211,245,.3);
+  }
+  .victory-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(125,211,245,.5), 0 0 32px rgba(125,211,245,.5); }
+  .victory-btn-ghost {
+    background: rgba(125,211,245,.08);
+    color: var(--ink);
+    border: 1px solid rgba(125,211,245,.2);
+  }
+  .victory-btn-ghost:hover { background: rgba(125,211,245,.15); color: var(--w-foam); }
 
   /* =========================================================
      BUILD PALETTE — left edge, only in Build mode
@@ -1820,6 +2006,38 @@
             <span>Baxter</span>
           </button>
 
+          <!-- Victory overlay (hidden by default) -->
+          <div class="victory-overlay" id="victoryOverlay" aria-hidden="true">
+            <div class="victory-rays" aria-hidden="true"></div>
+            <div class="victory-card">
+              <div class="victory-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M9 16.17 L4.83 12 3.41 13.41 9 19 21 7 19.59 5.59z"/>
+                </svg>
+              </div>
+              <h3 class="victory-title" id="victoryTitle">Goal Reached</h3>
+              <p class="victory-sub" id="victorySub">Water found its way.</p>
+              <div class="victory-stats">
+                <div class="victory-stat">
+                  <div class="victory-stat-num" id="victoryDrops">0</div>
+                  <div class="victory-stat-label">Drops placed</div>
+                </div>
+                <div class="victory-stat">
+                  <div class="victory-stat-num" id="victoryGoals">1</div>
+                  <div class="victory-stat-label">Goals reached</div>
+                </div>
+                <div class="victory-stat">
+                  <div class="victory-stat-num" id="victoryTime">0:00</div>
+                  <div class="victory-stat-label">Time</div>
+                </div>
+              </div>
+              <div class="victory-actions">
+                <button class="victory-btn victory-btn-primary" id="victoryContinue">Keep playing</button>
+                <button class="victory-btn victory-btn-ghost" id="victoryRestart">Restart level</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Baxter speech bubble -->
           <div class="bubble-wrap" id="baxterBubble">
             <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
@@ -2576,7 +2794,7 @@ er-section" id="baxt">
     grid: [],
     inventory: { canal: 30 },
     waterCells: new Map(),
-    reached: { spring: false, farm: false },
+    reached: { spring: false, farm: false, village: false, wheel: false },
     running: false,
     tickHandle: null,
     renderHandle: null,
@@ -3054,6 +3272,56 @@ er-section" id="baxt">
     });
   }
 
+  // ===== Particle effects (drawn over the canvas) =====
+  // Each particle has: x, y (in grid coords), vx, vy, life, maxLife, color, size
+  // Spawned by spawnParticles(gx, gy, color, count, speed)
+  const particles = [];
+
+  function spawnParticles(gx, gy, color, count, speed) {
+    if (!ctx) return;
+    const cx = gx * TILE + TILE / 2;
+    const cy = gy * TILE + TILE / 2;
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.4;
+      const v = (0.4 + Math.random() * 0.6) * (speed / 60);
+      particles.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * v,
+        vy: Math.sin(angle) * v - (0.3 + Math.random() * 0.4), // slight upward bias
+        life: 0,
+        maxLife: 40 + Math.random() * 30,
+        color: color,
+        size: 1.5 + Math.random() * 2.5,
+        gravity: 0.04 + Math.random() * 0.02,
+      });
+    }
+  }
+
+  function drawParticles() {
+    if (!ctx) return;
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.life++;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      const t = p.life / p.maxLife;
+      const alpha = 1 - t;
+      // Particle: a small glow + a tiny core
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = alpha * 0.35;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * 2.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      if (p.life >= p.maxLife) particles.splice(i, 1);
+    }
+  }
+
   // Highlight ring for tutorial guidance
   function drawHighlight(x, y) {
     if (x == null || y == null) return;
@@ -3134,6 +3402,8 @@ er-section" id="baxt">
       drawHighlight(step.highlight.x, step.highlight.y);
     }
     if (state.hover) drawHover(state.hover.x, state.hover.y);
+    // Particles drawn last (on top of everything)
+    drawParticles();
   }
 
   // ---- Logic ----
@@ -3161,6 +3431,7 @@ er-section" id="baxt">
     const cell = state.grid[y][x];
     cell.build = { type: 'canal' };
     state.inventory.canal--;
+    state.dropsPlaced = (state.dropsPlaced || 0) + 1;
     Sound.place();
     return true;
   }
@@ -3205,10 +3476,57 @@ er-section" id="baxt">
             // Big smile for the "You did it!" moment
             baxterSmile();
             setTimeout(() => baxterSmile(), 350);
+            // Burst of golden particles at the goal
+            spawnParticles(nx, ny, '#FFC857', 24, 80);
+            setTimeout(() => spawnParticles(nx, ny, '#FFE082', 14, 60), 180);
             // Trigger tutorial advance if waiting for reach
             if (state.tutorialActive && STEPS[state.tutorialIndex].requireReach === 'farm') {
               advanceTutorial();
+              // Show the victory splash for the tutorial win
+              setTimeout(() => {
+                const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
+                const m = Math.floor(elapsed / 60), s = elapsed % 60;
+                showVictory('You did it!', {
+                  drops: state.dropsPlaced || state.waterCells.size,
+                  goals: 1,
+                  time: m + ':' + (s < 10 ? '0' : '') + s
+                });
+              }, 1200);
+            } else {
+              // Free-play goal reach: smaller burst, no victory overlay
+              spawnParticles(nx, ny, '#7DD3F5', 12, 50);
+              // If all goals in this level are now reached, show the victory
+              const allGoalsReached =
+                (!state.goals.farm || state.goals.farm.length === 0 || state.reached.farm) &&
+                (!state.goals.village || state.goals.village.length === 0 || state.reached.village) &&
+                (!state.goals.wheel || state.goals.wheel.length === 0 || state.reached.wheel);
+              if (allGoalsReached && !victoryShown) {
+                setTimeout(() => {
+                  const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
+                  const m = Math.floor(elapsed / 60), s = elapsed % 60;
+                  const goalCount =
+                    (state.reached.farm ? 1 : 0) +
+                    (state.reached.village ? 1 : 0) +
+                    (state.reached.wheel ? 1 : 0);
+                  showVictory('Goal Reached', {
+                    drops: state.dropsPlaced || state.waterCells.size,
+                    goals: goalCount,
+                    time: m + ':' + (s < 10 ? '0' : '') + s
+                  });
+                }, 800);
+              }
             }
+          }
+          // Also particles for village and wheel
+          if (ncell.feature && ncell.feature.type === 'village' && !state.reached.village) {
+            state.reached.village = true;
+            spawnParticles(nx, ny, '#F4B5E4', 16, 70);
+            Sound.chime();
+          }
+          if (ncell.feature && ncell.feature.type === 'wheel' && !state.reached.wheel) {
+            state.reached.wheel = true;
+            spawnParticles(nx, ny, '#7DD3F5', 16, 70);
+            Sound.chime();
           }
         }
       });
@@ -3233,6 +3551,43 @@ er-section" id="baxt">
     state.running = false;
     if (state.tickHandle) clearInterval(state.tickHandle);
     if (state.renderHandle) clearInterval(state.renderHandle);
+  }
+
+  // ===== Victory overlay =====
+  let victoryStartTime = 0;
+  let victoryShown = false;
+  function showVictory(title, stats) {
+    if (victoryShown) return;
+    victoryShown = true;
+    victoryStartTime = Date.now();
+    const overlay = document.getElementById('victoryOverlay');
+    if (!overlay) return;
+    if (title) document.getElementById('victoryTitle').textContent = title;
+    if (stats) {
+      if (stats.drops != null) document.getElementById('victoryDrops').textContent = stats.drops;
+      if (stats.goals != null) document.getElementById('victoryGoals').textContent = stats.goals;
+      if (stats.time) document.getElementById('victoryTime').textContent = stats.time;
+    }
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+    // Big celebratory chime
+    Sound.chime();
+    setTimeout(() => Sound.chime(), 200);
+    setTimeout(() => Sound.chime(), 400);
+    // Big particle burst at the goal cell
+    const goal = state.goals && state.goals.farm && state.goals.farm[0];
+    if (goal) {
+      spawnParticles(goal.x, goal.y, '#FFC857', 30, 90);
+      setTimeout(() => spawnParticles(goal.x, goal.y, '#FFE082', 20, 70), 150);
+      setTimeout(() => spawnParticles(goal.x, goal.y, '#7DD3F5', 16, 60), 300);
+    }
+  }
+  function hideVictory() {
+    const overlay = document.getElementById('victoryOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+    victoryShown = false;
   }
 
   // ---- Tutorial ----
@@ -3849,6 +4204,9 @@ er-section" id="baxt">
 
     const parsed = parseLevel(level);
     state.grid = parsed.grid;
+    state.goals = parsed.goals;
+    state.dropsPlaced = 0;
+    state.levelStartTime = Date.now();
     resizeCanvas();
     render();
 
@@ -4000,6 +4358,42 @@ er-section" id="baxt">
 
     // ---- Idle hint system ----
     setupIdleHints();
+
+    // Wire victory overlay buttons
+    const victoryContinue = document.getElementById('victoryContinue');
+    const victoryRestart = document.getElementById('victoryRestart');
+    if (victoryContinue) {
+      victoryContinue.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideVictory();
+        Sound.click();
+      });
+    }
+    if (victoryRestart) {
+      victoryRestart.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hideVictory();
+        // Reload the level
+        const parsed2 = parseLevel(level);
+        state.grid = parsed2.grid;
+        state.goals = parsed2.goals;
+        state.waterCells = new Map();
+        state.reached = { spring: false, farm: false, village: false, wheel: false };
+        state.dropsPlaced = 0;
+        state.levelStartTime = Date.now();
+        state.inventory.canal = 30;
+        stopFlow();
+        // Restart the spring
+        parsed2.sources.forEach((s, idx) => {
+          state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
+        });
+        state.reached.spring = true;
+        state.tickHandle = setInterval(tickFlow, WATER_SPEED);
+        state.renderHandle = setInterval(render, 60);
+        render();
+        Sound.click();
+      });
+    }
   }
 
   // ---- Idle hint system ----
@@ -4130,10 +4524,30 @@ er-section" id="baxt">
       stars.innerHTML = html;
     }
 
-    // Skip if already shown this session
-    var SKIP_KEY = 'wb_splash_shown';
-    var alreadyShown = false;
-    try { alreadyShown = sessionStorage.getItem(SKIP_KEY) === '1'; } catch (e) {}
+      // Skip if already shown this session
+      var SKIP_KEY = 'wb_splash_shown';
+      var alreadyShown = false;
+      try { alreadyShown = sessionStorage.getItem(SKIP_KEY) === '1'; } catch (e) {}
+
+      // Touch/hover support for the gears — speed up on interaction
+      var splashGears = splash.querySelector('.splash-gears');
+      var speedUpGears = function() {
+        if (splashGears) splashGears.classList.add('speeding');
+        splash.classList.add('touched');
+      };
+      var slowDownGears = function() {
+        // Only slow down if the user is no longer touching/hovering
+        if (splashGears) splashGears.classList.remove('speeding');
+      };
+      splash.addEventListener('touchstart', speedUpGears, { passive: true });
+      splash.addEventListener('touchend', slowDownGears, { passive: true });
+      splash.addEventListener('mouseenter', speedUpGears);
+      splash.addEventListener('mouseleave', slowDownGears);
+      // Also: when the splash starts, give it a quick "touched" pulse so the
+      // user immediately sees the gears accelerate briefly (a subtle hint
+      // that they're interactive)
+      setTimeout(speedUpGears, 300);
+      setTimeout(slowDownGears, 1800);
 
     if (alreadyShown) {
       // Hide immediately, no animation
@@ -4142,13 +4556,15 @@ er-section" id="baxt">
       // Mark as initialized so the rest of the page works
       window.__splashDone = true;
     } else {
-      // Loading messages to cycle through
+      // Loading messages to cycle through — paced for 8s
       var messages = [
         'Drawing the first spring…',
+        'Spinning up the gears…',
         'Tuning the ambient drone…',
         'Raising the dam…',
         'Connecting the canals…',
         'Polishing the wheel…',
+        'Waking Baxter…',
         'Almost there…'
       ];
       var msgIdx = 0;
@@ -4156,7 +4572,7 @@ er-section" id="baxt">
         msgIdx++;
         if (msgIdx >= messages.length) { clearInterval(msgTimer); return; }
         if (loading) loading.textContent = messages[msgIdx];
-      }, 450);
+      }, 850); // ~0.85s per message so 8 messages fit comfortably in the 8s splash
 
       // Soft steam puffs from the gears every ~1.2s
       var steamTimer = setInterval(function() {
@@ -4166,7 +4582,7 @@ er-section" id="baxt">
       // Progress: 0 → 100 over ~2700ms
       var progress = 0;
       var start = Date.now();
-      var DURATION = 5000; // 5 seconds — gives the brand moment time to breathe
+      var DURATION = 8000; // 8 seconds — a longer, more cinematic brand moment
       var tickTimer = setInterval(function() {
         var elapsed = Date.now() - start;
         // Ease-out curve
@@ -4221,5 +4637,5 @@ er-section" id="baxt">
   })();
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b3c51ebc735fa6',t:'MTc4NDA2NjEwOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
