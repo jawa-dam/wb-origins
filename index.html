@@ -1,0 +1,3781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050B14" />
+  <title>Water Builder: Origins — Build the system. Grow civilization.</title>
+  <meta name="description" content="An interactive world about the engineering that makes civilization possible. Guide water from a single spring to farms, villages, and beyond." />
+  <meta name="keywords" content="Water Builder, Origins, engineering game, puzzle, education, civilization, Project Watershed, Baxter, YallToo" />
+  <meta property="og:title" content="Water Builder: Origins" />
+  <meta property="og:description" content="Build the system. Grow civilization. An interactive world about the engineering that makes life possible." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' x2='0' y1='0' y2='1'><stop offset='0' stop-color='%237DD3F5'/><stop offset='1' stop-color='%231A6E94'/></linearGradient></defs><path d='M32 6 C 16 26, 16 40, 32 58 C 48 40, 48 26, 32 6 Z' fill='url(%23g)'/></svg>" />
+
+  <!-- No external font requests — fully system-font stack for Hostinger compatibility -->
+  <meta name="font-stack" content="system" />
+
+  <style>
+  /* =========================================================
+     WATER BUILDER: ORIGINS — World styles
+     ========================================================= */
+  :root {
+    --night-0:#050B14; --night-1:#0A1626; --night-2:#0F2036; --night-3:#16304E; --night-4:#1E3F60;
+    --w-deep:#0A4A6B; --w-mid:#1A6E94; --w-bright:#4FB3D9; --w-glow:#7DD3F5; --w-foam:#EAF7FB;
+    --leaf-1:#6FBF73; --leaf-2:#3F8E4B; --leaf-3:#A8D49C;
+    --earth-1:#8B5A3C; --earth-2:#5C3A24; --wheat:#FFC857; --bark:#C49A6C;
+    --stone-1:#B5ADA0; --stone-2:#7A7064; --sun:#FFD27D; --sun-hot:#FFA94D;
+    --cottage:#F4D3A8; --roof:#B5533C;
+    --beaver:#A66E3F; --beaver-d:#6E4422; --beaver-belly:#D9A86C; --hat:#FFC53D; --vest:#3B6FB5;
+    --ink:#E8F2FA; --ink-soft:#A8BDD2; --ink-faint:#6A819A; --ink-dim:#2A4055;
+    --cream:#FFF7E6; --cream-2:#FBEED1; --c-ink-text:#1A1208; --c-ink-soft:#5A4A3A;
+    --r-sm:10px; --r-md:16px; --r-lg:24px; --r-xl:36px; --r-pill:999px;
+    --ease-splash:cubic-bezier(.2,.8,.2,1); --ease-bounce:cubic-bezier(.34,1.56,.64,1);
+    /* System font stack — no external Google Fonts needed */
+    --f-display:ui-serif,Georgia,'Times New Roman',Cambria,serif;
+    --f-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+    --f-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Courier New',monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: var(--f-body);
+    color: var(--ink);
+    background: var(--night-0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  button { font-family: inherit; color: inherit; }
+  a { color: var(--w-glow); text-decoration: none; transition: color .2s; }
+  a:hover { color: var(--w-foam); }
+  h1,h2,h3,h4 { font-family: var(--f-display); font-weight: 500; letter-spacing: -0.015em; margin: 0 0 0.6em; color: var(--ink); }
+  p { margin: 0 0 1em; }
+
+  
+    /* =========================================================
+       WELCOME SPLASH SCREEN
+       ========================================================= */
+    .splash-screen {
+      position: fixed; inset: 0;
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(125,211,245,.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,210,125,.05) 0%, transparent 60%),
+        linear-gradient(180deg, var(--night-0) 0%, var(--night-1) 30%, var(--night-2) 60%, var(--night-1) 90%, var(--night-0) 100%);
+      transition: opacity .8s var(--ease-splash), visibility .8s;
+    }
+    .splash-screen.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .splash-ambient {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .splash-ambient .stars { position: absolute; inset: 0; }
+    .splash-ambient .star {
+      position: absolute; background: var(--w-foam); border-radius: 50%;
+      box-shadow: 0 0 4px var(--w-foam);
+      animation: twinkle 4s ease-in-out infinite;
+    }
+    .splash-moon {
+      position: absolute; top: 8%; right: 8%;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--w-foam) 0%, var(--w-bright) 50%, var(--w-mid) 100%);
+      box-shadow: 0 0 0 5px rgba(125,211,245,.06), 0 0 60px rgba(125,211,245,.3), inset -10px -10px 24px rgba(10,74,107,.6);
+      animation: float-y 8s var(--ease-splash) infinite;
+    }
+    .splash-ambient .clouds { position: absolute; inset: 0; }
+    .splash-ambient .cloud {
+      position: absolute; background: rgba(125,211,245,.05);
+      border-radius: 100px; filter: blur(3px);
+    }
+    .splash-ambient .cloud::before, .splash-ambient .cloud::after {
+      content: ""; position: absolute; background: rgba(125,211,245,.05); border-radius: 50%;
+    }
+    .splash-ambient .cloud-a { top: 18%; left: -10%; width: 240px; height: 55px; animation: drift 38s linear infinite; }
+    .splash-ambient .cloud-a::before { width: 120px; height: 120px; top: -50px; left: 40px; }
+    .splash-ambient .cloud-a::after  { width: 90px;  height: 90px;  top: -30px; right: 40px; }
+    .splash-ambient .cloud-b { top: 26%; right: -10%; width: 200px; height: 50px; animation: drift 48s linear infinite reverse; opacity: .7; }
+    .splash-ambient .cloud-b::before { width: 100px; height: 100px; top: -40px; left: 30px; }
+    .splash-ambient .cloud-b::after  { width: 80px;  height: 80px;  top: -25px; right: 30px; }
+    .splash-ambient .hills {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 22vh; opacity: .8;
+    }
+    .splash-ambient .hills svg { width: 100%; height: 100%; display: block; }
+
+    .splash-content {
+      position: relative;
+      text-align: center;
+      max-width: 560px;
+      padding: 0 24px;
+      z-index: 2;
+      animation: splash-rise 1.2s var(--ease-splash) both;
+    }
+    @keyframes splash-rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .splash-logo-wrap {
+      margin-bottom: 28px;
+      animation: splash-logo-in 1.4s var(--ease-splash) both;
+    }
+    @keyframes splash-logo-in {
+      0% { opacity: 0; transform: scale(0.85) translateY(-8px); }
+      60% { opacity: 1; transform: scale(1.04) translateY(0); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .splash-logo {
+      width: clamp(110px, 18vw, 180px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 6px 24px rgba(125,211,245,.25)) drop-shadow(0 2px 8px rgba(0,0,0,.5));
+    }
+    .splash-presented {
+      font-family: var(--f-mono);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .35em;
+      color: var(--w-glow);
+      margin-top: 14px;
+      opacity: .8;
+    }
+    .splash-title {
+      font-family: var(--f-display);
+      font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      margin: 0 0 14px;
+      background: linear-gradient(135deg, var(--w-glow) 0%, var(--w-foam) 45%, var(--sun) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: splash-title-in 1.2s var(--ease-splash) .2s both;
+    }
+    @keyframes splash-title-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .splash-subtitle {
+      font-family: var(--f-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(.95rem, 1.6vw, 1.15rem);
+      color: var(--ink-soft);
+      margin: 0 auto 36px;
+      max-width: 36ch;
+      animation: splash-fade 1.2s var(--ease-splash) .4s both;
+    }
+    @keyframes splash-fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .splash-progress {
+      width: 240px; height: 2px;
+      background: rgba(125,211,245,.12);
+      border-radius: 2px;
+      margin: 0 auto 14px;
+      overflow: hidden;
+      animation: splash-fade 1.2s var(--ease-splash) .5s both;
+    }
+    .splash-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--w-bright) 0%, var(--w-glow) 50%, var(--sun) 100%);
+      border-radius: 2px;
+      box-shadow: 0 0 12px rgba(125,211,245,.6);
+      transition: width .25s linear;
+    }
+    .splash-loading {
+      font-family: var(--f-mono);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .25em;
+      color: var(--ink-faint);
+      margin: 0 0 32px;
+      min-height: 1em;
+      animation: splash-fade 1.2s var(--ease-splash) .5s both;
+    }
+    .splash-skip {
+      background: transparent;
+      border: 1px solid rgba(125,211,245,.2);
+      color: var(--ink-faint);
+      font-family: var(--f-mono);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      padding: .55em 1.4em;
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: all .2s var(--ease-splash);
+      animation: splash-fade 1.2s var(--ease-splash) .7s both;
+    }
+    .splash-skip:hover {
+      color: var(--w-foam);
+      border-color: var(--w-glow);
+      background: rgba(125,211,245,.08);
+    }
+    .splash-skip:active { transform: scale(.96); }
+
+    @media (max-width: 600px) {
+      .splash-moon { width: 60px; height: 60px; }
+      .splash-ambient .hills { height: 18vh; }
+    }
+
+    /* =========================================================
+     AMBIENT WORLD
+     ========================================================= */
+  .ambient {
+    position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+    background:
+      radial-gradient(ellipse 100% 70% at 50% 0%, rgba(125,211,245,.1) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(255,210,125,.05) 0%, transparent 60%),
+      linear-gradient(180deg, var(--night-0) 0%, var(--night-1) 25%, var(--night-2) 50%, var(--night-1) 80%, var(--night-0) 100%);
+  }
+  .stars { position: absolute; inset: 0; }
+  .star {
+    position: absolute; background: var(--w-foam); border-radius: 50%;
+    box-shadow: 0 0 4px var(--w-foam); animation: twinkle 4s ease-in-out infinite;
+  }
+  @keyframes twinkle { 50% { opacity: .15; transform: scale(.6); } }
+  .moon {
+    position: absolute; top: 12%; right: 12%;
+    width: 110px; height: 110px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--w-foam) 0%, var(--w-bright) 50%, var(--w-mid) 100%);
+    box-shadow: 0 0 0 6px rgba(125,211,245,.06), 0 0 80px rgba(125,211,245,.3), inset -14px -14px 30px rgba(10,74,107,.6);
+    animation: float-y 8s var(--ease-splash) infinite;
+  }
+  @keyframes float-y { 50% { transform: translateY(-10px); } }
+  .clouds { position: absolute; inset: 0; }
+  .cloud {
+    position: absolute; background: rgba(125,211,245,.05); border-radius: 100px; filter: blur(3px);
+  }
+  .cloud::before, .cloud::after { content: ""; position: absolute; background: rgba(125,211,245,.05); border-radius: 50%; }
+  .cloud-a { top: 20%; left: -10%; width: 260px; height: 60px; animation: drift 35s linear infinite; }
+  .cloud-a::before { width: 130px; height: 130px; top: -50px; left: 40px; }
+  .cloud-a::after  { width: 90px;  height: 90px;  top: -30px; right: 40px; }
+  .cloud-b { top: 28%; right: -10%; width: 220px; height: 50px; animation: drift 45s linear infinite reverse; opacity: .7; }
+  .cloud-b::before { width: 100px; height: 100px; top: -40px; left: 30px; }
+  .cloud-b::after  { width: 80px;  height: 80px;  top: -25px; right: 30px; }
+  @keyframes drift { to { transform: translateX(calc(100vw + 200px)); } }
+  .mountains {
+    position: absolute; bottom: 18%; left: 0; right: 0;
+    height: 32vh; pointer-events: none; opacity: .5;
+  }
+  .mountains svg { width: 100%; height: 100%; display: block; }
+  .hills {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 20vh; pointer-events: none;
+  }
+  .hills svg { width: 100%; height: 100%; display: block; }
+  .river {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 6vh;
+    background: linear-gradient(180deg, transparent 0%, var(--w-deep) 30%, var(--w-mid) 100%);
+  }
+  .river::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0 30px, rgba(234,247,251,.12) 30px 60px);
+    animation: shimmer 8s linear infinite; background-size: 200% 100%;
+  }
+  @keyframes shimmer { to { background-position: 200% 0; } }
+
+  /* =========================================================
+     TOP NAV
+     ========================================================= */
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+    padding: 1rem 1.6rem;
+    background: linear-gradient(180deg, rgba(5,11,20,.85) 0%, rgba(5,11,20,0) 100%);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+  }
+  .brand { display: flex; align-items: center; gap: .8rem; color: var(--ink); }
+  .brand-mark { position: relative; width: 40px; height: 50px; display: grid; place-items: center; }
+  .brand-mark svg { width: 100%; height: 100%; filter: drop-shadow(0 0 12px rgba(125,211,245,.5)); }
+  .brand-text { line-height: 1; }
+  .brand-name {
+    display: block; font-family: var(--f-display); font-weight: 600;
+    font-size: 1.15rem; letter-spacing: -.01em;
+  }
+  .brand-tag {
+    display: block; font-family: var(--f-mono); font-size: .65rem;
+    text-transform: uppercase; letter-spacing: .25em;
+    color: var(--w-glow); margin-top: 4px;
+  }
+  .nav-links {
+    display: flex; gap: .25rem;
+    background: rgba(15,32,54,.5); padding: .35rem;
+    border-radius: var(--r-pill); border: 1px solid rgba(125,211,245,.1);
+  }
+  .nav-links a {
+    padding: .55rem 1.1rem; border-radius: var(--r-pill);
+    font-weight: 500; font-size: .9rem; color: var(--ink-soft);
+    transition: all .2s var(--ease-splash);
+  }
+  .nav-links a:hover { color: var(--w-foam); background: rgba(125,211,245,.08); }
+  .nav-links a.active { color: var(--w-foam); background: rgba(125,211,245,.15); }
+  .nav-cta {
+    padding: .6rem 1.2rem !important;
+    background: linear-gradient(135deg, var(--w-bright) 0%, var(--w-glow) 100%) !important;
+    color: var(--night-0) !important; font-weight: 600 !important;
+    box-shadow: 0 0 0 1px rgba(125,211,245,.3), 0 0 30px rgba(125,211,245,.3);
+    transition: all .2s var(--ease-bounce);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(125,211,245,.5), 0 0 40px rgba(125,211,245,.5); }
+  .nav-toggle {
+    display: none; width: 40px; height: 40px;
+    background: rgba(15,32,54,.5); border: 1px solid rgba(125,211,245,.1);
+    border-radius: 12px; cursor: pointer;
+    flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  }
+  .nav-toggle span { width: 20px; height: 2px; background: var(--ink-soft); border-radius: 2px; }
+
+  /* =========================================================
+     HERO
+     ========================================================= */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 1.6rem 5rem; overflow: hidden;
+  }
+  .hero-inner {
+    max-width: 1280px; width: 100%; margin: 0 auto;
+    display: grid; grid-template-columns: 1.05fr 1fr; gap: 4rem; align-items: center;
+  }
+  .kicker {
+    display: inline-flex; align-items: center; gap: .6em;
+    padding: .45em 1.1em;
+    background: rgba(125,211,245,.08); border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-pill);
+    font-family: var(--f-mono); font-size: .7rem;
+    text-transform: uppercase; letter-spacing: .25em;
+    color: var(--w-glow); margin-bottom: 1.5rem;
+    animation: fade-up 1s var(--ease-splash) both;
+  }
+  .kicker::before {
+    content: ""; width: 6px; height: 6px; background: var(--w-glow);
+    border-radius: 50%; box-shadow: 0 0 8px var(--w-glow);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: .4; transform: scale(1.2); } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-title {
+    font-family: var(--f-display); font-weight: 500;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    line-height: 1.02; letter-spacing: -0.025em;
+    color: var(--ink); margin: 0 0 1.5rem;
+    animation: fade-up 1s var(--ease-splash) .1s both;
+  }
+  .hero-title em {
+    font-style: italic; font-weight: 400;
+    background: linear-gradient(135deg, var(--w-glow) 0%, var(--w-foam) 50%, var(--sun) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-tagline {
+    font-family: var(--f-display); font-style: italic; font-weight: 400;
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    color: var(--ink-soft); max-width: 38ch;
+    margin: 0 0 1.5rem;
+    animation: fade-up 1s var(--ease-splash) .2s both;
+  }
+  .hero-lede {
+    font-size: 1.05rem; line-height: 1.7; color: var(--ink-soft);
+    max-width: 52ch; margin: 0 0 2.5rem;
+    animation: fade-up 1s var(--ease-splash) .3s both;
+  }
+  .hero-cta-row {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    animation: fade-up 1s var(--ease-splash) .4s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: .55em;
+    padding: 1em 1.8em; border: none; border-radius: var(--r-pill);
+    font-family: var(--f-body); font-weight: 600; font-size: 1rem;
+    cursor: pointer; transition: all .2s var(--ease-bounce);
+    text-decoration: none; white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--w-bright) 0%, var(--w-glow) 100%);
+    color: var(--night-0);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.3), 0 0 30px rgba(125,211,245,.35), 0 8px 20px rgba(79,179,217,.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.5), 0 0 50px rgba(125,211,245,.5), 0 12px 30px rgba(79,179,217,.5);
+    color: var(--night-0);
+  }
+  .btn-ghost {
+    background: rgba(125,211,245,.04); color: var(--ink);
+    border: 1.5px solid rgba(125,211,245,.3);
+  }
+  .btn-ghost:hover { background: rgba(125,211,245,.1); border-color: var(--w-glow); color: var(--w-foam); }
+  .btn-icon { width: 20px; height: 20px; }
+  .hero-meta {
+    display: flex; gap: 1.5rem; margin-top: 2.5rem; flex-wrap: wrap;
+    animation: fade-up 1s var(--ease-splash) .5s both;
+  }
+  .meta-item {
+    display: flex; align-items: center; gap: .5em;
+    color: var(--ink-faint); font-size: .85rem;
+  }
+  .meta-item svg { width: 14px; height: 14px; opacity: .7; }
+  .meta-item strong { color: var(--ink-soft); font-weight: 600; margin-right: 2px; }
+
+  /* =========================================================
+     HERO STAGE — interactive game preview
+     ========================================================= */
+  .hero-stage {
+    position: relative; aspect-ratio: 1 / 1;
+    max-width: 540px; justify-self: end; width: 100%;
+  }
+  .stage-frame {
+    position: relative; width: 100%; height: 100%;
+    border-radius: var(--r-xl); overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(125,211,245,.25), 0 0 80px rgba(125,211,245,.3), 0 30px 80px rgba(0,0,0,.5);
+    animation: fade-up 1.2s var(--ease-splash) .3s both;
+  }
+  .stage-glow {
+    position: absolute; inset: -50px;
+    background: radial-gradient(circle, rgba(125,211,245,.18) 0%, transparent 60%);
+    z-index: -1; animation: pulse-glow 4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow { 50% { opacity: .6; } }
+  #heroCanvas {
+    display: block; width: 100%; height: 100%;
+    cursor: crosshair; touch-action: none;
+  }
+  .stage-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, transparent 65%, rgba(5,11,20,.5) 100%);
+  }
+  .stage-tag {
+    position: absolute; bottom: 16px; left: 16px;
+    display: inline-flex; align-items: center; gap: .5em;
+    padding: .4em .85em;
+    background: rgba(5,11,20,.65); backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2); border-radius: var(--r-pill);
+    font-family: var(--f-mono); font-size: .68rem;
+    text-transform: uppercase; letter-spacing: .15em;
+    color: var(--w-glow);
+  }
+  .stage-tag::before {
+    content: ""; width: 6px; height: 6px;
+    background: var(--leaf-1); border-radius: 50%;
+    box-shadow: 0 0 6px var(--leaf-1);
+    animation: pulse 1.5s infinite;
+  }
+  .stage-hint {
+    position: absolute; top: 64px; right: 16px;
+    padding: .35em .8em;
+    background: rgba(5,11,20,.6); backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,200,87,.2); border-radius: var(--r-pill);
+    font-family: var(--f-mono); font-size: .65rem;
+    color: var(--sun); letter-spacing: .1em;
+    transition: opacity .3s;
+    z-index: 3;
+  }
+  .stage-hint.hide { opacity: 0; pointer-events: none; }
+
+  /* =========================================================
+     BAXTER SPEECH BUBBLE — the tutorial narrator
+     ========================================================= */
+  .bubble-wrap {
+    position: absolute;
+    bottom: 56px; left: 16px; right: 16px;
+    max-width: 360px;
+    display: flex; gap: .8rem; align-items: flex-start;
+    padding: .9rem 1rem;
+    background: rgba(10,22,38,.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(125,211,245,.25);
+    border-radius: var(--r-md);
+    box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.08);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .4s var(--ease-splash), transform .4s var(--ease-splash);
+    pointer-events: auto;
+  }
+  .bubble-wrap.bubble-enter {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .bubble-portrait {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--w-mid) 0%, var(--w-bright) 100%);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    box-shadow: 0 0 0 2px rgba(125,211,245,.3), 0 0 16px rgba(125,211,245,.3);
+  }
+  .bubble-body {
+    flex: 1; min-width: 0;
+  }
+  .bubble-name {
+    display: flex; align-items: center; gap: .5rem;
+    margin-bottom: .2rem;
+  }
+  .bubble-name > span:first-child {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--ink);
+  }
+  .bubble-title-tag {
+    font-family: var(--f-mono);
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    color: var(--w-glow);
+    padding: .1em .5em;
+    background: rgba(125,211,245,.1);
+    border-radius: var(--r-pill);
+  }
+  .bubble-title {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: .25rem;
+    line-height: 1.2;
+  }
+  .bubble-text {
+    font-size: .85rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: .5rem;
+  }
+  .bubble-advance {
+    background: linear-gradient(135deg, var(--w-bright) 0%, var(--w-glow) 100%);
+    color: var(--night-0);
+    border: none;
+    border-radius: var(--r-pill);
+    padding: .35em .9em;
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: .75rem;
+    cursor: pointer;
+    transition: all .2s var(--ease-bounce);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.3);
+  }
+  .bubble-advance:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(125,211,245,.5), 0 0 16px rgba(125,211,245,.4); }
+  .bubble-advance:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+  /* Skip tutorial — top-right of bubble */
+  .bubble-skip {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: transparent;
+    border: none;
+    padding: .25em .65em;
+    border-radius: var(--r-pill);
+    font-family: var(--f-mono);
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: all .2s var(--ease-splash);
+  }
+  .bubble-skip:hover { color: var(--w-foam); background: rgba(125,211,245,.08); }
+  .bubble-skip.hide { display: none; }
+
+  /* Dismiss — top-left close button (X) */
+  .bubble-dismiss {
+    position: absolute;
+    top: 6px; left: 6px;
+    width: 24px; height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--ink-faint);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: none; /* only shown after tutorial */
+    align-items: center; justify-content: center;
+    transition: all .2s var(--ease-splash);
+  }
+  .bubble-dismiss:hover { color: var(--ink); background: rgba(125,211,245,.1); }
+  .bubble-dismiss.show { display: inline-flex; }
+
+  /* Reopen button — small ghost button next to advance */
+  .bubble-actions {
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .bubble-reopen {
+    background: transparent;
+    border: none;
+    padding: .35em .65em;
+    border-radius: var(--r-pill);
+    font-family: var(--f-mono);
+    font-size: .65rem;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: all .2s var(--ease-splash);
+  }
+  .bubble-reopen:hover { color: var(--w-glow); background: rgba(125,211,245,.08); }
+  .bubble-reopen.hide { display: none; }
+
+  /* When tutorial is fully done, hide skip + show dismiss + show reopen */
+  .bubble-wrap.tutorial-end .bubble-skip { display: none; }
+  .bubble-wrap.tutorial-end .bubble-dismiss { display: inline-flex; }
+
+  /* =========================================================
+     SOUND PICKER — top-center, three mood buttons
+     ========================================================= */
+  .stage-sound-picker {
+    position: absolute;
+    top: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex; gap: 4px;
+    padding: 4px;
+    background: rgba(5,11,20,.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-pill);
+    z-index: 6;
+  }
+  .sp-btn {
+    width: 30px; height: 30px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--ink-faint);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: all .2s var(--ease-splash);
+  }
+  .sp-btn svg { width: 16px; height: 16px; }
+  .sp-btn:hover { color: var(--ink); background: rgba(125,211,245,.08); }
+  .sp-btn.active {
+    color: var(--w-glow);
+    background: rgba(125,211,245,.18);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.4);
+  }
+
+  /* =========================================================
+     MODE TOGGLE — top-right, Build / Play
+     ========================================================= */
+  .stage-mode {
+    position: absolute;
+    top: 16px; right: 16px;
+    display: inline-flex; gap: 0;
+    padding: 3px;
+    background: rgba(5,11,20,.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-pill);
+    z-index: 6;
+  }
+  .mode-btn {
+    background: transparent;
+    border: none;
+    padding: .4em 1em;
+    border-radius: var(--r-pill);
+    font-family: var(--f-mono);
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: all .2s var(--ease-splash);
+  }
+  .mode-btn:hover { color: var(--ink); }
+  .mode-btn.active {
+    color: var(--w-foam);
+    background: rgba(125,211,245,.18);
+  }
+
+  /* =========================================================
+     BUILD PALETTE — left edge, only in Build mode
+     ========================================================= */
+  .stage-palette {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 6px;
+    background: rgba(5,11,20,.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-md);
+    z-index: 6;
+  }
+  .stage-palette[hidden] { display: none; }
+  .pal-btn {
+    width: 40px; height: 40px;
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: var(--r-sm);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all .2s var(--ease-splash);
+  }
+  .pal-btn:hover { background: rgba(125,211,245,.1); transform: scale(1.05); }
+  .pal-btn.active {
+    background: rgba(125,211,245,.2);
+    border-color: var(--w-glow);
+    box-shadow: 0 0 12px rgba(125,211,245,.4);
+  }
+  .pal-erase { color: var(--c-danger, #C0463A); }
+  .pal-clear { color: var(--sun); }
+
+  /* =========================================================
+     SHARE BUTTON — bottom-right, only in Build mode
+     ========================================================= */
+  .stage-share {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .5em 1em;
+    background: linear-gradient(135deg, var(--w-bright) 0%, var(--w-glow) 100%);
+    border: none;
+    border-radius: var(--r-pill);
+    color: var(--night-0);
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: .8rem;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(125,211,245,.3), 0 0 24px rgba(125,211,245,.3);
+    z-index: 6;
+    transition: all .2s var(--ease-bounce);
+  }
+  .stage-share[hidden] { display: none; }
+  .stage-share:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(125,211,245,.5), 0 0 32px rgba(125,211,245,.5); }
+  .stage-share svg { width: 14px; height: 14px; }
+
+  /* =========================================================
+     SAVE / SHARE MODAL
+     ========================================================= */
+  .stage-modal {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    background: rgba(5,11,20,.85);
+    backdrop-filter: blur(8px);
+    border-radius: var(--r-xl);
+    z-index: 50;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .stage-modal[hidden] { display: none; }
+  .modal-card {
+    background: linear-gradient(180deg, rgba(15,32,54,.95) 0%, rgba(10,22,38,.95) 100%);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-lg);
+    padding: 1.6rem;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 0 0 1px rgba(125,211,245,.1), 0 30px 60px rgba(0,0,0,.5);
+    position: relative;
+  }
+  .modal-card h4 {
+    font-family: var(--f-display);
+    font-size: 1.2rem;
+    color: var(--ink);
+    margin: 0 0 .4rem;
+  }
+  .modal-card p {
+    color: var(--ink-soft);
+    font-size: .85rem;
+    line-height: 1.5;
+    margin: 0 0 1rem;
+  }
+  .modal-close {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 28px; height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--ink-faint);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: all .2s;
+  }
+  .modal-close:hover { color: var(--ink); background: rgba(125,211,245,.1); }
+  .modal-row {
+    display: flex; gap: 6px; margin-bottom: .8rem;
+  }
+  .modal-row input {
+    flex: 1;
+    background: rgba(0,0,0,.3);
+    border: 1px solid rgba(125,211,245,.15);
+    border-radius: var(--r-sm);
+    padding: .5em .7em;
+    color: var(--ink);
+    font-family: var(--f-mono);
+    font-size: .8rem;
+    min-width: 0;
+  }
+  .modal-row input:focus { outline: none; border-color: var(--w-glow); }
+  .modal-btn {
+    background: rgba(125,211,245,.15);
+    border: 1px solid rgba(125,211,245,.3);
+    border-radius: var(--r-sm);
+    padding: .5em 1em;
+    color: var(--w-glow);
+    font-family: var(--f-mono);
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .modal-btn:hover { background: rgba(125,211,245,.25); color: var(--w-foam); }
+  .modal-btn-primary {
+    background: linear-gradient(135deg, var(--w-bright) 0%, var(--w-glow) 100%);
+    border: none;
+    color: var(--night-0);
+    font-weight: 600;
+  }
+  .modal-feedback {
+    color: var(--leaf-1);
+    font-family: var(--f-mono);
+    font-size: .75rem;
+    text-align: center;
+    height: 1.2em;
+    margin: .3rem 0;
+  }
+  .modal-divider {
+    height: 1px;
+    background: rgba(125,211,245,.15);
+    margin: 1rem 0;
+  }
+  .modal-levels {
+    max-height: 140px;
+    overflow-y: auto;
+    margin-bottom: .8rem;
+  }
+  .modal-level-item {
+    display: flex; align-items: center; gap: .5rem;
+    padding: .4em .6em;
+    background: rgba(125,211,245,.05);
+    border: 1px solid rgba(125,211,245,.1);
+    border-radius: var(--r-sm);
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .modal-level-item:hover { background: rgba(125,211,245,.12); border-color: var(--w-glow); }
+  .modal-level-item .name { flex: 1; font-size: .85rem; color: var(--ink); }
+  .modal-level-item .code { font-family: var(--f-mono); font-size: .65rem; color: var(--ink-faint); }
+  .modal-level-item .delete {
+    background: transparent; border: none; color: var(--ink-faint);
+    cursor: pointer; padding: 2px 6px; border-radius: 4px;
+  }
+  .modal-level-item .delete:hover { color: var(--w-foam); background: rgba(192,70,58,.2); }
+  .modal-empty {
+    color: var(--ink-faint);
+    font-size: .85rem;
+    text-align: center;
+    padding: 1rem;
+    margin: 0;
+  }
+
+
+  /* When bubble is fully dismissed, hide it and show a tiny "Baxter" pill in the corner */
+  .bubble-wrap.dismissed {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+  .bubble-reopen-pill {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    display: none; align-items: center; gap: .4rem;
+    padding: .35em .8em .35em .35em;
+    background: rgba(10,22,38,.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-pill);
+    cursor: pointer;
+    transition: all .2s var(--ease-splash);
+    box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    z-index: 10;
+  }
+  .bubble-reopen-pill:hover { background: rgba(15,32,54,.95); border-color: var(--w-glow); transform: translateY(-2px); }
+  .bubble-reopen-pill.show { display: inline-flex; }
+  .bubble-reopen-pill svg { width: 22px; height: 22px; }
+  .bubble-reopen-pill span {
+    font-family: var(--f-mono);
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    color: var(--ink-soft);
+  }
+
+  /* =========================================================
+     MUTE TOGGLE — top-right of stage
+     ========================================================= */
+  .stage-mute {
+    position: absolute;
+    top: 16px; left: 16px;
+    width: 32px; height: 32px;
+    background: rgba(5,11,20,.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: 50%;
+    color: var(--w-glow);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: all .2s var(--ease-splash);
+    z-index: 5;
+  }
+  .stage-mute:hover { background: rgba(15,32,54,.9); border-color: var(--w-glow); transform: scale(1.05); }
+  .stage-mute:active { transform: scale(.95); }
+  .stage-mute svg { width: 16px; height: 16px; }
+  .stage-mute .ic-off { display: none; }
+  .stage-mute.muted .ic-on { display: none; }
+  .stage-mute.muted .ic-off { display: inline; }
+  .stage-mute.muted { color: var(--ink-faint); }
+  .stage-mute.muted:hover { color: var(--ink); }
+
+  /* =========================================================
+     DAILY SEED INDICATOR — small toast at top
+     ========================================================= */
+  .stage-seed {
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    padding: .5em 1em;
+    background: rgba(10,22,38,.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(125,211,245,.3);
+    border-radius: var(--r-pill);
+    font-family: var(--f-mono);
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    color: var(--w-glow);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s var(--ease-splash), transform .4s var(--ease-splash);
+    z-index: 4;
+    display: none; /* disabled — too much UI now */
+  }
+  .stage-seed.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* When bubble pops up as a "tip" (idle hint), add a soft pulse */
+  .bubble-wrap.tip {
+    animation: tip-pop-in 0.4s var(--ease-splash), tip-pulse 2.5s var(--ease-splash) 0.4s infinite;
+  }
+  @keyframes tip-pop-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes tip-pulse {
+    0%, 100% { box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.08); }
+    50%      { box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.4), 0 0 30px rgba(125,211,245,.3); }
+  }
+
+  /* When tutorial ends, bubble becomes more compact */
+  .bubble-wrap.tutorial-end {
+    bottom: 16px; left: 16px;
+  }
+  .bubble-wrap.tutorial-end .bubble-advance { display: none; }
+
+  @media (max-width: 560px) {
+    .bubble-wrap {
+      bottom: 50px; left: 12px; right: 12px;
+      max-width: none;
+    }
+  }
+
+  /* =========================================================
+     SECTIONS — common
+     ========================================================= */
+  .section { position: relative; padding: 8rem 1.6rem; }
+  .section-head { max-width: 720px; margin: 0 auto 4rem; text-align: center; }
+  .section-eyebrow {
+    display: inline-block; font-family: var(--f-mono);
+    font-size: .72rem; text-transform: uppercase; letter-spacing: .3em;
+    color: var(--w-glow); margin-bottom: 1rem;
+    padding: .3em .9em;
+    background: rgba(125,211,245,.08); border: 1px solid rgba(125,211,245,.15);
+    border-radius: var(--r-pill);
+  }
+  .section-title {
+    font-family: var(--f-display); font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1; letter-spacing: -0.02em;
+    color: var(--ink); margin: 0 0 1rem;
+  }
+  .section-title em { font-style: italic; color: var(--w-glow); }
+  .section-sub {
+    font-size: 1.1rem; color: var(--ink-soft);
+    line-height: 1.6; max-width: 60ch; margin: 0 auto;
+  }
+
+  /* =========================================================
+     CHAPTERS
+     ========================================================= */
+  .chapters {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .chapter {
+    position: relative; padding: 2rem 1.6rem 1.6rem;
+    background: linear-gradient(180deg, rgba(15,32,54,.6) 0%, rgba(10,22,38,.4) 100%);
+    border: 1px solid rgba(125,211,245,.1);
+    border-radius: var(--r-lg); overflow: hidden;
+    transition: all .3s var(--ease-splash); cursor: pointer;
+  }
+  .chapter::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent, var(--w-bright));
+    opacity: .5; transition: opacity .3s;
+  }
+  .chapter:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent, var(--w-bright));
+    box-shadow: 0 20px 50px rgba(0,0,0,.4), 0 0 0 1px var(--accent, var(--w-bright));
+  }
+  .chapter:hover::before { opacity: 1; }
+  .chapter-num {
+    font-family: var(--f-display); font-weight: 500;
+    font-size: 3.6rem; line-height: 1;
+    color: var(--accent, var(--w-bright)); opacity: .4;
+    letter-spacing: -0.04em; margin-bottom: .5rem;
+  }
+  .chapter-title {
+    font-family: var(--f-display); font-weight: 600;
+    font-size: 1.5rem; margin: 0 0 .5rem; color: var(--ink);
+  }
+  .chapter-desc {
+    font-size: .95rem; line-height: 1.6;
+    color: var(--ink-soft); margin: 0 0 1rem;
+  }
+  .chapter-tags { display: flex; gap: .35rem; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: .3em;
+    padding: .25em .7em;
+    background: rgba(125,211,245,.06);
+    border: 1px solid rgba(125,211,245,.12);
+    border-radius: var(--r-pill);
+    font-family: var(--f-mono); font-size: .7rem;
+    color: var(--ink-soft);
+  }
+
+  /* =========================================================
+     BAXTER section
+     ========================================================= */
+  .baxter-section {
+    position: relative; padding: 6rem 1.6rem 8rem;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255,200,87,.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(125,211,245,.06) 0%, transparent 50%);
+  }
+  .baxt-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: center;
+  }
+  .baxt-art {
+    position: relative; aspect-ratio: 1; max-width: 380px;
+    margin: 0 auto;
+  }
+  .baxt-svg { width: 100%; height: 100%; filter: drop-shadow(0 20px 50px rgba(0,0,0,.5)); }
+  .baxt-svg .baxter { animation: float-y 4s ease-in-out infinite; }
+  .baxt-svg .eye { animation: blink 5s ease-in-out infinite; transform-origin: center; }
+  @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+  .baxt-quote {
+    font-family: var(--f-display); font-style: italic;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    line-height: 1.3; color: var(--ink); margin: 0 0 1.5rem;
+  }
+  .baxt-quote::before {
+    content: """; font-size: 3em; line-height: 0.1;
+    color: var(--w-glow); opacity: .5; margin-right: .1em; vertical-align: -0.3em;
+  }
+  .baxt-attr {
+    display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem;
+  }
+  .baxt-name {
+    font-family: var(--f-display); font-weight: 600;
+    font-size: 1.15rem; color: var(--ink);
+  }
+  .baxt-role {
+    font-family: var(--f-mono); font-size: .7rem;
+    text-transform: uppercase; letter-spacing: .2em;
+    color: var(--w-glow); display: block; margin-top: 2px;
+  }
+  .baxt-tag {
+    margin-top: 1.5rem;
+    font-family: var(--f-display); font-style: italic;
+    color: var(--w-glow); font-size: 1.15rem;
+  }
+
+  /* =========================================================
+     PRINCIPLES — the engineering sequence
+     ========================================================= */
+  .principles {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem; position: relative;
+  }
+  .principle {
+    position: relative; padding: 1.6rem 1.2rem;
+    background: rgba(15,32,54,.5);
+    border: 1px solid rgba(125,211,245,.1);
+    border-radius: var(--r-md);
+    text-align: center;
+    transition: all .3s var(--ease-splash);
+  }
+  .principle:hover {
+    transform: translateY(-4px);
+    background: rgba(15,32,54,.7);
+    border-color: rgba(125,211,245,.3);
+  }
+  .principle-ico {
+    width: 56px; height: 56px; margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--w-mid) 0%, var(--w-bright) 100%);
+    border-radius: var(--r-md);
+    display: grid; place-items: center;
+    color: var(--night-0);
+    box-shadow: 0 0 0 1px rgba(125,211,245,.2), 0 0 30px rgba(125,211,245,.3);
+  }
+  .principle-ico svg { width: 28px; height: 28px; }
+  .principle-name {
+    font-family: var(--f-display); font-weight: 600;
+    font-size: 1.1rem; color: var(--ink); margin: 0 0 .4rem;
+  }
+  .principle-desc {
+    font-size: .85rem; color: var(--ink-soft);
+    line-height: 1.5; margin: 0;
+  }
+  .principle-arrow {
+    position: absolute; top: 50%; right: -.6rem;
+    transform: translateY(-50%);
+    color: var(--w-glow); opacity: .4;
+    z-index: 1;
+  }
+  .principle-arrow svg { width: 16px; height: 16px; }
+
+  /* =========================================================
+     JOURNAL — discovery stories
+     ========================================================= */
+  .journal-list {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .journal-card {
+    padding: 2rem;
+    background: linear-gradient(180deg, rgba(15,32,54,.5) 0%, rgba(10,22,38,.3) 100%);
+    border: 1px solid rgba(125,211,245,.1);
+    border-radius: var(--r-lg);
+    transition: all .3s var(--ease-splash);
+    cursor: pointer;
+  }
+  .journal-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--w-glow);
+    box-shadow: 0 20px 50px rgba(0,0,0,.4);
+  }
+  .journal-num {
+    font-family: var(--f-mono); font-size: .7rem;
+    color: var(--w-glow); letter-spacing: .25em;
+    margin-bottom: 1rem; display: block;
+  }
+  .journal-title {
+    font-family: var(--f-display); font-weight: 600;
+    font-size: 1.35rem; color: var(--ink);
+    margin: 0 0 .8rem;
+  }
+  .journal-excerpt {
+    font-size: .95rem; line-height: 1.6;
+    color: var(--ink-soft); margin: 0 0 1rem;
+  }
+  .journal-link {
+    font-family: var(--f-mono); font-size: .75rem;
+    text-transform: uppercase; letter-spacing: .2em;
+    color: var(--w-glow);
+  }
+  .journal-link::after { content: " →"; transition: margin .2s; }
+  .journal-card:hover .journal-link::after { content: "  →"; }
+
+  /* =========================================================
+     CTA SECTION
+     ========================================================= */
+  .cta-section {
+    position: relative; padding: 8rem 1.6rem;
+    text-align: center;
+  }
+  .cta-card {
+    max-width: 720px; margin: 0 auto;
+    padding: 3rem 2rem;
+    background: linear-gradient(180deg, rgba(15,32,54,.8) 0%, rgba(10,22,38,.6) 100%);
+    border: 1px solid rgba(125,211,245,.2);
+    border-radius: var(--r-xl);
+    box-shadow: 0 0 80px rgba(125,211,245,.15);
+    position: relative; overflow: hidden;
+  }
+  .cta-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--w-bright) 0%, var(--w-glow) 50%, var(--sun) 100%);
+  }
+  .cta-title {
+    font-family: var(--f-display); font-weight: 500;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.2; margin: 0 0 1rem;
+  }
+  .cta-sub {
+    font-size: 1.05rem; color: var(--ink-soft);
+    line-height: 1.6; margin: 0 0 2rem; max-width: 50ch; margin-left: auto; margin-right: auto;
+  }
+  .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* =========================================================
+     FOOTER
+     ========================================================= */
+  .footer {
+    padding: 4rem 1.6rem 2rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(5,11,20,.6) 100%);
+    border-top: 1px solid rgba(125,211,245,.08);
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 2.5rem;
+  }
+  .footer-brand {
+    display: flex; align-items: center; gap: .8rem; margin-bottom: 1rem;
+  }
+  .footer-tagline {
+    font-family: var(--f-display); font-style: italic;
+    color: var(--ink-soft); font-size: 1rem; margin: 0 0 1rem;
+  }
+  .footer-desc {
+    color: var(--ink-faint); font-size: .85rem; line-height: 1.6; max-width: 32ch;
+  }
+  .footer-col h5 {
+    font-family: var(--f-mono); font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .2em;
+    color: var(--w-glow); margin: 0 0 1rem; font-weight: 500;
+  }
+  .footer-col ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: .6rem;
+  }
+  .footer-col a {
+    color: var(--ink-soft); font-size: .9rem;
+    transition: color .2s;
+  }
+  .footer-col a:hover { color: var(--w-foam); }
+  .footer-bottom {
+    max-width: 1200px; margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(125,211,245,.08);
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    color: var(--ink-faint); font-size: .8rem;
+    flex-wrap: wrap;
+  }
+  .footer-bottom .seal {
+    font-family: var(--f-mono); font-size: .7rem;
+    text-transform: uppercase; letter-spacing: .25em;
+    color: var(--w-glow);
+  }
+
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-stage { max-width: 100%; order: -1; aspect-ratio: 16/12; }
+    .baxt-inner { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+    .baxt-art { max-width: 280px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+    .nav-links.open {
+      display: flex; position: absolute; top: 100%; left: 1rem; right: 1rem;
+      flex-direction: column; gap: .25rem;
+      background: rgba(15,32,54,.95); padding: .75rem;
+      border-radius: var(--r-md);
+    }
+  }
+  @media (max-width: 560px) {
+    .hero { padding-top: 6rem; }
+    .hero-title { font-size: 2.4rem; }
+    .footer-inner { grid-template-columns: 1fr; }
+    .section { padding: 5rem 1rem; }
+  }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       WELCOME SPLASH — YallToo presents Water Builder
+       Shows on first visit, fades out when loaded.
+       ========================================================= -->
+  <div class="splash-screen" id="splashScreen" aria-label="Loading Water Builder">
+    <div class="splash-ambient" aria-hidden="true">
+      <div class="stars splash-stars" id="splashStars"></div>
+      <div class="moon splash-moon"></div>
+      <div class="clouds">
+        <div class="cloud cloud-a"></div>
+        <div class="cloud cloud-b"></div>
+      </div>
+      <div class="hills splash-hills">
+        <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+          <path d="M0,220 C220,160 420,260 720,200 C1020,140 1240,260 1440,180 L1440,320 L0,320 Z" fill="#0A4A6B" opacity="0.6"/>
+          <path d="M0,260 C240,200 480,300 760,240 C1020,190 1240,290 1440,240 L1440,320 L0,320 Z" fill="#1A6E94" opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="splash-content">
+      <div class="splash-logo-wrap">
+        <img class="splash-logo" src="data:image/png;base64,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" alt="YallToo" />
+        <div class="splash-presented">presents</div>
+      </div>
+      <h1 class="splash-title">Water Builder</h1>
+      <p class="splash-subtitle">Build the system. Grow civilization.</p>
+      <div class="splash-progress">
+        <div class="splash-progress-bar" id="splashBar"></div>
+      </div>
+      <p class="splash-loading" id="splashLoading">Drawing the first spring…</p>
+      <button class="splash-skip" id="splashSkip">Skip intro</button>
+    </div>
+  </div>
+
+<!-- =========================================================
+       AMBIENT WORLD
+       ========================================================= -->
+  <div class="ambient" aria-hidden="true">
+    <div class="stars" id="stars"></div>
+    <div class="moon"></div>
+    <div class="clouds">
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+    </div>
+    <div class="mountains">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,200 L120,140 L240,180 L360,80 L480,160 L600,100 L720,180 L840,90 L960,170 L1080,110 L1200,180 L1320,130 L1440,180 L1440,320 L0,320 Z" fill="#0F2036"/>
+      </svg>
+    </div>
+    <div class="hills">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,220 C220,160 420,260 720,200 C1020,140 1240,260 1440,180 L1440,320 L0,320 Z" fill="#0A4A6B" opacity="0.6"/>
+        <path d="M0,260 C240,200 480,300 760,240 C1020,190 1240,290 1440,240 L1440,320 L0,320 Z" fill="#1A6E94" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="river"></div>
+  </div>
+
+  <!-- =========================================================
+       TOP NAV
+       ========================================================= -->
+  <header class="topnav" role="banner">
+    <a class="brand" href="#top" aria-label="Water Builder: Origins home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 50" fill="none">
+          <defs>
+            <linearGradient id="dropG" x1="20" y1="0" x2="20" y2="50" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#7DD3F5"/>
+              <stop offset="1" stop-color="#1A6E94"/>
+            </linearGradient>
+          </defs>
+          <path d="M20 2 C 8 22, 8 36, 20 48 C 32 36, 32 22, 20 2 Z" fill="url(#dropG)"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">Water Builder</span>
+        <span class="brand-tag">Origins</span>
+      </span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#worlds">Worlds</a>
+      <a href="#baxt">Origins</a>
+      <a href="#principles">Principles</a>
+      <a href="#journal">Journal</a>
+      <a href="#play" class="nav-cta">Play</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- =========================================================
+       HERO
+       ========================================================= -->
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <span class="kicker">An interactive world · v1.0</span>
+        <h1 class="hero-title">Build the <em>system.</em><br/>Grow <em>civilization.</em></h1>
+        <p class="hero-tagline">A puzzle adventure about the engineering that makes life possible — one drop at a time.</p>
+        <p class="hero-lede">
+          Water begins as a single drop. Guide it, control it, store it, share it. Watch fields, mills, and
+          villages rise along its banks. Discover the sequence that every civilization has followed
+          since the first canal was carved in earth.
+        </p>
+        <div class="hero-cta-row">
+          <a href="#play" class="btn btn-primary" id="playBtn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            Enter the world
+          </a>
+          <a href="#baxt" class="btn btn-ghost">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            Watch the story
+          </a>
+        </div>
+        <div class="hero-meta">
+          <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><strong>30 min</strong> to first level</span>
+          <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg><strong>12 levels</strong> across 5 worlds</span>
+          <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 12h20"/></svg>Plays anywhere</span>
+        </div>
+      </div>
+
+      <!-- Interactive preview stage -->
+      <div class="hero-stage">
+        <div class="stage-glow"></div>
+        <div class="stage-frame">
+          <canvas id="heroCanvas" aria-label="Interactive Water Builder preview — try placing a canal"></canvas>
+          <div class="stage-overlay"></div>
+          <div class="stage-tag">World 1 · Live</div>
+          <div class="stage-hint" id="stageHint">Click the highlighted cell</div>
+
+          <!-- Mute toggle -->
+          <button class="stage-mute" id="stageMute" title="Toggle sound" aria-label="Toggle sound">
+            <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="23" y1="9" x2="17" y2="15"/>
+              <line x1="17" y1="9" x2="23" y2="15"/>
+            </svg>
+          </button>
+
+          <!-- Sound picker (forest / river / storm) -->
+          <div class="stage-sound-picker" id="stageSoundPicker" role="radiogroup" aria-label="Ambient sound">
+            <button class="sp-btn" data-mood="forest" title="Forest" aria-label="Forest">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L6 10 L9 10 L5 16 L10 16 L8 22 L16 22 L14 16 L19 16 L15 10 L18 10 Z"/></svg>
+            </button>
+            <button class="sp-btn active" data-mood="river" title="River" aria-label="River">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 12 C 4 8, 6 16, 8 12 S 12 8, 14 12 S 18 16, 20 12 S 22 8, 22 12 L 22 18 L 2 18 Z"/></svg>
+            </button>
+            <button class="sp-btn" data-mood="storm" title="Storm" aria-label="Storm">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4 L18 4 L14 11 L18 11 L8 20 L11 13 L7 13 Z"/></svg>
+            </button>
+          </div>
+
+          <!-- Mode toggle: Build / Play -->
+          <div class="stage-mode" id="stageMode" role="tablist" aria-label="Mode">
+            <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
+            <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
+          </div>
+
+          <!-- Build palette (only shown in Build mode) -->
+          <div class="stage-palette" id="stagePalette" hidden>
+            <button class="pal-btn active" data-tool="spring" title="Spring">💧</button>
+            <button class="pal-btn" data-tool="farm" title="Farm">🌾</button>
+            <button class="pal-btn" data-tool="village" title="Village">🏠</button>
+            <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
+            <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
+            <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
+            <button class="pal-btn pal-clear" data-tool="clear" title="Clear all">🗑</button>
+          </div>
+
+          <!-- Share button (only shown in Build mode) -->
+          <button class="stage-share" id="stageShare" hidden title="Share this level">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+            <span>Share</span>
+          </button>
+
+          <!-- Save modal -->
+          <div class="stage-modal" id="stageModal" hidden>
+            <div class="modal-card">
+              <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+              <h4 id="modalTitle">Share this level</h4>
+              <p id="modalDesc">Copy the link or code below. Anyone with it can play your level.</p>
+              <div class="modal-row">
+                <input type="text" id="shareLink" readonly />
+                <button class="modal-btn" id="copyLinkBtn">Copy link</button>
+              </div>
+              <div class="modal-row">
+                <input type="text" id="shareCode" readonly />
+                <button class="modal-btn" id="copyCodeBtn">Copy code</button>
+              </div>
+              <div class="modal-feedback" id="modalFeedback"></div>
+              <div class="modal-divider"></div>
+              <h4 style="margin-top: 0">My Levels</h4>
+              <div class="modal-levels" id="modalLevels">
+                <p class="modal-empty">No saved levels yet. Build something and save it!</p>
+              </div>
+              <div class="modal-row">
+                <input type="text" id="saveName" placeholder="Level name" />
+                <button class="modal-btn modal-btn-primary" id="saveLevelBtn">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily level seed indicator (shown briefly when level changes) -->
+          <div class="stage-seed" id="stageSeed" aria-live="polite"></div>
+
+          <!-- Tiny reopen pill (shown when bubble is fully dismissed) -->
+          <button class="bubble-reopen-pill" id="bubbleReopenPill" aria-label="Show Baxter again">
+            <svg viewBox="0 0 60 60" width="22" height="22" aria-hidden="true">
+              <ellipse cx="30" cy="22" rx="10" ry="11" fill="#6E4422"/>
+              <ellipse cx="30" cy="32" rx="14" ry="13" fill="#A66E3F"/>
+              <rect x="20" y="20" width="20" height="6" rx="1" fill="#FFC53D"/>
+              <rect x="18" y="24" width="24" height="3" rx="1" fill="#E5A82A"/>
+              <circle cx="26" cy="32" r="1.5" fill="#2A2018"/>
+              <circle cx="34" cy="32" r="1.5" fill="#2A2018"/>
+              <ellipse cx="30" cy="36" rx="3" ry="2" fill="#FFF7E6"/>
+            </svg>
+            <span>Baxter</span>
+          </button>
+
+          <!-- Baxter speech bubble -->
+          <div class="bubble-wrap" id="baxterBubble">
+            <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
+            <button class="bubble-dismiss" id="bubbleDismiss" title="Hide Baxter" aria-label="Hide Baxter">×</button>
+            <div class="bubble-portrait" aria-hidden="true">
+              <svg viewBox="0 0 60 60" width="44" height="44">
+                <ellipse cx="30" cy="22" rx="10" ry="11" fill="#6E4422"/>
+                <ellipse cx="30" cy="32" rx="14" ry="13" fill="#A66E3F"/>
+                <rect x="20" y="20" width="20" height="6" rx="1" fill="#FFC53D"/>
+                <rect x="18" y="24" width="24" height="3" rx="1" fill="#E5A82A"/>
+                <circle cx="26" cy="32" r="1.5" fill="#2A2018"/>
+                <circle cx="34" cy="32" r="1.5" fill="#2A2018"/>
+                <ellipse cx="30" cy="36" rx="3" ry="2" fill="#FFF7E6"/>
+                <ellipse cx="30" cy="39" rx="1.5" ry="1" fill="#6E4422"/>
+              </svg>
+            </div>
+            <div class="bubble-body">
+              <div class="bubble-name">
+                <span>Baxter</span>
+                <span class="bubble-title-tag">Your guide</span>
+              </div>
+              <div class="bubble-title" id="baxterTitle">Welcome, engineer.</div>
+              <div class="bubble-text" id="baxterBody">Hi, I'm Baxter. Let's build something.</div>
+              <div class="bubble-actions">
+                <button class="bubble-advance" id="baxterAdvance">Tap to continue</button>
+                <button class="bubble-reopen" id="bubbleReopen" title="Show Baxter">Baxter?</button>
+              </div>
+            </div>
+            <div class="bubble-tail" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       WORLDS
+       ========================================================= -->
+  <section class="section" id="worlds">
+    <div class="section-head">
+      <span class="section-eyebrow">The Journey</span>
+      <h2 class="section-title">Five worlds. <em>One river.</em></h2>
+      <p class="section-sub">
+        Each world teaches the next step in the sequence — water, control, storage, distribution, food,
+        energy, community, civilization. The same pattern every successful society has followed.
+      </p>
+    </div>
+    <div class="chapters">
+      <article class="chapter" style="--accent:#6FBF73">
+        <div class="chapter-num">01</div>
+        <h3 class="chapter-title">Learning Water</h3>
+        <p class="chapter-desc">Place a canal. Watch a spring become a stream. Reach your first farm. The journey begins with one drop.</p>
+        <div class="chapter-tags">
+          <span class="tag">💧 Spring</span><span class="tag">🌊 Canal</span><span class="tag">🌾 Farm</span>
+        </div>
+      </article>
+      <article class="chapter" style="--accent:#4FB3D9">
+        <div class="chapter-num">02</div>
+        <h3 class="chapter-title">Engineering</h3>
+        <p class="chapter-desc">Dams and reservoirs. Hold water back, then let it go on purpose. Control becomes a skill.</p>
+        <div class="chapter-tags">
+          <span class="tag">🧱 Dam</span><span class="tag">🟩 Reservoir</span><span class="tag">🚪 Gate</span>
+        </div>
+      </article>
+      <article class="chapter" style="--accent:#FFC857">
+        <div class="chapter-num">03</div>
+        <h3 class="chapter-title">Power</h3>
+        <p class="chapter-desc">Drop water onto a wheel. Convert flow into energy. The original renewable — older than fire, newer than the sun feels.</p>
+        <div class="chapter-tags">
+          <span class="tag">⚙️ Wheel</span><span class="tag">⚡ Energy</span>
+        </div>
+      </article>
+      <article class="chapter" style="--accent:#B5533C">
+        <div class="chapter-num">04</div>
+        <h3 class="chapter-title">Civilization</h3>
+        <p class="chapter-desc">Many villages. Many farms. Complex irrigation that must keep everyone alive — and balanced.</p>
+        <div class="chapter-tags">
+          <span class="tag">🏘 Multi-village</span><span class="tag">🛜 Networks</span>
+        </div>
+      </article>
+      <article class="chapter" style="--accent:#8B5A3C">
+        <div class="chapter-num">05</div>
+        <h3 class="chapter-title">Master Engineer</h3>
+        <p class="chapter-desc">Drought. Floods. Timed challenges. Earn the title by surviving them all and feeding civilization.</p>
+        <div class="chapter-tags">
+          <span class="tag">⏱ Timed</span><span class="tag">🌊 Flood</span><span class="tag">☀ Drought</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       BAXTER — Origins / character
+       ========================================================= -->
+  <section class="baxt
+er-section" id="baxt">
+    <div class="baxt-inner">
+      <div class="baxt-art">
+        <svg class="baxt-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Dam base -->
+          <ellipse cx="100" cy="180" rx="80" ry="10" fill="#7A7064" opacity="0.4"/>
+          <!-- Dam structure -->
+          <rect x="40" y="160" width="120" height="20" rx="2" fill="#7A7064"/>
+          <rect x="40" y="160" width="120" height="6" fill="#B5ADA0"/>
+          <!-- Water on top of dam -->
+          <rect x="42" y="146" width="116" height="14" rx="3" fill="#4FB3D9"/>
+          <rect x="42" y="146" width="116" height="3" fill="#7DD3F5"/>
+          <!-- Baxter group -->
+          <g class="baxter">
+            <!-- Body -->
+            <ellipse cx="100" cy="155" rx="32" ry="24" fill="#3B6FB5"/>
+            <rect x="72" y="142" width="56" height="6" rx="3" fill="#FFC53D"/>
+            <!-- Head -->
+            <ellipse cx="100" cy="118" rx="28" ry="26" fill="#A66E3F"/>
+            <!-- Ears -->
+            <ellipse cx="74" cy="112" rx="6" ry="8" fill="#6E4422"/>
+            <ellipse cx="126" cy="112" rx="6" ry="8" fill="#6E4422"/>
+            <!-- Hat -->
+            <rect x="68" y="92" width="64" height="14" rx="3" fill="#FFC53D"/>
+            <rect x="66" y="100" width="68" height="6" rx="2" fill="#E5A82A"/>
+            <ellipse cx="100" cy="92" rx="4" ry="3" fill="#E5A82A"/>
+            <!-- Eyes -->
+            <ellipse class="eye" cx="90" cy="118" rx="3" ry="4" fill="#2A2018"/>
+            <ellipse class="eye" cx="110" cy="118" rx="3" ry="4" fill="#2A2018"/>
+            <circle cx="91" cy="117" r="1" fill="#fff"/>
+            <circle cx="111" cy="117" r="1" fill="#fff"/>
+            <!-- Nose -->
+            <ellipse cx="100" cy="126" rx="3" ry="2" fill="#6E4422"/>
+            <!-- Teeth -->
+            <rect x="95" y="130" width="10" height="6" rx="1" fill="#FFF7E6"/>
+            <line x1="100" y1="130" x2="100" y2="136" stroke="#6E4422" stroke-width="0.5"/>
+            <!-- Cheeks -->
+            <ellipse cx="80" cy="124" rx="4" ry="2" fill="#B5533C" opacity="0.4"/>
+            <ellipse cx="120" cy="124" rx="4" ry="2" fill="#B5533C" opacity="0.4"/>
+            <!-- Tail -->
+            <ellipse cx="55" cy="155" rx="10" ry="14" fill="#D9A86C"/>
+            <ellipse cx="55" cy="155" rx="8" ry="11" fill="none" stroke="#6E4422" stroke-width="0.5" stroke-dasharray="2 2"/>
+          </g>
+          <!-- Water wheel on the right -->
+          <g transform="translate(170, 140)">
+            <circle r="22" fill="none" stroke="#8B5E3C" stroke-width="2"/>
+            <line x1="0" y1="0" x2="0" y2="-22" stroke="#C49A6C" stroke-width="2"/>
+            <line x1="0" y1="0" x2="19" y2="11" stroke="#C49A6C" stroke-width="2"/>
+            <line x1="0" y1="0" x2="-19" y2="11" stroke="#C49A6C" stroke-width="2"/>
+            <circle r="4" fill="#5C3A24"/>
+          </g>
+        </svg>
+      </div>
+      <div class="baxt-copy">
+        <span class="section-eyebrow">Meet your guide</span>
+        <p class="baxt-quote">Every drop has a job. You just have to figure out which one.</p>
+        <p>
+          Baxter the Beaver is a water engineer of the old school — the one that still works. He learned
+          his craft building dams, canal networks, and water wheels across three generations. He'll meet
+          you at the spring, walk you through your first canal, and warn you about flooding before it's
+          too late.
+        </p>
+        <p>
+          He doesn't lecture. He points. He builds. He laughs when the village floods — because you'll
+          fix it, and you'll remember why the gate mattered.
+        </p>
+        <div class="baxt-attr">
+          <div>
+            <div class="baxt-name">Baxter the Beaver</div>
+            <span class="baxt-role">Resident Engineer · Project Watershed</span>
+          </div>
+        </div>
+        <p class="baxt-tag">"Every drop has a job." 💧</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       PRINCIPLES — the engineering sequence
+       ========================================================= -->
+  <section class="section" id="principles">
+    <div class="section-head">
+      <span class="section-eyebrow">The Core Sequence</span>
+      <h2 class="section-title">Every civilization learned this.</h2>
+      <p class="section-sub">
+        Water flows through a fixed sequence. Master each step, and civilization is the natural result.
+        The order never changes. The depth is up to you.
+      </p>
+    </div>
+    <div class="principles">
+      <div class="principle">
+        <div class="principle-ico">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 C 6 10, 6 16, 12 22 C 18 16, 18 10, 12 2 Z"/></svg>
+        </div>
+        <h4 class="principle-name">Water</h4>
+        <p class="principle-desc">Find the source. It begins everything.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-ico">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v2H3zm2-3V8h2v7h2V6h2v9h2V4h2v11h2V8h2v7h2v2H3v-2z"/></svg>
+        </div>
+        <h4 class="principle-name">Control</h4>
+        <p class="principle-desc">Direct it. Stop it. Time its flow.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-ico">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 12h18v8H3z" opacity=".4"/><path d="M3 12c0-3 4-5 9-5s9 2 9 5-4 5-9 5-9-2-9-5z"/></svg>
+        </div>
+        <h4 class="principle-name">Storage</h4>
+        <p class="principle-desc">Save it for the dry days.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-ico">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z" opacity=".7"/><circle cx="12" cy="12" r="2" fill="#FFC53D"/></svg>
+        </div>
+        <h4 class="principle-name">Distribution</h4>
+        <p class="principle-desc">Deliver it where it's needed most.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-ico">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 6 8 10 12 14c4-4 4-8 0-12z"/><path d="M5 22h14v-2H5z" opacity=".6"/></svg>
+        </div>
+        <h4 class="principle-name">Productivity</h4>
+        <p class="principle-desc">Feed the people. Power the work.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-ico">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L4 8 L4 22 L20 22 L20 8 Z" opacity=".6"/><rect x="9" y="14" width="6" height="8" fill="#FFC53D"/><polygon points="12 2 20 8 4 8" fill="#B5533C"/></svg>
+        </div>
+        <h4 class="principle-name">Community</h4>
+        <p class="principle-desc">Build the villages. Build the world.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       JOURNAL
+       ========================================================= -->
+  <section class="section" id="journal">
+    <div class="section-head">
+      <span class="section-eyebrow">Discovery Journal</span>
+      <h2 class="section-title">Stories from the <em>watershed</em></h2>
+      <p class="section-sub">
+        As you play, unlock short stories from real engineering history — the people who solved these
+        problems first, and the civilizations that rose (and fell) along the rivers they shaped.
+      </p>
+    </div>
+    <div class="journal-list">
+      <article class="journal-card">
+        <span class="journal-num">CHAPTER 01</span>
+        <h4 class="journal-title">The first canals</h4>
+        <p class="journal-excerpt">Long before steel and concrete, ancient societies carved the first channels in earth — and built cities where the water stopped.</p>
+        <span class="journal-link">Read</span>
+      </article>
+      <article class="journal-card">
+        <span class="journal-num">CHAPTER 02</span>
+        <h4 class="journal-title">Why floods matter</h4>
+        <p class="journal-excerpt">A river that gives can also take. The earliest engineers learned to listen to seasons — and to build spillways before they were needed.</p>
+        <span class="journal-link">Read</span>
+      </article>
+      <article class="journal-card">
+        <span class="journal-num">CHAPTER 03</span>
+        <h4 class="journal-title">Power from flow</h4>
+        <p class="journal-excerpt">A water wheel is a quiet miracle: a stream becomes flour, then bread, then a village that lasts another hundred years.</p>
+        <span class="journal-link">Read</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       CTA
+       ========================================================= -->
+  <section class="cta-section" id="play">
+    <div class="cta-card">
+      <span class="section-eyebrow">Begin the journey</span>
+      <h2 class="cta-title">Your first spring is waiting.</h2>
+      <p class="cta-sub">No download. No signup. Open the world, place your first canal, and meet Baxter at the river.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-primary" id="playCta">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Enter the world
+        </a>
+        <a href="#baxt" class="btn btn-ghost">Learn the story first</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 50"><defs><linearGradient id="dropG2" x1="20" y1="0" x2="20" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7DD3F5"/><stop offset="1" stop-color="#1A6E94"/></linearGradient></defs><path d="M20 2 C 8 22, 8 36, 20 48 C 32 36, 32 22, 20 2 Z" fill="url(#dropG2)"/></svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-name">Water Builder</span>
+            <span class="brand-tag">Origins</span>
+          </span>
+        </div>
+        <p class="footer-tagline">Build the system. Grow civilization.</p>
+        <p class="footer-desc">An interactive world about the engineering that makes life possible. Part of Project Watershed.</p>
+      </div>
+      <div class="footer-col">
+        <h5>World</h5>
+        <ul>
+          <li><a href="#worlds">Five worlds</a></li>
+          <li><a href="#baxt">Origins</a></li>
+          <li><a href="#principles">Principles</a></li>
+          <li><a href="#journal">Journal</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Play</h5>
+        <ul>
+          <li><a href="#play">Enter</a></li>
+          <li><a href="#">Daily puzzle</a></li>
+          <li><a href="#">Sandbox</a></li>
+          <li><a href="#">Achievements</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>About</h5>
+        <ul>
+          <li><a href="#">The team</a></li>
+          <li><a href="#">Press kit</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">YallToo</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Project Watershed · Water Builder: Origins</span>
+      <span class="seal">A YallToo Game</span>
+    </div>
+  </footer>
+
+  <script>
+  /* =========================================================
+     WATER BUILDER: ORIGINS — World JS
+     Stars, smooth scroll, nav, year stamp.
+     The hero canvas game is initialized separately.
+     ========================================================= */
+  (function() {
+    'use strict';
+
+    // Year
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+
+    // Generate stars
+    const starsEl = document.getElementById('stars');
+    if (starsEl) {
+      let html = '';
+      for (let i = 0; i < 80; i++) {
+        const x = Math.random() * 100;
+        const y = Math.random() * 60; // only top 60%
+        const s = 1 + Math.random() * 1.5;
+        const d = Math.random() * 4;
+        html += `<div class="star" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation-delay:${d}s"></div>`;
+      }
+      starsEl.innerHTML = html;
+    }
+
+    // Mobile nav
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    if (toggle && links) {
+      toggle.addEventListener('click', () => {
+        const open = links.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      links.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          links.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (id.length < 2) return;
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Active section tracking
+    const sections = document.querySelectorAll('section[id]');
+    const navMap = new Map();
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && href.startsWith('#')) navMap.set(href.slice(1), a);
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          const id = en.target.id;
+          document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+          if (navMap.has(id)) navMap.get(id).classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px' });
+    sections.forEach(s => io.observe(s));
+  })();
+  </script>
+  <script>
+/* =========================================================
+   WATER BUILDER: ORIGINS — Hero game engine
+   Guided tutorial + free play. Baxter narrates the journey.
+   =========================================================
+   Tutorial steps:
+   0. Hello              — "Hi, I'm Baxter. Let's build something."
+   1. Find spring       — highlight spring cell
+   2. Place first canal — require click on cell (3,3)
+   3. See water flow    — wait for water to reach (3,3)
+   4. Bend the path     — require click on (3,4) or (3,5)
+   5. Reach the farm    — wait for farm to be reached
+   6. Free play         — "Now you try."
+   ========================================================= */
+
+(function () {
+  'use strict';
+
+  const TILE = 60;
+  const GRID_W = 15;
+  const GRID_H = 9;
+  const WATER_SPEED = 110;
+
+  // ---- Starter levels (rotate daily) ----
+  const STARTER_LEVELS = [
+    {
+      id: '1-1', name: 'First Spring',
+      grid: [
+        '...............',
+        '...............',
+        '...............',
+        '..~............',
+        '...............',
+        '...............',
+        '.............F.',
+        '...............',
+        '...............',
+      ],
+      goals: { spring: { x: 2, y: 3 }, farm: { x: 13, y: 6 } },
+    },
+    {
+      id: '1-2', name: 'Twin Springs',
+      grid: [
+        '..~...........',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        '..............V',
+        '...............',
+        '.............F.',
+      ],
+      goals: { spring: { x: 2, y: 0 }, farm: { x: 13, y: 8 }, village: { x: 14, y: 6 } },
+    },
+    {
+      id: '1-3', name: 'Bend It',
+      grid: [
+        '...............',
+        '...............',
+        '...........~..',
+        '...............',
+        '.....#####.....',
+        '...............',
+        '...............',
+        '...........F..',
+        '...............',
+      ],
+      goals: { spring: { x: 11, y: 2 }, farm: { x: 11, y: 7 } },
+    },
+    {
+      id: '1-4', name: 'Corner Run',
+      grid: [
+        '...............',
+        '~.............',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        '...............',
+        '..............F',
+      ],
+      goals: { spring: { x: 0, y: 1 }, farm: { x: 14, y: 8 } },
+    },
+    {
+      id: '1-5', name: 'Triple Goal',
+      grid: [
+        '...............',
+        '...............',
+        '...............',
+        '..~............',
+        '...............',
+        '...............',
+        '..F.......W....',
+        '...............',
+        '...........V...',
+      ],
+      goals: { spring: { x: 2, y: 3 }, farm: { x: 2, y: 6 }, wheel: { x: 9, y: 6 }, village: { x: 11, y: 8 } },
+    },
+    {
+      id: '1-6', name: 'Tight Squeeze',
+      grid: [
+        '...............',
+        '..~...........',
+        '..#######.....',
+        '...............',
+        '...............',
+        '...............',
+        '.....#######...',
+        '............F.',
+        '...............',
+      ],
+      goals: { spring: { x: 2, y: 1 }, farm: { x: 12, y: 7 } },
+    },
+  ];
+
+  // Daily seed: same level for everyone on the same day
+  function getDailyLevel() {
+    try {
+      const stored = localStorage.getItem('wb_daily_level');
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.date === today) return parsed;
+      }
+      // Pick a new one
+      // Use date as seed for deterministic choice
+      const seed = today.split('-').reduce((a, b) => a + parseInt(b, 10), 0);
+      const idx = seed % STARTER_LEVELS.length;
+      const chosen = STARTER_LEVELS[idx];
+      const data = { date: today, idx, level: chosen };
+      localStorage.setItem('wb_daily_level', JSON.stringify(data));
+      return data;
+    } catch (e) {
+      return { date: '', idx: 0, level: STARTER_LEVELS[0] };
+    }
+  }
+
+  const daily = getDailyLevel();
+  const level = daily.level;
+
+  // ---- Tutorial steps ----
+  const STEPS = [
+    {
+      id: 'hello',
+      title: 'Welcome, engineer.',
+      body: "I'm Baxter. Every civilization starts with a single drop. Let's find it together.",
+      bubbleSide: 'right',
+      highlight: null,
+      requireClick: null,
+      requireReach: null,
+      advance: 'click-anywhere',
+      advanceLabel: 'Tap to continue',
+    },
+    {
+      id: 'spring',
+      title: 'There it is.',
+      body: "A spring — water bubbling out of the rock. Everything we build starts here. Notice how it just… sits. It doesn't know where to go yet.",
+      bubbleSide: 'right',
+      highlight: { x: 2, y: 3 },
+      requireClick: null,
+      requireReach: null,
+      advance: 'click-anywhere',
+      advanceLabel: 'Tap to continue',
+    },
+    {
+      id: 'place-1',
+      title: 'Build a canal.',
+      body: "Drag a canal from the spring toward the farm. Water will follow it. Try the cell right next to the spring.",
+      bubbleSide: 'right',
+      highlight: { x: 3, y: 3 },
+      requireClick: { x: 3, y: 3 },
+      requireReach: null,
+      advance: 'click-cell',
+      advanceLabel: 'Place a canal here',
+    },
+    {
+      id: 'flow',
+      title: 'See what happens?',
+      body: "Water found the canal. Now it has somewhere to go. The flow won't stop until it hits a wall, a dam, or its destination.",
+      bubbleSide: 'right',
+      highlight: null,
+      requireClick: null,
+      requireReach: null,
+      advance: 'auto',
+      advanceLabel: '',
+      autoDelay: 2400,
+    },
+    {
+      id: 'bend',
+      title: 'Bend the path.',
+      body: "Water flows along canals — turn them however you like. Lead the stream down and to the right, toward that little cottage on the hill.",
+      bubbleSide: 'right',
+      highlight: { x: 3, y: 4 },
+      requireClick: { x: 3, y: 4 },
+      requireReach: null,
+      advance: 'click-cell',
+      advanceLabel: 'Place a canal here',
+    },
+    {
+      id: 'reach',
+      title: 'Almost there.',
+      body: "Keep going. The farm is waiting. Try drawing a path that leads to it.",
+      bubbleSide: 'right',
+      highlight: { x: 13, y: 6 },
+      requireClick: null,
+      requireReach: 'farm',
+      advance: 'reach',
+      advanceLabel: '',
+    },
+    {
+      id: 'win',
+      title: 'You did it.',
+      body: "Water reached the farm. Crops are growing. People will eat this winter. That's the whole job of an engineer — making sure the drops get where they need to go.",
+      bubbleSide: 'right',
+      highlight: null,
+      requireClick: null,
+      requireReach: null,
+      advance: 'auto',
+      advanceLabel: '',
+      autoDelay: 4000,
+    },
+    {
+      id: 'free',
+      title: "Now it's yours.",
+      body: "Keep playing. Place canals, dams, and gates. Break it. Fix it. Baxter will keep an eye on you.",
+      bubbleSide: 'right',
+      highlight: null,
+      requireClick: null,
+      requireReach: null,
+      advance: 'click-anywhere',
+      advanceLabel: 'Got it',
+    },
+    {
+      id: 'returning',
+      title: "Welcome back, engineer.",
+      body: "The spring is still flowing. Place a canal anywhere to start the water moving — or just explore.",
+      bubbleSide: 'right',
+      highlight: null,
+      requireClick: null,
+      requireReach: null,
+      advance: 'click-anywhere',
+      advanceLabel: 'Let me play',
+    },
+  ];
+
+  // ---- State ----
+  const state = {
+    grid: [],
+    inventory: { canal: 30 },
+    waterCells: new Map(),
+    reached: { spring: false, farm: false },
+    running: false,
+    tickHandle: null,
+    renderHandle: null,
+    currentTool: 'canal',
+    hover: null,
+    tutorialIndex: 0,
+    tutorialActive: true,
+    tutorialWaiting: false,
+    tutorialReached: new Set(),
+    baxterVisible: true,
+    started: false,
+  };
+
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function key(x, y) { return x + ',' + y; }
+
+  // ========================================================================
+  // SOUND ENGINE — three ambient moods
+  // ========================================================================
+  const Sound = (function () {
+    let audio = null;
+    let muted = false;
+    let currentMood = 'river';
+    let ambientNodes = null;
+    let masterGain = null;
+    let noiseNode = null;
+    let noiseSource = null;
+    let noiseGain = null;
+
+    // Load preferences
+    try {
+      if (localStorage.getItem('wb_muted') === '1') muted = true;
+      const savedMood = localStorage.getItem('wb_mood');
+      if (savedMood && ['forest', 'river', 'storm'].includes(savedMood)) currentMood = savedMood;
+    } catch (e) {}
+
+    function ensure() {
+      if (!audio) {
+        try { audio = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { audio = null; }
+      }
+      if (audio && audio.state === 'suspended') audio.resume();
+      return audio;
+    }
+
+    // Mood definitions: each is a list of (oscillator config) + optional noise
+    const MOODS = {
+      forest: {
+        name: 'Forest',
+        layers: [
+          { type: 'sine', freq: 110, gain: 0.05, lfo: { freq: 0.06, gain: 3 } },
+          { type: 'sine', freq: 220, gain: 0.025, lfo: { freq: 0.12, gain: 6 } },
+          { type: 'sine', freq: 880, gain: 0.012, lfo: { freq: 0.4, gain: 30 } }, // bird-like chirps
+        ],
+        noise: { type: 'pink', gain: 0.008 }, // leaves rustling
+        breathDepth: 0.1,
+      },
+      river: {
+        name: 'River',
+        layers: [
+          { type: 'sine', freq: 80, gain: 0.06 },                              // deep water
+          { type: 'sine', freq: 320, gain: 0.012, lfo: { freq: 0.4, gain: 12 } }, // water surface
+        ],
+        noise: { type: 'white', gain: 0.005, filterFreq: 1200 }, // gentle flow
+        breathDepth: 0.08,
+      },
+      storm: {
+        name: 'Storm',
+        layers: [
+          { type: 'sine', freq: 55, gain: 0.07 },                              // deep rumble
+          { type: 'sine', freq: 130, gain: 0.04, lfo: { freq: 0.18, gain: 4 } },
+          { type: 'triangle', freq: 200, gain: 0.018, lfo: { freq: 0.6, gain: 18 } }, // wind
+        ],
+        noise: { type: 'white', gain: 0.04, filterFreq: 4000 }, // heavy rain
+        breathDepth: 0.12,
+      },
+    };
+
+    // Create a noise buffer source
+    function createNoise(type) {
+      const c = ensure();
+      const bufferSize = c.sampleRate * 2; // 2s buffer
+      const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
+      const data = buffer.getChannelData(0);
+      if (type === 'white') {
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+      } else if (type === 'pink') {
+        // Simple pink noise via Paul Kellet's algorithm
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+          b6 = white * 0.115926;
+        }
+      }
+      const src = c.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      return src;
+    }
+
+    function stopCurrentAmbient() {
+      if (!ambientNodes) return;
+      const c = ensure();
+      if (!c) return;
+      const t = c.currentTime;
+      try { ambientNodes.masterGain.gain.cancelScheduledValues(t);
+            ambientNodes.masterGain.gain.linearRampToValueAtTime(0, t + 0.4); } catch (e) {}
+      const old = ambientNodes;
+      setTimeout(() => {
+        try { old.oscs.forEach(o => { try { o.osc.stop(); } catch(e){}; try { o.lfo.stop(); } catch(e){}; }); } catch (e) {}
+        try { old.noiseSource && old.noiseSource.stop(); } catch (e) {}
+      }, 500);
+      ambientNodes = null;
+    }
+
+    function startAmbient(mood) {
+      const c = ensure();
+      if (!c) return;
+      stopCurrentAmbient();
+      const def = MOODS[mood] || MOODS.river;
+      currentMood = mood;
+
+      const oscs = [];
+      const t = c.currentTime;
+      masterGain = c.createGain();
+      masterGain.gain.value = 0;
+      masterGain.connect(c.destination);
+      masterGain.gain.linearRampToValueAtTime(0.55, t + 0.6);
+
+      // Tone layers
+      def.layers.forEach(L => {
+        const osc = c.createOscillator();
+        osc.type = L.type;
+        osc.frequency.value = L.freq;
+        const g = c.createGain();
+        g.gain.value = L.gain;
+        osc.connect(g);
+        g.connect(masterGain);
+        osc.start();
+        let lfoOsc = null;
+        if (L.lfo) {
+          lfoOsc = c.createOscillator();
+          lfoOsc.frequency.value = L.lfo.freq;
+          const lfoGain = c.createGain();
+          lfoGain.gain.value = L.lfo.gain;
+          lfoOsc.connect(lfoGain);
+          lfoGain.connect(osc.frequency);
+          lfoOsc.start();
+        }
+        oscs.push({ osc, lfo: lfoOsc });
+      });
+
+      // Noise (rain, leaves, flow)
+      let nSource = null, nGain = null;
+      if (def.noise) {
+        nSource = createNoise(def.noise.type);
+        nGain = c.createGain();
+        nGain.gain.value = def.noise.gain;
+        if (def.noise.filterFreq) {
+          const filt = c.createBiquadFilter();
+          filt.type = 'lowpass';
+          filt.frequency.value = def.noise.filterFreq;
+          nSource.connect(filt);
+          filt.connect(nGain);
+        } else {
+          nSource.connect(nGain);
+        }
+        nGain.connect(masterGain);
+        nSource.start();
+      }
+
+      // Master breath
+      const breathLfo = c.createOscillator();
+      breathLfo.frequency.value = 0.08;
+      const breathGain = c.createGain();
+      breathGain.gain.value = def.breathDepth;
+      breathLfo.connect(breathGain);
+      breathGain.connect(masterGain.gain);
+      breathLfo.start();
+
+      ambientNodes = {
+        masterGain,
+        oscs,
+        noiseSource: nSource,
+        breathLfo,
+      };
+    }
+
+    function stopAmbient() {
+      stopCurrentAmbient();
+    }
+
+    // Switch mood smoothly
+    function setMood(mood) {
+      if (!MOODS[mood]) return;
+      try { localStorage.setItem('wb_mood', mood); } catch (e) {}
+      startAmbient(mood);
+    }
+
+    // One-shot blip
+    function blip(freq, dur, type, gain, freqEnd) {
+      if (muted) return;
+      const c = ensure();
+      if (!c) return;
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = type || 'sine';
+      o.frequency.value = freq;
+      if (freqEnd != null) {
+        o.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), c.currentTime + dur);
+      }
+      g.gain.value = 0;
+      o.connect(g);
+      g.connect(c.destination);
+      const t = c.currentTime;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(gain || 0.1, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.start(t);
+      o.stop(t + dur + 0.05);
+    }
+
+    // Mood-specific blips (storm has thunder, forest has birds, river has water)
+    function place() {
+      if (currentMood === 'storm') {
+        blip(220, 0.12, 'sawtooth', 0.08, 140);
+      } else if (currentMood === 'forest') {
+        blip(1200, 0.08, 'sine', 0.05, 800);
+        setTimeout(() => blip(900, 0.10, 'sine', 0.04, 1100), 30);
+      } else {
+        blip(520, 0.18, 'sine', 0.10, 380);
+        setTimeout(() => blip(720, 0.12, 'sine', 0.06, 600), 50);
+      }
+    }
+
+    function flowTick() {
+      if (muted) return;
+      if (currentMood === 'storm') blip(600, 0.05, 'white-noise', 0.02);
+      else if (currentMood === 'forest') blip(1800, 0.04, 'sine', 0.012, 1600);
+      else blip(1400, 0.04, 'sine', 0.015, 1200);
+    }
+
+    function chime() {
+      blip(660, 0.18, 'sine', 0.10, 880);
+      setTimeout(() => blip(880, 0.22, 'sine', 0.10, 1100), 100);
+      setTimeout(() => blip(1100, 0.30, 'sine', 0.08, 1320), 220);
+    }
+
+    function advance() {
+      blip(440, 0.10, 'sine', 0.08, 660);
+      setTimeout(() => blip(660, 0.10, 'sine', 0.08, 880), 80);
+    }
+
+    function click() {
+      blip(1800, 0.04, 'sine', 0.04, 1200);
+    }
+
+    function discover() {
+      blip(880, 0.4, 'sine', 0.06, 1320);
+    }
+
+    return {
+      start: () => { ensure(); startAmbient(currentMood); },
+      stop: stopAmbient,
+      setMood,
+      getMood: () => currentMood,
+      place, flowTick, chime, advance, click, discover,
+      isMuted: () => muted,
+      toggleMute: () => {
+        muted = !muted;
+        try { localStorage.setItem('wb_muted', muted ? '1' : '0'); } catch (e) {}
+        if (muted) stopAmbient();
+        return muted;
+      },
+    };
+  })();
+
+  // ---- Parsing ----
+  function parseLevel(level) {
+    const grid = [], sources = [], goals = { farm: [], village: [], wheel: [] };
+    for (let y = 0; y < level.grid.length; y++) {
+      const row = level.grid[y], line = [];
+      for (let x = 0; x < row.length; x++) {
+        const ch = row[x];
+        let cell = { terrain: 'grass', build: null, feature: null };
+        if (ch === '#') cell.terrain = 'rock';
+        else if (ch === '~') { cell.terrain = 'rock'; cell.feature = { type: 'spring' }; sources.push({ x, y }); }
+        else if (ch === 'F') { cell.feature = { type: 'farm' }; goals.farm.push({ x, y }); }
+        else if (ch === 'V') { cell.feature = { type: 'village' }; goals.village.push({ x, y }); }
+        else if (ch === 'W') { cell.feature = { type: 'wheel' }; goals.wheel.push({ x, y }); }
+        line.push(cell);
+      }
+      grid.push(line);
+    }
+    return { grid, sources, goals };
+  }
+
+  // ---- Drawing (night palette) ----
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width) return;
+    if (!ctx) return; // canvas not supported (test env)
+    const w = rect.width;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(w * dpr * (GRID_H / GRID_W));
+    try { ctx.setTransform(dpr * (w / (TILE * GRID_W)), 0, 0, dpr * (w / (TILE * GRID_W)), 0, 0); } catch (e) {}
+  }
+
+  function drawCellBackground(x, y, cell) {
+    const px = x * TILE, py = y * TILE;
+    if (cell.terrain === 'rock') {
+      ctx.fillStyle = '#0F2036'; ctx.fillRect(px, py, TILE, TILE);
+      ctx.fillStyle = 'rgba(125,211,245,.05)';
+      for (let i = 0; i < 6; i++) ctx.fillRect(px + ((i*9) % TILE), py + ((i*13) % TILE), 4, 2);
+    } else {
+      const v = ((x * 31 + y * 17) % 5) * 0.04;
+      ctx.fillStyle = `rgb(${20 + v*20}, ${50 + v*20}, ${30 + v*20})`;
+      ctx.fillRect(px, py, TILE, TILE);
+      ctx.fillStyle = 'rgba(111,191,115,.18)';
+      for (let i = 0; i < 3; i++) {
+        const gx = px + ((x*7 + i*13) % (TILE-6)) + 3;
+        const gy = py + ((y*5 + i*11) % (TILE-6)) + 3;
+        ctx.fillRect(gx, gy, 1.5, 4);
+      }
+    }
+  }
+
+  function drawFeature(x, y, type) {
+    const px = x * TILE, py = y * TILE;
+    if (type === 'spring') {
+      // Pulsing glow
+      const pulse = 0.4 + 0.2 * Math.sin(Date.now() / 400);
+      ctx.fillStyle = `rgba(125,211,245,${0.15 * pulse})`;
+      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 26, 0, Math.PI*2); ctx.fill();
+
+      ctx.fillStyle = '#1A6E94'; ctx.beginPath(); ctx.ellipse(px + TILE/2, py + TILE/2 + 4, 18, 8, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#4FB3D9'; ctx.beginPath(); ctx.ellipse(px + TILE/2, py + TILE/2, 16, 7, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#7DD3F5'; ctx.beginPath(); ctx.ellipse(px + TILE/2 - 4, py + TILE/2 - 1, 4, 2, 0, 0, Math.PI*2); ctx.fill();
+    } else if (type === 'farm') {
+      const active = state.reached.farm;
+      // Glow when active
+      if (active) {
+        const pulse = 0.3 + 0.15 * Math.sin(Date.now() / 300);
+        ctx.fillStyle = `rgba(255,200,87,${0.2 * pulse})`;
+        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 30, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.fillStyle = active ? '#A8D49C' : '#5C3A24'; ctx.fillRect(px + 6, py + 8, TILE - 12, TILE - 14);
+      ctx.fillStyle = active ? '#FFC857' : '#8B5A3C';
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) ctx.fillRect(px + 10 + c*10, py + 12 + r*10, 6, 6);
+      ctx.fillStyle = '#F4D3A8'; ctx.fillRect(px + TILE - 18, py + 6, 12, 12);
+      ctx.fillStyle = '#B5533C'; ctx.beginPath();
+      ctx.moveTo(px + TILE - 19, py + 6); ctx.lineTo(px + TILE - 12, py); ctx.lineTo(px + TILE - 5, py + 6);
+      ctx.closePath(); ctx.fill();
+    } else if (type === 'village') {
+      ctx.fillStyle = '#3F8E4B'; ctx.fillRect(px + 4, py + TILE - 14, TILE - 8, 10);
+      const cottages = [{ ox: 6, oy: 18, w: 18, h: 18 }, { ox: 28, oy: 12, w: 16, h: 22 }];
+      cottages.forEach(co => {
+        ctx.fillStyle = '#F4D3A8'; ctx.fillRect(px + co.ox, py + co.oy, co.w, co.h);
+        ctx.fillStyle = '#B5533C'; ctx.beginPath();
+        ctx.moveTo(px + co.ox - 2, py + co.oy);
+        ctx.lineTo(px + co.ox + co.w/2, py + co.oy - 8);
+        ctx.lineTo(px + co.ox + co.w + 2, py + co.oy);
+        ctx.closePath(); ctx.fill();
+      });
+    } else if (type === 'wheel') {
+      const cx = px + TILE/2, cy = py + TILE/2;
+      ctx.fillStyle = '#1A6E94'; ctx.fillRect(px + 4, py + TILE - 10, TILE - 8, 6);
+      ctx.strokeStyle = '#8B5E3C'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, 22, 0, Math.PI*2); ctx.stroke();
+      ctx.save(); ctx.translate(cx, cy);
+      ctx.rotate((Date.now() / 300) % (Math.PI*2));
+      ctx.fillStyle = '#C49A6C'; ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#5C3A24'; ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath(); ctx.moveTo(0, 0);
+        const a = (i * Math.PI) / 3;
+        ctx.lineTo(Math.cos(a) * 18, Math.sin(a) * 18); ctx.stroke();
+      }
+      ctx.restore();
+      ctx.fillStyle = '#5C3A24';
+      ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  function drawBuild(x, y, build) {
+    const px = x * TILE, py = y * TILE;
+    if (!build) return;
+    if (build.type === 'canal') {
+      ctx.fillStyle = '#0A4A6B'; ctx.fillRect(px + 4, py + TILE/2 - 8, TILE - 8, 16);
+      ctx.fillStyle = '#1A6E94'; ctx.fillRect(px + 4, py + TILE/2 - 6, TILE - 8, 12);
+      ctx.fillStyle = 'rgba(125,211,245,.4)';
+      const t = (Date.now() / 600 + x + y) % 1;
+      for (let i = 0; i < 3; i++) {
+        const fx = px + 4 + ((t * (TILE - 8)) + i * 12) % (TILE - 8);
+        ctx.fillRect(fx, py + TILE/2 - 3, 6, 2);
+      }
+    }
+  }
+
+  function drawWaterOverlay() {
+    state.waterCells.forEach((data, k) => {
+      const [x, y] = k.split(',').map(Number);
+      const px = x * TILE, py = y * TILE;
+      const alpha = 0.55 + 0.25 * Math.sin(data.t * 4);
+      ctx.fillStyle = `rgba(79,179,217,${alpha})`;
+      ctx.fillRect(px + 2, py + 2, TILE - 4, TILE - 4);
+      ctx.fillStyle = `rgba(125,211,245,${alpha * 0.8})`;
+      ctx.fillRect(px + 4, py + TILE/2 - 1 + Math.sin(Date.now() / 400 * Math.PI * 2) * 1.5, TILE - 8, 2);
+    });
+  }
+
+  // Highlight ring for tutorial guidance
+  function drawHighlight(x, y) {
+    if (x == null || y == null) return;
+    const px = x * TILE, py = y * TILE;
+    const t = (Date.now() / 800) % 1;
+    // Pulsing ring
+    const r = 28 + Math.sin(t * Math.PI * 2) * 4;
+    ctx.strokeStyle = `rgba(125,211,245,${0.7 + 0.3 * Math.sin(t * Math.PI * 2)})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, r, 0, Math.PI * 2); ctx.stroke();
+    // Inner glow
+    ctx.fillStyle = `rgba(125,211,245,0.08)`;
+    ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, r - 5, 0, Math.PI * 2); ctx.fill();
+    // Arrow pointing to it
+    drawArrowToCell(x, y);
+  }
+
+  function drawArrowToCell(x, y) {
+    const cellPx = x * TILE + TILE/2;
+    const cellPy = y * TILE + TILE/2;
+    // Draw arrow from the speech bubble area
+    // For simplicity, draw a small animated arrow at the top of the cell
+    const t = (Date.now() / 600) % 1;
+    const offset = -10 + t * -8;
+    const ax = cellPx;
+    const ay = cellPy + offset - 8;
+    ctx.fillStyle = 'rgba(125,211,245,.9)';
+    ctx.beginPath();
+    ctx.moveTo(ax, ay + 8);
+    ctx.lineTo(ax - 6, ay);
+    ctx.lineTo(ax + 6, ay);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawHover(x, y) {
+    if (x < 0 || y < 0 || x >= GRID_W || y >= GRID_H) return;
+    const px = x * TILE, py = y * TILE;
+    const cell = state.grid[y] && state.grid[y][x];
+    if (!cell) return;
+    // Only show hover if tutorial allows it
+    const step = STEPS[state.tutorialIndex];
+    if (state.tutorialActive && step.requireClick) {
+      const req = step.requireClick;
+      if (x !== req.x || y !== req.y) {
+        // Dim everything except the required cell
+        ctx.fillStyle = 'rgba(5,11,20,.4)';
+        ctx.fillRect(px, py, TILE, TILE);
+        return;
+      }
+    }
+    const canPlaceHere = !cell.build && !cell.feature && cell.terrain === 'grass' && state.inventory.canal > 0;
+    ctx.fillStyle = canPlaceHere ? 'rgba(125,211,245,.25)' : 'rgba(192,70,58,.2)';
+    ctx.fillRect(px, py, TILE, TILE);
+    ctx.strokeStyle = canPlaceHere ? '#7DD3F5' : '#C0463A';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(px + 1, py + 1, TILE - 2, TILE - 2);
+  }
+
+  function render() {
+    if (!ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+    for (let y = 0; y < GRID_H; y++) for (let x = 0; x < GRID_W; x++) {
+      const cell = state.grid[y] && state.grid[y][x];
+      if (!cell) continue;
+      drawCellBackground(x, y, cell);
+      if (cell.feature) drawFeature(x, y, cell.feature.type);
+      if (cell.build) drawBuild(x, y, cell.build);
+    }
+    drawWaterOverlay();
+    // Tutorial highlight
+    const step = STEPS[state.tutorialIndex];
+    if (state.tutorialActive && step && step.highlight) {
+      drawHighlight(step.highlight.x, step.highlight.y);
+    }
+    if (state.hover) drawHover(state.hover.x, state.hover.y);
+  }
+
+  // ---- Logic ----
+  function canPlace(x, y) {
+    if (x < 0 || y < 0 || x >= GRID_W || y >= GRID_H) return false;
+    const cell = state.grid[y][x];
+    if (!cell || cell.feature) return false;
+    if (cell.build) return false;
+    if (cell.terrain !== 'grass') return false;
+    if (state.inventory.canal <= 0) return false;
+    return true;
+  }
+
+  function place(x, y) {
+    if (!canPlace(x, y)) return false;
+    // Tutorial gate
+    if (state.tutorialActive) {
+      const step = STEPS[state.tutorialIndex];
+      if (step.requireClick) {
+        if (x !== step.requireClick.x || y !== step.requireClick.y) {
+          return false; // not the right cell yet
+        }
+      }
+    }
+    const cell = state.grid[y][x];
+    cell.build = { type: 'canal' };
+    state.inventory.canal--;
+    Sound.place();
+    return true;
+  }
+
+  function isPassable(x, y) {
+    if (x < 0 || y < 0 || x >= GRID_W || y >= GRID_H) return false;
+    const cell = state.grid[y][x];
+    if (!cell) return false;
+    if (cell.terrain === 'rock') return false;
+    if (cell.build && cell.build.type === 'dam') return false;
+    if (cell.build && cell.build.type === 'gate' && !cell.build.open) return false;
+    if (cell.feature && ['farm','village','wheel'].includes(cell.feature.type)) return true;
+    return true;
+  }
+
+  let lastFlowCellCount = 0;
+  function tickFlow() {
+    if (!state.running) return;
+    const newWater = new Map(state.waterCells);
+    state.waterCells.forEach((data, k) => {
+      const [x, y] = k.split(',').map(Number);
+      const cellHere = state.grid[y][x];
+      const isSpring = cellHere.feature && cellHere.feature.type === 'spring';
+      const isCanal = cellHere.build && cellHere.build.type === 'canal';
+      const isFeature = cellHere.feature && ['farm','village','wheel'].includes(cellHere.feature.type);
+      if (!isSpring && !isCanal && !isFeature) return;
+      [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx, dy]) => {
+        const nx = x + dx, ny = y + dy;
+        if (!isPassable(nx, ny)) return;
+        const ncell = state.grid[ny][nx];
+        const tIsCanal = ncell.build && ncell.build.type === 'canal';
+        const tIsFeature = ncell.feature && ['farm','village','wheel','spring'].includes(ncell.feature.type);
+        if (!tIsCanal && !tIsFeature) return;
+        const tk = key(nx, ny);
+        if (!newWater.has(tk)) {
+          newWater.set(tk, { t: data.t + 1, sourceId: data.sourceId });
+          Sound.flowTick();
+          if (ncell.feature && ncell.feature.type === 'farm' && !state.reached.farm) {
+            state.reached.farm = true;
+            Sound.chime();
+            // Trigger tutorial advance if waiting for reach
+            if (state.tutorialActive && STEPS[state.tutorialIndex].requireReach === 'farm') {
+              advanceTutorial();
+            }
+          }
+        }
+      });
+    });
+    state.waterCells = newWater;
+  }
+
+  function startFlow() {
+    if (state.running) return;
+    state.running = true;
+    const parsed = parseLevel(level);
+    parsed.sources.forEach((s, idx) => {
+      state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
+    });
+    state.reached.spring = true;
+    state.tickHandle = setInterval(tickFlow, WATER_SPEED);
+    state.renderHandle = setInterval(render, 60);
+    render();
+  }
+
+  function stopFlow() {
+    state.running = false;
+    if (state.tickHandle) clearInterval(state.tickHandle);
+    if (state.renderHandle) clearInterval(state.renderHandle);
+  }
+
+  // ---- Tutorial ----
+  function advanceTutorial() {
+    if (state.tutorialIndex >= STEPS.length - 1) return;
+    state.tutorialIndex++;
+    Sound.advance();
+    updateTutorialUI();
+    const step = STEPS[state.tutorialIndex];
+    if (step.advance === 'auto' && step.autoDelay) {
+      setTimeout(() => {
+        if (state.tutorialIndex < STEPS.length - 1) advanceTutorial();
+      }, step.autoDelay);
+    }
+  }
+
+  // Skip the entire tutorial — jump to the last step (free play)
+  function skipTutorial() {
+    if (!state.tutorialActive) return;
+    state.tutorialIndex = STEPS.length - 1;
+    Sound.advance();
+    updateTutorialUI();
+    Sound.click();
+  }
+
+  // Dismiss the bubble entirely (hide it, show reopen pill)
+  function dismissBubble() {
+    const bubble = document.getElementById('baxterBubble');
+    const pill = document.getElementById('bubbleReopenPill');
+    if (!bubble) return;
+    bubble.classList.add('dismissed');
+    if (pill) pill.classList.add('show');
+    Sound.click();
+  }
+
+  // Re-show the bubble
+  function reopenBubble() {
+    const bubble = document.getElementById('baxterBubble');
+    const pill = document.getElementById('bubbleReopenPill');
+    if (!bubble) return;
+    bubble.classList.remove('dismissed');
+    if (pill) pill.classList.remove('show');
+    Sound.click();
+  }
+
+  function updateTutorialUI() {
+    const step = STEPS[state.tutorialIndex];
+    const bubble = document.getElementById('baxterBubble');
+    const title = document.getElementById('baxterTitle');
+    const body = document.getElementById('baxterBody');
+    const advance = document.getElementById('baxterAdvance');
+    const skip = document.getElementById('bubbleSkip');
+    const dismiss = document.getElementById('bubbleDismiss');
+    const reopen = document.getElementById('bubbleReopen');
+    const hint = document.getElementById('stageHint');
+    if (!bubble) return;
+    title.textContent = step.title;
+    body.textContent = step.body;
+
+    // Wire skip button
+    if (skip) {
+      skip.onclick = (e) => {
+        e.stopPropagation();
+        skipTutorial();
+      };
+      // Hide skip on the very last step (free play)
+      if (state.tutorialIndex >= STEPS.length - 1) {
+        skip.classList.add('hide');
+      } else {
+        skip.classList.remove('hide');
+      }
+    }
+
+    // Wire dismiss button
+    if (dismiss) {
+      dismiss.onclick = (e) => {
+        e.stopPropagation();
+        dismissBubble();
+      };
+    }
+
+    // Wire reopen button (the small "Baxter?" in the actions row)
+    if (reopen) {
+      reopen.onclick = (e) => {
+        e.stopPropagation();
+        reopenBubble();
+      };
+      // Show reopen only when the tutorial is done
+      if (state.tutorialIndex >= STEPS.length - 1) {
+        reopen.classList.remove('hide');
+      } else {
+        reopen.classList.add('hide');
+      }
+    }
+
+    // Advance button
+    if (step.advance === 'click-anywhere' || step.advance === 'click-cell') {
+      advance.textContent = step.advanceLabel;
+      advance.style.display = '';
+      // Re-wire the click handler (since we replace text each time)
+      advance.onclick = (e) => {
+        e.stopPropagation();
+        Sound.click();
+        if (state.tutorialActive) {
+          const cur = STEPS[state.tutorialIndex];
+          if (cur.advance === 'click-anywhere' && !cur.requireClick) {
+            // If this is the last step, dismiss the bubble entirely
+            if (state.tutorialIndex >= STEPS.length - 1) {
+              dismissBubble();
+            } else {
+              advanceTutorial();
+            }
+          } else if (cur.advance === 'click-cell') {
+            // Tell user to click the cell
+            bubble.animate([
+              { transform: 'translateX(0)' },
+              { transform: 'translateX(-4px)' },
+              { transform: 'translateX(4px)' },
+              { transform: 'translateX(0)' }
+            ], { duration: 300, iterations: 1 });
+          }
+        }
+      };
+    } else {
+      advance.style.display = 'none';
+    }
+
+    // Hint pill
+    if (hint) {
+      if (step.requireClick) {
+        hint.textContent = step.advanceLabel;
+        hint.classList.remove('hide');
+      } else if (step.advance === 'reach') {
+        hint.textContent = 'Water it!';
+        hint.classList.remove('hide');
+      } else {
+        hint.classList.add('hide');
+      }
+    }
+
+    // When tutorial ends, shrink the bubble + show dismiss button
+    if (state.tutorialIndex >= STEPS.length - 1) {
+      setTimeout(() => bubble.classList.add('tutorial-end'), 100);
+      if (dismiss) dismiss.classList.add('show');
+      // Mark complete in localStorage
+      try { localStorage.setItem('wb_tutorial_done', '1'); } catch (e) {}
+      // Arm the idle hint system now that tutorial is done
+      armIdleHints();
+    } else {
+      if (dismiss) dismiss.classList.remove('show');
+    }
+
+    bubble.classList.remove('bubble-enter');
+    void bubble.offsetWidth; // force reflow
+    bubble.classList.add('bubble-enter');
+  }
+
+  function handleCanvasClick(x, y) {
+    Sound.click();
+    if (state.mode === 'build') {
+      handleBuildClick(x, y);
+      return;
+    }
+    if (state.tutorialActive) {
+      const step = STEPS[state.tutorialIndex];
+      if (step.advance === 'click-anywhere' && !step.requireClick) {
+        advanceTutorial();
+        return;
+      }
+      if (step.requireClick) {
+        if (x === step.requireClick.x && y === step.requireClick.y) {
+          // place & advance
+          if (place(x, y)) {
+            render();
+            // If the place action completes the requirement, advance after a moment
+            if (step.id === 'place-1') {
+              // After water reaches this cell, advance
+              const checkWater = setInterval(() => {
+                if (state.waterCells.has(key(x, y))) {
+                  clearInterval(checkWater);
+                  setTimeout(() => advanceTutorial(), 600);
+                }
+              }, 100);
+            } else if (step.id === 'bend') {
+              setTimeout(() => advanceTutorial(), 800);
+            }
+          }
+        }
+        return;
+      }
+      if (step.advance === 'reach') {
+        // click is ignored for reach steps
+        return;
+      }
+    }
+    // Free play
+    if (place(x, y)) render();
+  }
+
+  // ---- Input ----
+  function getCellFromEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    return {
+      x: Math.floor((cx / rect.width) * GRID_W),
+      y: Math.floor((cy / rect.height) * GRID_H),
+    };
+  }
+  canvas.addEventListener('mousemove', (e) => {
+    state.hover = getCellFromEvent(e);
+    render();
+  });
+  canvas.addEventListener('mouseleave', () => { state.hover = null; render(); });
+  canvas.addEventListener('click', (e) => {
+    handleCanvasClick(getCellFromEvent(e));
+  });
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const c = getCellFromEvent(e);
+    state.hover = c;
+    handleCanvasClick(c);
+  }, { passive: false });
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    state.hover = getCellFromEvent(e);
+    render();
+  }, { passive: false });
+
+  // ========================================================================
+  // MAP EDITOR + SHARE + SAVE
+  // ========================================================================
+  // state.mode: 'play' | 'build'
+  // state.buildTool: 'spring' | 'farm' | 'village' | 'wheel' | 'rock' | 'erase'
+  // state.customGrid: when in build mode, the working grid (object, not string)
+  state.mode = 'play';
+  state.buildTool = 'spring';
+
+  function setMode(mode) {
+    if (mode === state.mode) return;
+    state.mode = mode;
+    // Update mode buttons
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+    // Show/hide palette and share button
+    const palette = document.getElementById('stagePalette');
+    const share = document.getElementById('stageShare');
+    if (mode === 'build') {
+      if (palette) palette.hidden = false;
+      if (share) share.hidden = false;
+      // Stop water flow in build mode
+      stopFlow();
+      // Clear water cells
+      state.waterCells = new Map();
+      // Don't run tutorial in build mode
+      state.tutorialActive = false;
+      // Hide the bubble in build mode
+      const bubble = document.getElementById('baxterBubble');
+      if (bubble) bubble.style.display = 'none';
+    } else {
+      if (palette) palette.hidden = true;
+      if (share) share.hidden = true;
+      const bubble = document.getElementById('baxterBubble');
+      if (bubble) bubble.style.display = '';
+      state.tutorialActive = true;
+      // Restart the level
+      loadLevel(state.levelIndex);
+    }
+    render();
+  }
+
+  function setBuildTool(tool) {
+    state.buildTool = tool;
+    document.querySelectorAll('.pal-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.tool === tool);
+    });
+  }
+
+  // Build mode click handler
+  function handleBuildClick(x, y) {
+    if (x < 0 || y < 0 || x >= GRID_W || y >= GRID_H) return;
+    const cell = state.grid[y][x];
+    if (!cell) return;
+
+    if (state.buildTool === 'clear') {
+      // Reset to a single spring at top
+      for (let yy = 0; yy < GRID_H; yy++) {
+        for (let xx = 0; xx < GRID_W; xx++) {
+          state.grid[yy][xx] = { terrain: 'grass', build: null, feature: null };
+        }
+      }
+      state.grid[3][2] = { terrain: 'rock', build: null, feature: { type: 'spring' } };
+      state.grid[6][13] = { terrain: 'grass', build: null, feature: { type: 'farm' } };
+      render();
+      return;
+    }
+
+    if (state.buildTool === 'erase') {
+      // Erase: clear the cell
+      cell.feature = null;
+      cell.build = null;
+      if (cell.terrain === 'rock') cell.terrain = 'grass';
+      render();
+      return;
+    }
+
+    // Setting a feature
+    if (state.buildTool === 'rock') {
+      cell.terrain = 'rock';
+      cell.feature = null;
+      cell.build = null;
+      render();
+      return;
+    }
+    if (state.buildTool === 'spring') {
+      // Only one spring allowed
+      for (let yy = 0; yy < GRID_H; yy++) {
+        for (let xx = 0; xx < GRID_W; xx++) {
+          if (state.grid[yy][xx].feature && state.grid[yy][xx].feature.type === 'spring') {
+            state.grid[yy][xx].feature = null;
+            if (state.grid[yy][xx].terrain === 'rock' && !state.grid[yy][xx].build) state.grid[yy][xx].terrain = 'grass';
+          }
+        }
+      }
+      cell.terrain = 'rock';
+      cell.feature = { type: 'spring' };
+      cell.build = null;
+      render();
+      return;
+    }
+    // Goals: farm, village, wheel
+    const goalTypes = ['farm', 'village', 'wheel'];
+    if (goalTypes.includes(state.buildTool)) {
+      // Clear any existing goal of this type (only one of each for simplicity)
+      for (let yy = 0; yy < GRID_H; yy++) {
+        for (let xx = 0; xx < GRID_W; xx++) {
+          if (state.grid[yy][xx].feature && state.grid[yy][xx].feature.type === state.buildTool) {
+            state.grid[yy][xx].feature = null;
+          }
+        }
+      }
+      cell.terrain = 'grass';
+      cell.feature = { type: state.buildTool };
+      cell.build = null;
+      render();
+      return;
+    }
+  }
+
+  // Level serialization: 9 rows × 15 cols, each cell encoded as a character
+  //  '.' grass, '#' rock, '~' spring, 'F' farm, 'V' village, 'W' wheel
+  function gridToString() {
+    let out = '';
+    for (let y = 0; y < GRID_H; y++) {
+      for (let x = 0; x < GRID_W; x++) {
+        const c = state.grid[y][x];
+        if (c.feature && c.feature.type === 'spring') out += '~';
+        else if (c.feature && c.feature.type === 'farm') out += 'F';
+        else if (c.feature && c.feature.type === 'village') out += 'V';
+        else if (c.feature && c.feature.type === 'wheel') out += 'W';
+        else if (c.terrain === 'rock') out += '#';
+        else out += '.';
+      }
+    }
+    return out;
+  }
+
+  function stringToGrid(s) {
+    if (s.length !== GRID_W * GRID_H) return false;
+    const grid = [];
+    for (let y = 0; y < GRID_H; y++) {
+      const row = [];
+      for (let x = 0; x < GRID_W; x++) {
+        const ch = s[y * GRID_W + x];
+        let cell = { terrain: 'grass', build: null, feature: null };
+        if (ch === '#') cell.terrain = 'rock';
+        else if (ch === '~') { cell.terrain = 'rock'; cell.feature = { type: 'spring' }; }
+        else if (ch === 'F') cell.feature = { type: 'farm' };
+        else if (ch === 'V') cell.feature = { type: 'village' };
+        else if (ch === 'W') cell.feature = { type: 'wheel' };
+        row.push(cell);
+      }
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  // Encode a level (9x15) into a compact shareable string
+  // Use a 6-bit alphabet to pack efficiently
+  const SHARE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+  function encodeLevel(grid) {
+    // Map each cell to 4 bits using a base encoding
+    // 0=grass, 1=rock, 2=spring, 3=farm, 4=village, 5=wheel
+    let bits = '';
+    for (let y = 0; y < GRID_H; y++) {
+      for (let x = 0; x < GRID_W; x++) {
+        const c = grid[y][x];
+        let code = 0;
+        if (c.feature && c.feature.type === 'spring') code = 2;
+        else if (c.feature && c.feature.type === 'farm') code = 3;
+        else if (c.feature && c.feature.type === 'village') code = 4;
+        else if (c.feature && c.feature.type === 'wheel') code = 5;
+        else if (c.terrain === 'rock') code = 1;
+        else code = 0;
+        bits += code.toString(2).padStart(3, '0');
+      }
+    }
+    // 135 cells * 3 bits = 405 bits. Group into 6-bit chunks → 68 chars
+    let out = '';
+    for (let i = 0; i < bits.length; i += 6) {
+      const chunk = bits.slice(i, i + 6).padEnd(6, '0');
+      out += SHARE_ALPHABET[parseInt(chunk, 2)];
+    }
+    return out;
+  }
+
+  function decodeLevel(code) {
+    if (!code || code.length < 60) return null;
+    let bits = '';
+    for (let i = 0; i < code.length; i++) {
+      const idx = SHARE_ALPHABET.indexOf(code[i]);
+      if (idx < 0) return null;
+      bits += idx.toString(2).padStart(6, '0');
+    }
+    bits = bits.slice(0, GRID_W * GRID_H * 3);
+    const grid = [];
+    for (let y = 0; y < GRID_H; y++) {
+      const row = [];
+      for (let x = 0; x < GRID_W; x++) {
+        const code3 = bits.slice((y * GRID_W + x) * 3, (y * GRID_W + x) * 3 + 3);
+        const n = parseInt(code3, 2);
+        let cell = { terrain: 'grass', build: null, feature: null };
+        if (n === 1) cell.terrain = 'rock';
+        else if (n === 2) { cell.terrain = 'rock'; cell.feature = { type: 'spring' }; }
+        else if (n === 3) cell.feature = { type: 'farm' };
+        else if (n === 4) cell.feature = { type: 'village' };
+        else if (n === 5) cell.feature = { type: 'wheel' };
+        row.push(cell);
+      }
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  // Save / load levels in localStorage
+  function getSavedLevels() {
+    try {
+      return JSON.parse(localStorage.getItem('wb_saved_levels') || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+  function saveLevelToStorage(name) {
+    const levels = getSavedLevels();
+    const code = encodeLevel(state.grid);
+    const entry = { id: 'l_' + Date.now(), name, code, ts: Date.now() };
+    levels.unshift(entry);
+    // Keep max 20
+    if (levels.length > 20) levels.length = 20;
+    try { localStorage.setItem('wb_saved_levels', JSON.stringify(levels)); } catch (e) {}
+    return entry;
+  }
+  function deleteSavedLevel(id) {
+    const levels = getSavedLevels().filter(l => l.id !== id);
+    try { localStorage.setItem('wb_saved_levels', JSON.stringify(levels)); } catch (e) {}
+  }
+  function loadSavedLevel(id) {
+    const levels = getSavedLevels();
+    const found = levels.find(l => l.id === id);
+    if (!found) return false;
+    const grid = decodeLevel(found.code);
+    if (!grid) return false;
+    state.grid = grid;
+    render();
+    return true;
+  }
+
+  // Render saved levels list
+  function renderSavedLevels() {
+    const container = document.getElementById('modalLevels');
+    if (!container) return;
+    const levels = getSavedLevels();
+    if (levels.length === 0) {
+      container.innerHTML = '<p class="modal-empty">No saved levels yet. Build something and save it!</p>';
+      return;
+    }
+    container.innerHTML = levels.map(l => `
+      <div class="modal-level-item" data-id="${l.id}">
+        <span class="name">${escapeHtml(l.name)}</span>
+        <span class="code">${l.code}</span>
+        <button class="delete" data-action="delete" title="Delete">×</button>
+      </div>
+    `).join('');
+    container.querySelectorAll('.modal-level-item').forEach(item => {
+      const id = item.dataset.id;
+      item.addEventListener('click', (e) => {
+        if (e.target.matches('[data-action="delete"]')) {
+          e.stopPropagation();
+          deleteSavedLevel(id);
+          renderSavedLevels();
+        } else {
+          loadSavedLevel(id);
+          showModalFeedback('Loaded "' + escapeHtml(getSavedLevels().find(l => l.id === id).name) + '"');
+        }
+      });
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function showModalFeedback(msg) {
+    const fb = document.getElementById('modalFeedback');
+    if (!fb) return;
+    fb.textContent = msg;
+    setTimeout(() => { if (fb.textContent === msg) fb.textContent = ''; }, 2500);
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        () => showModalFeedback('Copied!'),
+        () => fallbackCopy(text)
+      );
+    } else {
+      fallbackCopy(text);
+    }
+  }
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showModalFeedback('Copied!');
+    } catch (e) {
+      showModalFeedback('Copy failed — select the text manually');
+    }
+    document.body.removeChild(ta);
+  }
+
+  // Try to load a level from the URL
+  function tryLoadFromURL() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('level');
+      if (code) {
+        const grid = decodeLevel(code);
+        if (grid) {
+          state.grid = grid;
+          // Override the daily level
+          const newLevel = {
+            id: 'shared', name: 'Shared Level',
+            grid: gridToArrayOfStrings(grid),
+            goals: {},
+          };
+          // Replace the active level
+          Object.assign(level, newLevel);
+          render();
+          // Show a small toast
+          const seedEl = document.getElementById('stageSeed');
+          if (seedEl) {
+            seedEl.textContent = 'SHARED LEVEL';
+            seedEl.style.display = '';
+            seedEl.classList.add('show');
+            setTimeout(() => seedEl.classList.remove('show'), 4500);
+          }
+          return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function gridToArrayOfStrings(grid) {
+    const out = [];
+    for (let y = 0; y < GRID_H; y++) {
+      let row = '';
+      for (let x = 0; x < GRID_W; x++) {
+        const c = grid[y][x];
+        if (c.feature && c.feature.type === 'spring') row += '~';
+        else if (c.feature && c.feature.type === 'farm') row += 'F';
+        else if (c.feature && c.feature.type === 'village') row += 'V';
+        else if (c.feature && c.feature.type === 'wheel') row += 'W';
+        else if (c.terrain === 'rock') row += '#';
+        else row += '.';
+      }
+      out.push(row);
+    }
+    return out;
+  }
+
+  // ---- Init ----
+  function init() {
+    // First: try loading a shared level from URL
+    const loadedShared = tryLoadFromURL();
+
+    const parsed = parseLevel(level);
+    state.grid = parsed.grid;
+    resizeCanvas();
+    render();
+
+    // Check if returning player has completed the tutorial before
+    let skipTutorialInit = false;
+    try {
+      if (localStorage.getItem('wb_tutorial_done') === '1') {
+        skipTutorialInit = true;
+      }
+    } catch (e) {}
+
+    // Start sound on first user interaction (browser autoplay rules)
+    const startSound = () => {
+      if (!Sound.isMuted()) Sound.start();
+      document.removeEventListener('click', startSound);
+      document.removeEventListener('touchstart', startSound);
+    };
+    document.addEventListener('click', startSound, { once: true });
+    document.addEventListener('touchstart', startSound, { once: true, passive: true });
+
+    // Wire the reopen pill (Baxter? — appears when bubble is dismissed)
+    const reopenPill = document.getElementById('bubbleReopenPill');
+    if (reopenPill) {
+      reopenPill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        reopenBubble();
+      });
+    }
+
+    // ---- Mute toggle ----
+    const muteBtn = document.getElementById('stageMute');
+    if (muteBtn) {
+      if (Sound.isMuted()) muteBtn.classList.add('muted');
+      muteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isMuted = Sound.toggleMute();
+        muteBtn.classList.toggle('muted', isMuted);
+        if (isMuted) Sound.stop();
+        else Sound.start();
+        Sound.click();
+      });
+    }
+
+    // ---- Sound picker ----
+    const soundPicker = document.getElementById('stageSoundPicker');
+    if (soundPicker) {
+      // Reflect current mood
+      soundPicker.querySelectorAll('.sp-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.mood === Sound.getMood());
+      });
+      soundPicker.querySelectorAll('.sp-btn').forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const mood = b.dataset.mood;
+          if (mood === Sound.getMood()) return;
+          soundPicker.querySelectorAll('.sp-btn').forEach(x => x.classList.remove('active'));
+          b.classList.add('active');
+          if (!Sound.isMuted()) Sound.setMood(mood);
+          Sound.click();
+        });
+      });
+    }
+
+    // ---- Mode toggle ----
+    document.querySelectorAll('.mode-btn').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setMode(b.dataset.mode);
+      });
+    });
+
+    // ---- Build palette ----
+    document.querySelectorAll('.pal-btn').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setBuildTool(b.dataset.tool);
+      });
+    });
+
+    // ---- Share button → opens modal ----
+    const shareBtn = document.getElementById('stageShare');
+    const shareModal = document.getElementById('stageModal');
+    const modalClose = document.getElementById('modalClose');
+    if (shareBtn && shareModal) {
+      shareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const code = encodeLevel(state.grid);
+        const link = window.location.origin + window.location.pathname + '?level=' + code;
+        const linkInput = document.getElementById('shareLink');
+        const codeInput = document.getElementById('shareCode');
+        if (linkInput) linkInput.value = link;
+        if (codeInput) codeInput.value = code;
+        renderSavedLevels();
+        shareModal.hidden = false;
+        Sound.click();
+      });
+      modalClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        shareModal.hidden = true;
+      });
+      // Close on backdrop click
+      shareModal.addEventListener('click', (e) => {
+        if (e.target === shareModal) shareModal.hidden = true;
+      });
+      // Copy buttons
+      const copyLinkBtn = document.getElementById('copyLinkBtn');
+      const copyCodeBtn = document.getElementById('copyCodeBtn');
+      if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const link = document.getElementById('shareLink').value;
+          copyToClipboard(link);
+        });
+      }
+      if (copyCodeBtn) {
+        copyCodeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const code = document.getElementById('shareCode').value;
+          copyToClipboard(code);
+        });
+      }
+      // Save button
+      const saveLevelBtn = document.getElementById('saveLevelBtn');
+      const saveName = document.getElementById('saveName');
+      if (saveLevelBtn) {
+        saveLevelBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const name = (saveName.value || '').trim() || 'Untitled level';
+          const entry = saveLevelToStorage(name);
+          saveName.value = '';
+          showModalFeedback('Saved as "' + entry.name + '"');
+          renderSavedLevels();
+        });
+      }
+    }
+
+    if (skipTutorialInit) {
+      // Returning player — jump to the welcome-back step (last one)
+      state.tutorialIndex = STEPS.length - 1;
+      setTimeout(() => updateTutorialUI(), 300);
+    } else {
+      // First-time player — full tutorial
+      setTimeout(() => updateTutorialUI(), 600);
+    }
+    // Start the spring's water (so the player can see it bubbling even before they place canals)
+    setTimeout(() => startFlow(), 1000);
+    // Mark state started
+    state.started = true;
+
+    // ---- Idle hint system ----
+    setupIdleHints();
+  }
+
+  // ---- Idle hint system ----
+  // After tutorial ends, if the player is idle for 30s, Baxter peeks back
+  // with a contextual tip.
+  let idleTimer = null;
+  let lastIdleHintIndex = -1;
+  const IDLE_HINTS = [
+    { title: "Still there?",
+      body: "Tap a grass cell to drop a canal. Water follows canals — even around corners." },
+    { title: "Try a bend.",
+      body: "Canals turn. Lead the stream in any direction you like, as long as there's a connected path." },
+    { title: "Need a pause?",
+      body: "Click the 🔊 icon in the corner to mute. Hit the × on this bubble to hide me — tap the Baxter chip to bring me back." },
+    { title: "Different every day.",
+      body: "The starting level changes each day. Come back tomorrow for a new puzzle." },
+  ];
+
+  function resetIdleTimer() {
+    if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+  }
+  function armIdleHints() {
+    resetIdleTimer();
+    // Only arm if tutorial is done AND bubble is visible (not dismissed)
+    if (state.tutorialIndex < STEPS.length - 1) return;
+    const bubble = document.getElementById('baxterBubble');
+    if (!bubble || bubble.classList.contains('dismissed')) return;
+    idleTimer = setTimeout(showIdleHint, 30000);
+  }
+  function setupIdleHints() {
+    // Reset the timer on any user activity within the stage
+    const stage = document.querySelector('.stage-frame');
+    if (stage) {
+      ['click', 'mousemove', 'touchstart', 'touchmove', 'keydown'].forEach(ev => {
+        stage.addEventListener(ev, () => { armIdleHints(); }, { passive: true });
+      });
+    }
+    // Initial arm (will skip if tutorial not done)
+    armIdleHints();
+  }
+
+  function showIdleHint() {
+    const bubble = document.getElementById('baxterBubble');
+    const title = document.getElementById('baxterTitle');
+    const body = document.getElementById('baxterBody');
+    const advance = document.getElementById('baxterAdvance');
+    if (!bubble || bubble.classList.contains('dismissed')) return;
+
+    // Pick a hint that's different from the last one
+    let next;
+    do {
+      next = Math.floor(Math.random() * IDLE_HINTS.length);
+    } while (next === lastIdleHintIndex && IDLE_HINTS.length > 1);
+    lastIdleHintIndex = next;
+    const hint = IDLE_HINTS[next];
+
+    title.textContent = hint.title;
+    body.textContent = hint.body;
+    if (advance) advance.textContent = 'Thanks, got it';
+    if (advance) advance.style.display = '';
+
+    // Mark as tip
+    bubble.classList.remove('tutorial-end'); // make full-size for the tip
+    bubble.classList.add('tip');
+    bubble.classList.remove('dismissed');
+    bubble.classList.add('bubble-enter');
+
+    // Update the advance button to just close the tip
+    if (advance) {
+      advance.onclick = (e) => {
+        e.stopPropagation();
+        bubble.classList.remove('tip');
+        bubble.classList.add('tutorial-end'); // back to compact
+        // restore the free-play text
+        title.textContent = STEPS[state.tutorialIndex].title;
+        body.textContent = STEPS[state.tutorialIndex].body;
+        advance.textContent = STEPS[state.tutorialIndex].advanceLabel || 'Got it';
+        advance.onclick = (e) => {
+          e.stopPropagation();
+          dismissBubble();
+        };
+        // Reset the idle timer
+        armIdleHints();
+      };
+    }
+  }
+
+
+  let resizeRaf = null;
+  window.addEventListener('resize', () => {
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => { resizeCanvas(); render(); });
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Expose
+  window.WB = { state, place, sound: Sound };
+})();
+
+  </script>
+
+  <!-- Splash screen controller -->
+  <script>
+  (function() {
+    'use strict';
+    var splash = document.getElementById('splashScreen');
+    var bar = document.getElementById('splashBar');
+    var loading = document.getElementById('splashLoading');
+    var skip = document.getElementById('splashSkip');
+    var stars = document.getElementById('splashStars');
+    if (!splash) return;
+
+    // Build the star field
+    if (stars) {
+      var html = '';
+      for (var i = 0; i < 60; i++) {
+        var x = Math.random() * 100;
+        var y = Math.random() * 60;
+        var s = 1 + Math.random() * 1.4;
+        var d = Math.random() * 4;
+        html += '<div class="star" style="left:' + x + '%;top:' + y + '%;width:' + s + 'px;height:' + s + 'px;animation-delay:' + d + 's"></div>';
+      }
+      stars.innerHTML = html;
+    }
+
+    // Skip if already shown this session
+    var SKIP_KEY = 'wb_splash_shown';
+    var alreadyShown = false;
+    try { alreadyShown = sessionStorage.getItem(SKIP_KEY) === '1'; } catch (e) {}
+
+    if (alreadyShown) {
+      // Hide immediately, no animation
+      splash.style.transition = 'none';
+      splash.classList.add('hide');
+      // Mark as initialized so the rest of the page works
+      window.__splashDone = true;
+    } else {
+      // Loading messages to cycle through
+      var messages = [
+        'Drawing the first spring…',
+        'Tuning the ambient drone…',
+        'Raising the dam…',
+        'Connecting the canals…',
+        'Polishing the wheel…',
+        'Almost there…'
+      ];
+      var msgIdx = 0;
+      var msgTimer = setInterval(function() {
+        msgIdx++;
+        if (msgIdx >= messages.length) { clearInterval(msgTimer); return; }
+        if (loading) loading.textContent = messages[msgIdx];
+      }, 450);
+
+      // Progress: 0 → 100 over ~2700ms
+      var progress = 0;
+      var start = Date.now();
+      var DURATION = 2700;
+      var tickTimer = setInterval(function() {
+        var elapsed = Date.now() - start;
+        // Ease-out curve
+        var t = Math.min(1, elapsed / DURATION);
+        var eased = 1 - Math.pow(1 - t, 2);
+        progress = eased * 100;
+        if (bar) bar.style.width = progress + '%';
+        if (t >= 1) {
+          clearInterval(tickTimer);
+          finish();
+        }
+      }, 30);
+
+      function finish() {
+        // Try to start the ambient sound (user gesture was the page load)
+        try {
+          if (window.WB && window.WB.sound && !window.WB.sound.isMuted()) {
+            window.WB.sound.start();
+          }
+        } catch (e) {}
+        // Mark as done
+        try { sessionStorage.setItem(SKIP_KEY, '1'); } catch (e) {}
+        window.__splashDone = true;
+        // Fade out
+        splash.classList.add('hide');
+        setTimeout(function() {
+          if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+        }, 900);
+      }
+
+      // Skip button
+      if (skip) {
+        skip.addEventListener('click', function(e) {
+          e.stopPropagation();
+          clearInterval(tickTimer);
+          clearInterval(msgTimer);
+          if (bar) bar.style.width = '100%';
+          setTimeout(finish, 120);
+        });
+      }
+      // Click anywhere also skips
+      splash.addEventListener('click', function(e) {
+        if (e.target === skip) return;
+        clearInterval(tickTimer);
+        clearInterval(msgTimer);
+        if (bar) bar.style.width = '100%';
+        setTimeout(finish, 120);
+      });
+    }
+  })();
+  </script>
+
+</body>
+</html>
