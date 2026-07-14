@@ -131,10 +131,35 @@
     @keyframes gear-cw  { to { transform: rotate(360deg); } }
     @keyframes gear-ccw { to { transform: rotate(-360deg); } }
 
+    /* ===== Steam puffs rising from the gears ===== */
+    .splash-steam { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .steam {
+      position: absolute; bottom: auto;
+      width: 14px; height: 14px;
+      background: radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(255,255,255,.15) 50%, transparent 70%);
+      border-radius: 50%;
+      animation: steam-rise 3.6s ease-out infinite;
+      opacity: 0;
+    }
+    /* Each puff positioned above a different gear */
+    .steam.s1 { left: calc(6%  + 28px); top: 14%; animation-delay: 0s; }
+    .steam.s2 { left: calc(11% + 20px); top: 18%; animation-delay: .9s; }
+    .steam.s3 { right: calc(7%  + 36px); bottom: 24%; animation-delay: 1.7s; top: auto; }
+    .steam.s4 { right: calc(14% + 22px); bottom: 26%; animation-delay: 2.5s; top: auto; }
+    .steam.s5 { left: calc(4%  + 16px); top: 60%; animation-delay: 1.2s; }
+
+    @keyframes steam-rise {
+      0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+      20%  { opacity: .7; }
+      50%  { transform: translate(-3px, -22px) scale(1); opacity: .5; }
+      100% { transform: translate(4px, -50px) scale(1.6); opacity: 0; }
+    }
+
     @media (max-width: 600px) {
       .splash-gear.g1 { width: 48px; } .splash-gear.g2 { width: 32px; }
       .splash-gear.g3 { width: 60px; } .splash-gear.g4 { width: 40px; }
       .splash-gear.g5 { display: none; }
+      .steam.s5 { display: none; }
     }
 
     .splash-content {
@@ -554,6 +579,20 @@
   @keyframes baxter-blink { 0%,92%,100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
   @keyframes baxter-tail  { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
   @keyframes baxter-wave  { 0%,100% { transform: rotate(0); } 50% { transform: rotate(12deg); } }
+  /* Smile — applied briefly when a tutorial step is completed */
+  .bubble-portrait.smiling { animation: baxter-big-smile 0.6s ease-out; }
+  @keyframes baxter-big-smile {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.18) rotate(-4deg); }
+    70%  { transform: scale(1.05) rotate(2deg); }
+    100% { transform: scale(1); }
+  }
+  .bubble-portrait .baxter-smile {
+    opacity: 0;
+    transform-origin: center;
+  }
+  .bubble-portrait.smiling .baxter-smile { opacity: 1; }
+  .bubble-portrait.smiling .baxter-teeth { opacity: 0; }
   .bubble-body {
     flex: 1; min-width: 0;
   }
@@ -668,7 +707,7 @@
   .bubble-wrap.tutorial-end .bubble-dismiss { display: inline-flex; }
 
   /* =========================================================
-     SOUND PICKER — top-center, three mood buttons
+     SOUND PICKER — bottom-left on mobile, top-center on desktop
      ========================================================= */
   .stage-sound-picker {
     position: absolute;
@@ -701,7 +740,7 @@
   }
 
   /* =========================================================
-     MODE TOGGLE — top-right, Build / Play
+     MODE TOGGLE — bottom-right on mobile, top-right on desktop
      ========================================================= */
   .stage-mode {
     position: absolute;
@@ -731,6 +770,41 @@
   .mode-btn.active {
     color: var(--w-foam);
     background: rgba(125,211,245,.18);
+  }
+
+  /* =========================================================
+     STAGE TOOLBAR — single bottom row on mobile so buttons
+     don't overlap. Mute (left) | Sound picker (center) | Mode (right)
+     ========================================================= */
+  @media (max-width: 640px) {
+    .stage-sound-picker {
+      top: auto; left: 50%; bottom: 56px;
+      transform: translateX(-50%);
+      gap: 2px; padding: 3px;
+    }
+    .sp-btn { width: 28px; height: 28px; }
+    .sp-btn svg { width: 14px; height: 14px; }
+    .stage-mode {
+      top: auto; right: 12px; bottom: 12px;
+      padding: 2px;
+    }
+    .mode-btn {
+      padding: .35em .75em;
+      font-size: .62rem;
+    }
+    .stage-mute {
+      top: auto; left: 12px; bottom: 12px;
+      width: 36px; height: 36px;
+    }
+    .stage-mute svg { width: 14px; height: 14px; }
+    .stage-tag {
+      top: 12px; left: 12px;
+      bottom: auto;
+      font-size: .58rem;
+      padding: .3em .7em;
+    }
+    .stage-hint { top: 12px; right: 12px; font-size: .58rem; }
+    .bubble-wrap { bottom: 110px; }
   }
 
   /* =========================================================
@@ -1530,6 +1604,13 @@
           </svg>
         </div>
       </div>
+      <div class="splash-steam" aria-hidden="true">
+        <div class="steam s1"></div>
+        <div class="steam s2"></div>
+        <div class="steam s3"></div>
+        <div class="steam s4"></div>
+        <div class="steam s5"></div>
+      </div>
       <div class="hills splash-hills">
         <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
           <path d="M0,220 C220,160 420,260 720,200 C1020,140 1240,260 1440,180 L1440,320 L0,320 Z" fill="#0A4A6B" opacity="0.6"/>
@@ -1693,17 +1774,7 @@
             <button class="pal-btn pal-clear" data-tool="clear" title="Clear all">🗑</button>
           </div>
 
-          <!-- Share button (only shown in Build mode) -->
-          <button class="stage-share" id="stageShare" hidden title="Share this level">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="18" cy="5" r="3"/>
-              <circle cx="6" cy="12" r="3"/>
-              <circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
-            <span>Share</span>
-          </button>
+          <!-- Share button removed (not needed per user feedback) -->
 
           <!-- Save modal -->
           <div class="stage-modal" id="stageModal" hidden>
@@ -1783,9 +1854,14 @@
                 <circle cx="34.5" cy="31.5" r=".5" fill="#fff"/>
                 <!-- Nose -->
                 <ellipse cx="30" cy="35" rx="1.8" ry="1.2" fill="#3D2415"/>
-                <!-- Teeth -->
-                <rect x="28" y="37" width="4" height="2.5" rx=".5" fill="#FFF7E6"/>
-                <line x1="30" y1="37" x2="30" y2="39.5" stroke="#6E4422" stroke-width=".3"/>
+                <!-- Teeth (normal) -->
+                <rect class="baxter-teeth" x="28" y="37" width="4" height="2.5" rx=".5" fill="#FFF7E6"/>
+                <line class="baxter-teeth" x1="30" y1="37" x2="30" y2="39.5" stroke="#6E4422" stroke-width=".3"/>
+                <!-- Big smile (shown when tutorial step completes) -->
+                <g class="baxter-smile">
+                  <path d="M25 36 Q30 41 35 36" stroke="#6E4422" stroke-width=".8" fill="#FFF7E6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="30" y1="36" x2="30" y2="40.5" stroke="#6E4422" stroke-width=".4"/>
+                </g>
                 <!-- Cheeks -->
                 <ellipse cx="23" cy="34" rx="1.5" ry="1" fill="#B5533C" opacity=".4"/>
                 <ellipse cx="37" cy="34" rx="1.5" ry="1" fill="#B5533C" opacity=".4"/>
@@ -2772,12 +2848,67 @@ er-section" id="baxt">
       blip(880, 0.4, 'sine', 0.06, 1320);
     }
 
+    // Water dripping — a short, bright "plink" at a high pitch
+    // Triggered when water flow advances. Filtered to sound watery, not tonal.
+    function drip() {
+      if (muted) return;
+      const c = ensure();
+      if (!c) return;
+      const t = c.currentTime;
+      // The "plink" — fast attack, fast decay
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(1800, t);
+      o.frequency.exponentialRampToValueAtTime(900, t + 0.08);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.06, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+      o.connect(g); g.connect(c.destination);
+      o.start(t); o.stop(t + 0.12);
+      // A tiny noise tap for the "tap" character
+      const n = c.createBufferSource();
+      const buf = c.createBuffer(1, Math.floor(c.sampleRate * 0.04), c.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+      n.buffer = buf;
+      const ng = c.createGain();
+      ng.gain.value = 0.02;
+      const filt = c.createBiquadFilter();
+      filt.type = 'bandpass';
+      filt.frequency.value = 2500;
+      n.connect(filt); filt.connect(ng); ng.connect(c.destination);
+      n.start(t);
+    }
+
+    // Steam hiss — soft white noise for the splash screen (only plays if not muted)
+    function steam() {
+      if (muted) return;
+      const c = ensure();
+      if (!c) return;
+      const t = c.currentTime;
+      const n = c.createBufferSource();
+      const buf = c.createBuffer(1, Math.floor(c.sampleRate * 0.5), c.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      n.buffer = buf;
+      const g = c.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.012, t + 0.1);
+      g.gain.linearRampToValueAtTime(0, t + 0.5);
+      const filt = c.createBiquadFilter();
+      filt.type = 'highpass';
+      filt.frequency.value = 3000;
+      n.connect(filt); filt.connect(g); g.connect(c.destination);
+      n.start(t); n.stop(t + 0.55);
+    }
+
     return {
       start: () => { ensure(); startAmbient(currentMood); },
       stop: stopAmbient,
       setMood,
       getMood: () => currentMood,
-      place, flowTick, chime, advance, click, discover,
+      place, flowTick, chime, advance, click, discover, drip, steam,
       isMuted: () => muted,
       toggleMute: () => {
         muted = !muted;
@@ -3067,9 +3198,13 @@ er-section" id="baxt">
         if (!newWater.has(tk)) {
           newWater.set(tk, { t: data.t + 1, sourceId: data.sourceId });
           Sound.flowTick();
+          Sound.drip(); // gentle water "plink" as flow advances
           if (ncell.feature && ncell.feature.type === 'farm' && !state.reached.farm) {
             state.reached.farm = true;
             Sound.chime();
+            // Big smile for the "You did it!" moment
+            baxterSmile();
+            setTimeout(() => baxterSmile(), 350);
             // Trigger tutorial advance if waiting for reach
             if (state.tutorialActive && STEPS[state.tutorialIndex].requireReach === 'farm') {
               advanceTutorial();
@@ -3101,10 +3236,21 @@ er-section" id="baxt">
   }
 
   // ---- Tutorial ----
+  // Trigger a brief smile on Baxter's portrait (used when a step is completed)
+  function baxterSmile() {
+    const portrait = document.querySelector('.bubble-portrait');
+    if (!portrait) return;
+    portrait.classList.remove('smiling');
+    void portrait.offsetWidth; // restart animation
+    portrait.classList.add('smiling');
+    setTimeout(() => portrait.classList.remove('smiling'), 700);
+  }
+
   function advanceTutorial() {
     if (state.tutorialIndex >= STEPS.length - 1) return;
     state.tutorialIndex++;
     Sound.advance();
+    baxterSmile(); // little celebration when each step is completed
     updateTutorialUI();
     const step = STEPS[state.tutorialIndex];
     if (step.advance === 'auto' && step.autoDelay) {
@@ -4012,6 +4158,11 @@ er-section" id="baxt">
         if (loading) loading.textContent = messages[msgIdx];
       }, 450);
 
+      // Soft steam puffs from the gears every ~1.2s
+      var steamTimer = setInterval(function() {
+        try { if (window.WB && window.WB.sound && !window.WB.sound.isMuted()) window.WB.sound.steam(); } catch (e) {}
+      }, 1200);
+
       // Progress: 0 → 100 over ~2700ms
       var progress = 0;
       var start = Date.now();
@@ -4030,6 +4181,8 @@ er-section" id="baxt">
       }, 30);
 
       function finish() {
+        // Stop the steam puffs
+        try { clearInterval(steamTimer); } catch (e) {}
         // Try to start the ambient sound (user gesture was the page load)
         try {
           if (window.WB && window.WB.sound && !window.WB.sound.isMuted()) {
@@ -4068,5 +4221,5 @@ er-section" id="baxt">
   })();
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b3a118af2b98aa',t:'MTc4NDA2NDYzMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b3c51ebc735fa6',t:'MTc4NDA2NjEwOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
