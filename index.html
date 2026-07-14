@@ -788,87 +788,143 @@
   }
 
   /* =========================================================
+     STAGE TOOLBAR — desktop default: the toolbar is just a layout
+     helper (it has no visual chrome on desktop). The individual
+     elements inside it use their own absolute positioning rules.
+     ========================================================= */
+  .stage-toolbar { display: contents; }
+
+  /* =========================================================
      STAGE TOOLBAR — single bottom row on mobile so buttons
      don't overlap. Mute (left) | Sound picker (center) | Mode (right)
      ========================================================= */
   @media (max-width: 640px) {
-    /* Make the game stage taller and more usable on mobile */
-    .hero-stage { aspect-ratio: 4 / 3; max-width: 100%; }
-    .stage-frame { border-radius: 18px; }
-
-    /* All floating stage controls go to a single bottom toolbar */
-    .stage-sound-picker {
-      top: auto; left: 50%; bottom: 8px;
-      transform: translateX(-50%);
-      gap: 2px; padding: 3px;
-      background: rgba(5,11,20,.85);
+    .stage-toolbar { display: grid; }
+    /* Make the game stage taller and more usable on mobile.
+       Use a FIXED aspect so it always renders the full canvas
+       plus the bottom toolbar. We also use a safe-area inset for
+       notched phones (iPhone X+/Pixel/etc). */
+    .hero-stage {
+      aspect-ratio: auto;
+      height: clamp(420px, calc(100vw * 0.95), 560px);
+      max-width: 100%;
+      width: 100%;
     }
-    .sp-btn { width: 32px; height: 32px; }
-    .sp-btn svg { width: 16px; height: 16px; }
+    .stage-frame {
+      border-radius: 18px;
+      box-shadow: 0 0 0 1px rgba(125,211,245,.25),
+                  0 0 60px rgba(125,211,245,.25),
+                  0 20px 60px rgba(0,0,0,.5);
+    }
 
+    /* === SINGLE-BAR BOTTOM TOOLBAR === */
+    /* All three controls + the bubble live in one strip at the
+       bottom of the stage. NO FLOATING ELEMENTS inside the canvas. */
+    .stage-toolbar {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(180deg, rgba(5,11,20,0) 0%, rgba(5,11,20,.92) 35%, rgba(5,11,20,.95) 100%);
+      z-index: 8;
+      pointer-events: none;
+    }
+    .stage-toolbar > * { pointer-events: auto; }
+
+    /* Mute button (left cell) */
+    .stage-mute {
+      position: relative;
+      top: auto; left: auto; bottom: auto;
+      width: 44px; height: 44px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .stage-mute svg { width: 20px; height: 20px; }
+
+    /* Sound picker (center cell) — three small icons in a row */
+    .stage-sound-picker {
+      position: relative;
+      top: auto; left: auto; bottom: auto;
+      transform: none;
+      justify-self: center;
+      gap: 2px; padding: 3px 4px;
+      background: rgba(15,32,54,.85);
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .sp-btn { width: 36px; height: 36px; }
+    .sp-btn svg { width: 18px; height: 18px; }
+
+    /* Mode toggle (right cell) */
     .stage-mode {
-      top: auto; right: 8px; bottom: 8px;
-      padding: 2px;
+      position: relative;
+      top: auto; right: auto; bottom: auto;
+      padding: 3px;
+      background: rgba(15,32,54,.85);
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
     }
     .mode-btn {
-      padding: .4em .85em;
-      font-size: .68rem;
+      padding: .55em 1em;
+      font-size: .7rem;
     }
 
-    .stage-mute {
-      top: auto; left: 8px; bottom: 8px;
-      width: 40px; height: 40px;
-    }
-    .stage-mute svg { width: 18px; height: 18px; }
-
-    /* Build palette: hide the floating vertical bar; show as a small
-       horizontal strip just above the bottom toolbar */
+    /* Build palette: ALWAYS horizontal, sits just above the toolbar
+       so it never overlaps the canvas. (Also make it a bit larger
+       for touch targets.) */
     .stage-palette {
       position: absolute;
-      left: 50%; bottom: 56px;
+      left: 50%; bottom: 70px;
       top: auto; transform: translateX(-50%);
       flex-direction: row;
-      padding: 4px;
-      gap: 4px;
+      padding: 6px;
+      gap: 6px;
+      background: rgba(5,11,20,.92);
+      box-shadow: 0 4px 16px rgba(0,0,0,.5);
     }
-    .pal-btn { width: 36px; height: 36px; font-size: 1.1rem; }
+    .pal-btn { width: 44px; height: 44px; font-size: 1.3rem; }
 
+    /* Tag + hint at the TOP, smaller, never collide */
     .stage-tag {
       top: 10px; left: 10px;
       bottom: auto;
-      font-size: .58rem;
-      padding: .3em .7em;
+      font-size: .55rem;
+      padding: .25em .6em;
     }
     .stage-hint {
       top: 10px; right: 10px;
-      font-size: .58rem;
+      font-size: .55rem;
       max-width: 50%;
       text-align: right;
+      padding: .25em .6em;
     }
 
-    /* Speech bubble sits above the bottom toolbar, with safe padding */
+    /* Speech bubble: tucked in the upper portion of the canvas,
+       but small enough to not block playing. Above the toolbar. */
     .bubble-wrap {
-      bottom: 120px; left: 10px; right: 10px;
+      bottom: 140px; left: 10px; right: 10px;
       max-width: none;
-      padding: .7rem .8rem;
+      padding: .6rem .75rem;
+      gap: .6rem;
     }
-    .bubble-portrait { width: 38px; height: 38px; }
-    .bubble-portrait svg { width: 38px; height: 38px; }
-    .bubble-title { font-size: .9rem; }
-    .bubble-text { font-size: .8rem; }
-
-    /* Victory overlay: tighter on mobile */
-    .victory-stats { gap: .8rem; }
-    .victory-stat { min-width: 70px; padding: .6rem .8rem; }
-    .victory-stat-num { font-size: 1.4rem; }
+    .bubble-portrait { width: 36px; height: 36px; }
+    .bubble-portrait svg { width: 36px; height: 36px; }
+    .bubble-title { font-size: .85rem; margin-bottom: .15rem; }
+    .bubble-text { font-size: .75rem; line-height: 1.4; margin-bottom: .35rem; }
+    .bubble-advance { font-size: .68rem; padding: .3em .8em; }
+    .bubble-skip { font-size: .55rem; }
   }
 
   /* Extra-small phones (≤ 380px) — even tighter */
   @media (max-width: 380px) {
-    .hero-stage { aspect-ratio: 3 / 4; }
-    .pal-btn { width: 32px; height: 32px; }
-    .mode-btn { padding: .35em .7em; font-size: .6rem; }
-    .bubble-wrap { bottom: 130px; }
+    .hero-stage { height: clamp(380px, calc(100vw * 1.05), 480px); }
+    .pal-btn { width: 40px; height: 40px; }
+    .sp-btn { width: 32px; height: 32px; }
+    .sp-btn svg { width: 16px; height: 16px; }
+    .mode-btn { padding: .4em .8em; font-size: .62rem; }
+    .stage-mute { width: 40px; height: 40px; }
+    .bubble-wrap { bottom: 150px; }
   }
 
   /* =========================================================
@@ -1917,36 +1973,39 @@
           <div class="stage-tag">World 1 · Live</div>
           <div class="stage-hint" id="stageHint">Click the highlighted cell</div>
 
-          <!-- Mute toggle -->
-          <button class="stage-mute" id="stageMute" title="Toggle sound" aria-label="Toggle sound">
-            <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-            </svg>
-            <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="23" y1="9" x2="17" y2="15"/>
-              <line x1="17" y1="9" x2="23" y2="15"/>
-            </svg>
-          </button>
+          <!-- Bottom toolbar (visible on mobile; on desktop these are positioned absolutely) -->
+          <div class="stage-toolbar" aria-label="Game controls">
+            <!-- Mute toggle -->
+            <button class="stage-mute" id="stageMute" title="Toggle sound" aria-label="Toggle sound">
+              <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              </svg>
+              <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <line x1="23" y1="9" x2="17" y2="15"/>
+                <line x1="17" y1="9" x2="23" y2="15"/>
+              </svg>
+            </button>
 
-          <!-- Sound picker (forest / river / storm) -->
-          <div class="stage-sound-picker" id="stageSoundPicker" role="radiogroup" aria-label="Ambient sound">
-            <button class="sp-btn" data-mood="forest" title="Forest" aria-label="Forest">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L6 10 L9 10 L5 16 L10 16 L8 22 L16 22 L14 16 L19 16 L15 10 L18 10 Z"/></svg>
-            </button>
-            <button class="sp-btn active" data-mood="river" title="River" aria-label="River">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 12 C 4 8, 6 16, 8 12 S 12 8, 14 12 S 18 16, 20 12 S 22 8, 22 12 L 22 18 L 2 18 Z"/></svg>
-            </button>
-            <button class="sp-btn" data-mood="storm" title="Storm" aria-label="Storm">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4 L18 4 L14 11 L18 11 L8 20 L11 13 L7 13 Z"/></svg>
-            </button>
-          </div>
+            <!-- Sound picker (forest / river / storm) -->
+            <div class="stage-sound-picker" id="stageSoundPicker" role="radiogroup" aria-label="Ambient sound">
+              <button class="sp-btn" data-mood="forest" title="Forest" aria-label="Forest">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L6 10 L9 10 L5 16 L10 16 L8 22 L16 22 L14 16 L19 16 L15 10 L18 10 Z"/></svg>
+              </button>
+              <button class="sp-btn active" data-mood="river" title="River" aria-label="River">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 12 C 4 8, 6 16, 8 12 S 12 8, 14 12 S 18 16, 20 12 S 22 8, 22 12 L 22 18 L 2 18 Z"/></svg>
+              </button>
+              <button class="sp-btn" data-mood="storm" title="Storm" aria-label="Storm">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4 L18 4 L14 11 L18 11 L8 20 L11 13 L7 13 Z"/></svg>
+              </button>
+            </div>
 
-          <!-- Mode toggle: Build / Play -->
-          <div class="stage-mode" id="stageMode" role="tablist" aria-label="Mode">
-            <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
-            <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
+            <!-- Mode toggle: Build / Play -->
+            <div class="stage-mode" id="stageMode" role="tablist" aria-label="Mode">
+              <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
+              <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
+            </div>
           </div>
 
           <!-- Build palette (only shown in Build mode) -->
@@ -4637,5 +4696,5 @@ er-section" id="baxt">
   })();
   </script>
 
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b3f0bfaccdc97c',t:'MTc4NDA2Nzg5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

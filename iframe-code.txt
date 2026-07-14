@@ -3,24 +3,17 @@ WATER BUILDER: ORIGINS — HOSTINGER EMBED CODE
 GitHub Pages URL: https://jawa-dam.github.io/wb-origins/
 ================================================================
 
+⚠️  HEIGHT TIP: Use at least 2400px so the mobile game toolbar
+    (mute / sound / build buttons) is fully visible. Shorter
+    heights will crop the controls on phones.
+
 Copy the HTML below and paste it into your Hostinger "Embed Code"
 or "Custom HTML" widget:
 
 ----------------------------------------------------------------
 
-<iframe 
-  src="https://jawa-dam.github.io/wb-origins/" 
-  style="width:100%; height:1400px; border:0; border-radius:16px; overflow:hidden; display:block; margin:0 auto; max-width:1280px;"
-  title="Water Builder: Origins"
-  loading="lazy">
-</iframe>
-
-----------------------------------------------------------------
-
-Alternative: A taller version (for full scrollable experience):
-
-<iframe 
-  src="https://jawa-dam.github.io/wb-origins/" 
+<iframe
+  src="https://jawa-dam.github.io/wb-origins/"
   style="width:100%; height:2400px; border:0; border-radius:16px; overflow:hidden; display:block; margin:0 auto; max-width:1280px;"
   title="Water Builder: Origins"
   loading="lazy">
@@ -28,9 +21,30 @@ Alternative: A taller version (for full scrollable experience):
 
 ----------------------------------------------------------------
 
+For desktop-only (game screen shorter):
+
+<iframe
+  src="https://jawa-dam.github.io/wb-origins/"
+  style="width:100%; height:1400px; border:0; border-radius:16px; overflow:hidden; display:block; margin:0 auto; max-width:1280px;"
+  title="Water Builder: Origins"
+  loading="lazy">
+</iframe>
+
+----------------------------------------------------------------
+
+RESPONSIVE TIP: If Hostinger lets you put a custom CSS @media query
+in your page styles, you can swap the height automatically:
+
+  @media (max-width: 768px) { iframe { height: 2400px !important; } }
+  @media (min-width: 769px) { iframe { height: 1400px !important; } }
+
+----------------------------------------------------------------
+
 Tips:
-- If the game canvas inside looks too small, increase the height
-  (try 1600px, 1800px, or 2000px)
-- For mobile, the page is already responsive inside the iframe
-- The iframe inherits the page background; the dark theme blends well
-  with most Hostinger templates
+- The game canvas on mobile is 4:3 aspect, ~520px tall
+- The bottom toolbar is ~70px tall (mute, sound, mode buttons)
+- Build palette adds another ~70px when in build mode
+- Speech bubble takes another ~120px at the top
+- 2400px gives the whole page room to scroll naturally
+- 1400px works for desktop-only viewing
+
