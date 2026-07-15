@@ -2527,6 +2527,28 @@
   color: var(--w-foam);
 }
 
+
+/* =========================================================
+   VIRTUAL FULLSCREEN OVERRIDES (Fallback for Sandboxed Iframes)
+   ========================================================= */
+.stage-frame.virtual-fs {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  z-index: 99999 !important;
+  border-radius: 0 !important;
+  background: var(--night-0) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.stage-frame.virtual-fs #heroCanvas {
+  width: 100% !important;
+  height: calc(100% - 60px) !important; /* reserve space for toolbar */
+}
+
   </style>
   <style>
   /* =========================================================
@@ -5621,6 +5643,9 @@ window.WaterSystem = WaterSystem;
 (function () {
   'use strict';
 
+  // Map local references of Sound to the ProjectWatershed Sound System
+  const Sound = window.SoundSystem || window.Sound || (window.ProjectWatershed ? window.ProjectWatershed.Sound : null);
+
   const TILE = 60;
   const GRID_W = 15;
   const GRID_H = 9;
@@ -7806,12 +7831,27 @@ window.WaterSystem = WaterSystem;
   function toggleFullscreen() {
     const stage = document.querySelector('.stage-frame');
     if (!stage) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      const req = stage.requestFullscreen || stage.webkitRequestFullscreen || stage.mozRequestFullScreen;
-      if (req) req.call(stage).catch(() => {});
+    
+    // Toggle virtual fullscreen class for compatibility with sandboxed iframes
+    stage.classList.toggle('virtual-fs');
+    
+    // Fallback to native fullscreen if supported and permitted
+    try {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        const req = stage.requestFullscreen || stage.webkitRequestFullscreen || stage.mozRequestFullScreen;
+        if (req) req.call(stage).catch(() => {});
+      }
+    } catch (e) {
+      console.warn("Native fullscreen not allowed in sandboxed environment, fallback to virtual FS.");
     }
+
+    // Always trigger a resize and render immediately to fit canvas
+    setTimeout(() => {
+      resizeCanvas();
+      render();
+    }, 100);
   }
 
   // ---- Animated level intro (camera zoom on the spring) ----
@@ -8903,6 +8943,10 @@ window.WaterSystem = WaterSystem;
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      
+      // Dispatch a resize event to force the canvas to size and render!
+      window.dispatchEvent(new Event('resize'));
+
       // Cleanup DOM to optimize GPU/CPU memory
       if (intro && intro.parentNode) {
         intro.parentNode.removeChild(intro);
@@ -9332,5 +9376,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1ba51429b1f0bb1',t:'MTc4NDEzNDc2Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
