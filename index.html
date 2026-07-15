@@ -15,12 +15,9 @@
   <!-- No external font requests — fully system-font stack for Hostinger compatibility -->
   <meta name="font-stack" content="system" />
 
-    
-  
-
   <style>
   /* =========================================================
-     WATER BUILDER: ORIGINS — World styles
+     WATER BUILDER: ORIGINS — World styles (Inlined)
      ========================================================= */
   
   /* =========================================================
@@ -2154,10 +2151,59 @@
     .section { padding: 5rem 1rem; }
   }
   
+
+/* =========================================================
+   PLAY MODE TOOL SELECTOR (Milestone 2)
+   ========================================================= */
+.play-tool-selector {
+  position: absolute;
+  top: 60px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+}
+.play-tool-btn {
+  background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%);
+  border: 2px solid #3D2415;
+  border-radius: var(--r-md);
+  color: var(--cream);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 0 #3D2415, 0 4px 8px rgba(0,0,0,0.3);
+  transition: all 0.2s var(--ease-bounce);
+}
+.play-tool-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #3D2415, 0 6px 12px rgba(0,0,0,0.4);
+}
+.play-tool-btn.active {
+  background: linear-gradient(135deg, #4FB3D9 0%, #1A6E94 100%);
+  border-color: #0A4A6B;
+  box-shadow: 0 4px 0 #0A4A6B, 0 4px 8px rgba(0,0,0,0.3);
+}
+.play-tool-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #3D2415, 0 2px 4px rgba(0,0,0,0.2);
+}
+.play-tool-icon {
+  font-size: 1.2rem;
+}
+.play-tool-label {
+  font-family: var(--f-display);
+}
+
   </style>
   <style>
   /* =========================================================
-     WATER BUILDER: ORIGINS — Cinematic Intro Styles
+     WATER BUILDER: ORIGINS — Cinematic Intro Styles (Inlined)
      ========================================================= */
   /* =========================================================
    WATER BUILDER: ORIGINS — Cinematic Intro Styles
@@ -3032,7 +3078,6 @@
 }
 
   </style>
-
 </head>
 <body>
 
@@ -3639,6 +3684,18 @@
         <div class="stage-glow"></div>
         <div class="stage-frame">
           <canvas id="heroCanvas" aria-label="Interactive Water Builder preview — try placing a canal"></canvas>
+
+          <!-- Floating Play Mode Tool Selector (Canal vs Dam) -->
+          <div class="play-tool-selector" id="playToolSelector">
+            <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="Water Canal (Conducts flow)">
+              <span class="play-tool-icon">💧</span>
+              <span class="play-tool-label">Canal</span>
+            </button>
+            <button class="play-tool-btn" id="playToolDam" data-tool="dam" title="Log Dam (Blocks flow)">
+              <span class="play-tool-icon">🪵</span>
+              <span class="play-tool-label">Dam</span>
+            </button>
+          </div>
           <div class="stage-overlay"></div>
           <div class="stage-tag">World 1 · Live</div>
           <div class="stage-hint" id="stageHint">Click the highlighted cell</div>
@@ -4213,7 +4270,6 @@ er-section" id="baxt">
     </div>
   </footer>
 
-  
   <!-- World navigation and general UI controller -->
   <script>
   
@@ -4644,181 +4700,85 @@ er-section" id="baxt">
   // The "tutorial" flag marks the first level a brand-new player sees.
   const STARTER_LEVELS = [
     {
-      id: '1-1', name: 'First Spring', tutorial: true,
+      id: '1-1', name: 'Moving Water', tutorial: true,
       grid: [
         '...............',
         '...............',
+        '..#######......',
         '...............',
-        '..~............',
+        '..~---------F..',
         '...............',
-        '...............',
-        '.............F.',
-        '...............',
-        '...............',
-      ],
-      goals: { spring: { x: 2, y: 3 }, farm: { x: 13, y: 6 } },
-      par: { drops: 12, time: 60 },
-    },
-    {
-      id: '1-2', name: 'Twin Springs',
-      grid: [
-        '..~...........',
-        '...............',
-        '...............',
-        '...............',
-        '...............',
-        '...............',
-        '..............V',
-        '...............',
-        '.............F.',
-      ],
-      goals: { spring: { x: 2, y: 0 }, farm: { x: 13, y: 8 }, village: { x: 14, y: 6 } },
-      par: { drops: 18, time: 90 },
-    },
-    {
-      id: '1-3', name: 'Bend It',
-      grid: [
-        '...............',
-        '...............',
-        '...........~..',
-        '...............',
-        '.....#####.....',
-        '...............',
-        '...............',
-        '...........F..',
-        '...............',
-      ],
-      goals: { spring: { x: 11, y: 2 }, farm: { x: 11, y: 7 } },
-      par: { drops: 8, time: 45 },
-    },
-    {
-      id: '1-4', name: 'Corner Run',
-      grid: [
-        '...............',
-        '~.............',
-        '...............',
-        '...............',
-        '...............',
-        '...............',
-        '...............',
-        '...............',
-        '..............F',
-      ],
-      goals: { spring: { x: 0, y: 1 }, farm: { x: 14, y: 8 } },
-      par: { drops: 22, time: 120 },
-    },
-    {
-      id: '1-5', name: 'Triple Goal',
-      grid: [
-        '...............',
-        '...............',
-        '...............',
-        '..~............',
-        '...............',
-        '...............',
-        '..F.......W....',
-        '...............',
-        '...........V...',
-      ],
-      goals: { spring: { x: 2, y: 3 }, farm: { x: 2, y: 6 }, wheel: { x: 9, y: 6 }, village: { x: 11, y: 8 } },
-      par: { drops: 20, time: 100 },
-    },
-    {
-      id: '1-6', name: 'Tight Squeeze',
-      grid: [
-        '...............',
-        '..~...........',
-        '..#######.....',
-        '...............',
-        '...............',
-        '...............',
-        '.....#######...',
-        '............F.',
-        '...............',
-      ],
-      goals: { spring: { x: 2, y: 1 }, farm: { x: 12, y: 7 } },
-      par: { drops: 14, time: 75 },
-    },
-    {
-      id: '2-1', name: 'Reservoir',
-      grid: [
-        '...............',
-        '...............',
-        '..~..........F.',
-        '....#######....',
-        '...............',
-        '...............',
-        '...............',
+        '......#######..',
         '...............',
         '...............',
       ],
-      goals: { spring: { x: 2, y: 2 }, farm: { x: 13, y: 2 } },
+      goals: { spring: { x: 2, y: 4 }, farm: { x: 12, y: 4 } },
       par: { drops: 10, time: 60 },
     },
     {
-      id: '2-2', name: 'The Detour',
-      grid: [
-        '...............',
-        '...............',
-        '...............',
-        '..~......####F.',
-        '...............',
-        '.......##......',
-        '...............',
-        '...............',
-        '...............',
-      ],
-      goals: { spring: { x: 2, y: 3 }, farm: { x: 14, y: 3 } },
-      par: { drops: 16, time: 90 },
-    },
-    {
-      id: '2-3', name: 'Three Farms',
+      id: '1-2', name: 'Diverting the Flow',
       grid: [
         '...............',
         '..~............',
+        '..c............',
+        '..c............',
+        '..c............',
+        '...............',
+        '.......P.......',
         '...............',
         '...............',
-        '...............',
-        '...............',
-        'F............F.',
-        '...............',
-        '.......F.......',
       ],
-      goals: { spring: { x: 2, y: 1 }, farm: [{ x: 0, y: 6 }, { x: 14, y: 6 }, { x: 7, y: 8 }] },
-      par: { drops: 24, time: 120 },
+      goals: { spring: { x: 2, y: 1 }, pond: { x: 7, y: 6 } },
+      par: { drops: 8, time: 90 },
     },
     {
-      id: '3-1', name: 'Power Plant',
+      id: '1-3', name: 'Ancient Water Wheel',
       grid: [
         '...............',
+        '..~............',
+        '..#######......',
+        '........#......',
+        '........#...W..',
+        '..#######......',
         '...............',
-        '....~..........',
-        '...............',
-        '...............',
-        '...............',
-        '...........W...',
         '...............',
         '...............',
       ],
-      goals: { spring: { x: 4, y: 2 }, wheel: { x: 11, y: 6 } },
-      par: { drops: 12, time: 60 },
+      goals: { spring: { x: 2, y: 1 }, wheel: { x: 12, y: 4 } },
+      par: { drops: 15, time: 100 },
     },
     {
-      id: '3-2', name: 'Master Engineer',
+      id: '1-4', name: 'Saving the Village',
       grid: [
         '...............',
-        '..~...........V',
-        '...............',
-        '...............',
-        '.....##........',
-        '...............',
-        '..F..........W.',
+        '..~............',
+        '..#######......',
+        '..#............',
+        '..#............',
+        '..#.#######....',
+        '..........V....',
         '...............',
         '...............',
       ],
-      goals: { spring: { x: 2, y: 1 }, village: { x: 14, y: 1 }, farm: { x: 2, y: 6 }, wheel: { x: 12, y: 6 } },
-      par: { drops: 28, time: 150 },
+      goals: { spring: { x: 2, y: 1 }, village: { x: 10, y: 6 } },
+      par: { drops: 18, time: 120 },
     },
+    {
+      id: '1-5', name: 'Origins: The Living World',
+      grid: [
+        '..~............',
+        '..c............',
+        '..c......W.....',
+        '..c............',
+        '.....P.........',
+        '...............',
+        '..F.........V..',
+        '...............',
+        '...............',
+      ],
+      goals: { spring: { x: 2, y: 0 }, farm: { x: 2, y: 6 }, wheel: { x: 9, y: 2 }, village: { x: 12, y: 6 }, pond: { x: 5, y: 4 } },
+      par: { drops: 25, time: 180 },
+    }
   ];
 
   // Daily seed: same level for everyone on the same day
@@ -4861,7 +4821,7 @@ er-section" id="baxt">
     state.goals = parsed.goals;
     state.waterCells = new Map();
     state.sources = parsed.sources.slice();
-    state.reached = { spring: false, farm: false, village: false, wheel: false };
+    state.reached = { spring: false, farm: false, village: false, wheel: false, pond: false };
     state.dropsPlaced = 0;
     state.undoStack = [];
     state.levelStartTime = Date.now();
@@ -5083,7 +5043,7 @@ er-section" id="baxt">
 
   // ---- Parsing ----
   function parseLevel(level) {
-    const grid = [], sources = [], goals = { farm: [], village: [], wheel: [] };
+    const grid = [], sources = [], goals = { farm: [], village: [], wheel: [], pond: [] };
     for (let y = 0; y < level.grid.length; y++) {
       const row = level.grid[y], line = [];
       for (let x = 0; x < row.length; x++) {
@@ -5094,6 +5054,9 @@ er-section" id="baxt">
         else if (ch === 'F') { cell.feature = { type: 'farm' }; goals.farm.push({ x, y }); }
         else if (ch === 'V') { cell.feature = { type: 'village' }; goals.village.push({ x, y }); }
         else if (ch === 'W') { cell.feature = { type: 'wheel' }; goals.wheel.push({ x, y }); }
+        else if (ch === 'P') { cell.feature = { type: 'pond' }; goals.pond = goals.pond || []; goals.pond.push({ x, y }); }
+        else if (ch === 'c') { cell.build = { type: 'canal' }; }
+        else if (ch === 'd') { cell.build = { type: 'dam' }; }
         line.push(cell);
       }
       grid.push(line);
@@ -5194,18 +5157,11 @@ er-section" id="baxt">
     const px = x * TILE, py = y * TILE;
     const t = Date.now();
     if (type === 'spring') {
-      // ===== Soft life animation: pulsing glow + sparkles =====
-      // The outer halo pulses gently (a "breathing" effect),
-      // and tiny water-spark dots twinkle on top. The main pool
-      // also has a 2-frame ripple.
       const pulse = 0.4 + 0.25 * Math.sin(t / 380);
-      // Outer halo (slightly larger than before, more visible)
       ctx.fillStyle = `rgba(125,211,245,${0.18 * pulse})`;
       ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 30, 0, Math.PI*2); ctx.fill();
-      // Inner halo (tighter, brighter)
       ctx.fillStyle = `rgba(125,211,245,${0.32 * pulse})`;
       ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 18, 0, Math.PI*2); ctx.fill();
-      // Pool — three nested ellipses with a gentle ripple offset
       const ripple = Math.sin(t / 220) * 1.2;
       ctx.fillStyle = '#1A6E94';
       ctx.beginPath(); ctx.ellipse(px + TILE/2, py + TILE/2 + 4, 18, 8, 0, 0, Math.PI*2); ctx.fill();
@@ -5213,9 +5169,6 @@ er-section" id="baxt">
       ctx.beginPath(); ctx.ellipse(px + TILE/2 + ripple * 0.3, py + TILE/2, 16, 7, 0, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = '#7DD3F5';
       ctx.beginPath(); ctx.ellipse(px + TILE/2 - 4, py + TILE/2 - 1, 4, 2, 0, 0, Math.PI*2); ctx.fill();
-      // ===== Sparkles — 3 tiny white dots that twinkle on top =====
-      // Each sparkle has a phase so they twinkle out of sync.
-      // Visible only when the global pulse is high (peak of breath).
       if (pulse > 0.5) {
         const sparklePhase = t / 240;
         const positions = [
@@ -5233,33 +5186,25 @@ er-section" id="baxt">
       }
     } else if (type === 'farm') {
       const active = state.reached.farm;
-      // ===== Active glow: stronger & pulsing =====
       if (active) {
         const pulse = 0.3 + 0.2 * Math.sin(t / 300);
-        // Outer soft glow
         ctx.fillStyle = `rgba(255,200,87,${0.22 * pulse})`;
         ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 32, 0, Math.PI*2); ctx.fill();
-        // Inner brighter glow
         ctx.fillStyle = `rgba(255,200,87,${0.32 * pulse})`;
         ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 22, 0, Math.PI*2); ctx.fill();
       }
-      // ===== Field: crops shimmer between green and gold =====
-      // When active, the green slowly shifts toward gold and back.
       const shimmer = active ? 0.5 + 0.5 * Math.sin(t / 700) : 0;
-      // Mix green to gold by shimmer amount
-      const gr = Math.round(168 + (212 - 168) * shimmer); // A8 -> D4
-      const gg = Math.round(212 + (170 - 212) * shimmer); // D4 -> AA
-      const gb = Math.round(156 + ( 60 - 156) * shimmer); // 9C -> 3C
+      const gr = Math.round(168 + (212 - 168) * shimmer);
+      const gg = Math.round(212 + (170 - 212) * shimmer);
+      const gb = Math.round(156 + ( 60 - 156) * shimmer);
       ctx.fillStyle = `rgb(${gr},${gg},${gb})`;
       ctx.fillRect(px + 6, py + 8, TILE - 12, TILE - 14);
-      // Crop dots — pulse with the shimmer
       const dotPulse = 1 + shimmer * 0.4;
       ctx.fillStyle = active ? '#FFC857' : '#8B5A3C';
       for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) {
         const sz = (6 * dotPulse);
         ctx.fillRect(px + 10 + c*10 - (sz-6)/2, py + 12 + r*10 - (sz-6)/2, sz, sz);
       }
-      // ===== Barn (top-right) — roof sways gently when active =====
       const barnSway = active ? Math.sin(t / 500) * 1.5 : 0;
       ctx.fillStyle = '#F4D3A8';
       ctx.fillRect(px + TILE - 18, py + 6, 12, 12);
@@ -5271,11 +5216,7 @@ er-section" id="baxt">
       ctx.closePath();
       ctx.fill();
     } else if (type === 'village') {
-      // ===== Village ground =====
       ctx.fillStyle = '#3F8E4B'; ctx.fillRect(px + 4, py + TILE - 14, TILE - 8, 10);
-      // ===== Cottages — each "breathes" (subtle scale) =====
-      // We use a tiny vertical bob + a faint window glow that
-      // pulses in/out so the village feels inhabited.
       const cottages = [
         { ox: 6,  oy: 18, w: 18, h: 18, phase: 0.0 },
         { ox: 28, oy: 12, w: 16, h: 22, phase: 1.7 },
@@ -5283,40 +5224,28 @@ er-section" id="baxt">
       cottages.forEach(co => {
         const bob = Math.sin(t / 600 + co.phase) * 0.6;
         ctx.save();
-        ctx.translate(px + co.ox + co.w/2, py + co.oy + co.h);
-        ctx.scale(1, 1 + bob * 0.02);
-        ctx.translate(-(px + co.ox + co.w/2), -(py + co.oy + co.h));
-        ctx.fillStyle = '#F4D3A8';
-        ctx.fillRect(px + co.ox, py + co.oy, co.w, co.h);
-        // Window: a small lit square that pulses on/off
-        const windowGlow = 0.5 + 0.5 * Math.sin(t / 800 + co.phase);
-        ctx.fillStyle = `rgba(255,200,87,${0.35 + windowGlow * 0.55})`;
-        ctx.fillRect(px + co.ox + 3, py + co.oy + 5, 3, 3);
-        ctx.fillRect(px + co.ox + co.w - 6, py + co.oy + 5, 3, 3);
-        // Roof: warm red, slight tilt with the bob
+        ctx.translate(px + co.ox, py + co.oy + bob);
+        ctx.fillStyle = '#F4D3A8'; ctx.fillRect(0, 4, co.w, co.h - 4);
         ctx.fillStyle = '#B5533C';
         ctx.beginPath();
-        ctx.moveTo(px + co.ox - 2, py + co.oy);
-        ctx.lineTo(px + co.ox + co.w/2, py + co.oy - 8 - bob * 0.3);
-        ctx.lineTo(px + co.ox + co.w + 2, py + co.oy);
-        ctx.closePath();
-        ctx.fill();
+        ctx.moveTo(-2, 4); ctx.lineTo(co.w/2, -1); ctx.lineTo(co.w + 2, 4);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = state.reached.village ? 'rgba(255,210,125,0.85)' : '#4D2F1A';
+        ctx.fillRect(co.w/2 - 3, co.h/2, 6, co.h/2 - 1);
         ctx.restore();
       });
     } else if (type === 'wheel') {
       const cx = px + TILE/2, cy = py + TILE/2;
-      // ===== Water base =====
       ctx.fillStyle = '#1A6E94'; ctx.fillRect(px + 4, py + TILE - 10, TILE - 8, 6);
-      // ===== Brighter outer halo when wheel is turning =====
       const halo = 0.4 + 0.2 * Math.sin(t / 250);
       ctx.fillStyle = `rgba(125,211,245,${0.18 * halo})`;
       ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI*2); ctx.fill();
-      // Wheel rim
       ctx.strokeStyle = '#8B5E3C'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(cx, cy, 22, 0, Math.PI*2); ctx.stroke();
-      // Spinning wheel
       ctx.save(); ctx.translate(cx, cy);
-      ctx.rotate((t / 300) % (Math.PI*2));
+      if (state.reached.wheel) {
+        ctx.rotate((t / 200) % (Math.PI*2));
+      }
       ctx.fillStyle = '#C49A6C'; ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI*2); ctx.fill();
       ctx.strokeStyle = '#5C3A24'; ctx.lineWidth = 2;
       for (let i = 0; i < 6; i++) {
@@ -5325,17 +5254,31 @@ er-section" id="baxt">
         ctx.lineTo(Math.cos(a) * 18, Math.sin(a) * 18); ctx.stroke();
       }
       ctx.restore();
-      // Center hub
       ctx.fillStyle = '#5C3A24';
       ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
-      // A couple of splashes (water-droplets) that flash when the
-      // wheel hits the bottom of its rotation. Cheap to render and
-      // sells the "power" of the wheel.
-      const wheelPhase = (t / 300) % (Math.PI*2);
-      if (Math.abs(Math.sin(wheelPhase)) < 0.05) {
-        ctx.fillStyle = 'rgba(125,211,245,.6)';
-        ctx.fillRect(cx - 14, cy + 8, 1.5, 1.5);
-        ctx.fillRect(cx + 12, cy + 8, 1.5, 1.5);
+    } else if (type === 'pond') {
+      const active = state.reached.pond;
+      const pulse = 0.4 + 0.25 * Math.sin(t / 380);
+      ctx.fillStyle = active ? `rgba(125,211,245,${0.18 * pulse})` : `rgba(139,90,60,${0.12 * pulse})`;
+      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 28, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#7A7064';
+      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 20, 0, Math.PI*2); ctx.fill();
+      if (active) {
+        const ripple = Math.sin(t / 250) * 1.5;
+        ctx.fillStyle = '#1A6E94';
+        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 16, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#4FB3D9';
+        ctx.beginPath(); ctx.ellipse(px + TILE/2 + ripple * 0.3, py + TILE/2, 13, 10, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#7DD3F5';
+        ctx.beginPath(); ctx.ellipse(px + TILE/2 - 2, py + TILE/2 - 2, 4, 2, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#3F8E4B';
+        ctx.fillRect(px + TILE - 14, py + 8, 4, 12);
+        ctx.fillRect(px + 10, py + TILE - 16, 3, 10);
+      } else {
+        ctx.fillStyle = '#5C3A24';
+        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 16, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#8B5A3C';
+        ctx.beginPath(); ctx.ellipse(px + TILE/2, py + TILE/2, 12, 8, 0, 0, Math.PI*2); ctx.fill();
       }
     }
   }
@@ -5353,12 +5296,10 @@ er-section" id="baxt">
         ctx.fillRect(fx, py + TILE/2 - 3, 6, 2);
       }
       // ===== Soft life: tiny sparkle droplets on the canal =====
-      // A few small "foam" dots drift along the surface and
-      // occasionally pop into view. Very subtle.
       const sparkleT = (Date.now() / 900 + x * 1.3 + y * 0.7);
       for (let i = 0; i < 2; i++) {
         const phase = (sparkleT + i * 1.7) % 1;
-        const alpha = Math.max(0, Math.sin(phase * Math.PI)); // 0..1..0
+        const alpha = Math.max(0, Math.sin(phase * Math.PI));
         if (alpha < 0.15) continue;
         const fx = px + 6 + phase * (TILE - 12);
         ctx.fillStyle = `rgba(255,255,255,${alpha * 0.4})`;
@@ -5366,6 +5307,27 @@ er-section" id="baxt">
         ctx.fillStyle = `rgba(125,211,245,${alpha * 0.6})`;
         ctx.fillRect(fx, py + TILE/2 - 2, 1, 1);
       }
+    } else if (build.type === 'dam') {
+      // Solid base
+      ctx.fillStyle = '#5C3A24';
+      ctx.fillRect(px + 4, py + 4, TILE - 8, TILE - 8);
+      // Draw logs
+      ctx.fillStyle = '#8B5A3C';
+      ctx.strokeStyle = '#3D2415';
+      ctx.lineWidth = 1.5;
+      // Log 1
+      ctx.fillRect(px + 6, py + 8, TILE - 12, 10);
+      ctx.strokeRect(px + 6, py + 8, TILE - 12, 10);
+      // Log 2
+      ctx.fillRect(px + 6, py + 22, TILE - 12, 10);
+      ctx.strokeRect(px + 6, py + 22, TILE - 12, 10);
+      // Rope bindings
+      ctx.strokeStyle = '#D9A86C';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(px + 12, py + 4); ctx.lineTo(px + 12, py + TILE - 4);
+      ctx.moveTo(px + TILE - 12, py + 4); ctx.lineTo(px + TILE - 12, py + TILE - 4);
+      ctx.stroke();
     }
   }
 
@@ -5838,6 +5800,7 @@ er-section" id="baxt">
     if (!cell || cell.feature) return false;
     if (cell.build) return false;
     if (cell.terrain !== 'grass') return false;
+    if (state.playTool === 'dam') return true;
     if (state.inventory.canal <= 0) return false;
     return true;
   }
@@ -5854,21 +5817,23 @@ er-section" id="baxt">
       }
     }
     const cell = state.grid[y][x];
-    cell.build = { type: 'canal' };
-    state.inventory.canal--;
-    state.dropsPlaced = (state.dropsPlaced || 0) + 1;
-    // Track for undo (cap at 20 to avoid memory bloat)
-    state.undoStack.push({ x, y });
-    if (state.undoStack.length > 20) state.undoStack.shift();
-    Sound.place();
-    // ===== Small "plop" sparkle when a canal is placed =====
-    // Just 4-6 sparkles in the cell — a quick confirmation that
-    // the drop landed. Doesn't fire on the very first drop (the
-    // achievement burst handles that moment).
-    if (state.dropsPlaced > 1) {
-      spawnBurst(x, y, ['#7DD3F5', '#FAF7FF', '#5B6FE8'], 5, 40, 'spark');
+    if (state.playTool === 'dam') {
+      cell.build = { type: 'dam' };
+      state.dropsPlaced = (state.dropsPlaced || 0) + 1;
+      state.undoStack.push({ x, y, tool: 'dam' });
+      Sound.place();
+      spawnBurst(x, y, ['#8B5A3C', '#C49A6C', '#D9A86C'], 6, 35, 'spark');
+    } else {
+      cell.build = { type: 'canal' };
+      state.inventory.canal--;
+      state.dropsPlaced = (state.dropsPlaced || 0) + 1;
+      state.undoStack.push({ x, y, tool: 'canal' });
+      Sound.place();
+      if (state.dropsPlaced > 1) {
+        spawnBurst(x, y, ['#7DD3F5', '#FAF7FF', '#5B6FE8'], 5, 40, 'spark');
+      }
     }
-    // Achievement: first drop
+    if (state.undoStack.length > 20) state.undoStack.shift();
     if (state.dropsPlaced === 1) unlockAchievement('first_drop');
     return true;
   }
@@ -5880,7 +5845,7 @@ er-section" id="baxt">
     if (cell.terrain === 'rock') return false;
     if (cell.build && cell.build.type === 'dam') return false;
     if (cell.build && cell.build.type === 'gate' && !cell.build.open) return false;
-    if (cell.feature && ['farm','village','wheel'].includes(cell.feature.type)) return true;
+    if (cell.feature && ['farm','village','wheel','pond'].includes(cell.feature.type)) return true;
     return true;
   }
 
@@ -5893,14 +5858,14 @@ er-section" id="baxt">
       const cellHere = state.grid[y][x];
       const isSpring = cellHere.feature && cellHere.feature.type === 'spring';
       const isCanal = cellHere.build && cellHere.build.type === 'canal';
-      const isFeature = cellHere.feature && ['farm','village','wheel'].includes(cellHere.feature.type);
+      const isFeature = cellHere.feature && ['farm','village','wheel','pond'].includes(cellHere.feature.type);
       if (!isSpring && !isCanal && !isFeature) return;
       [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx, dy]) => {
         const nx = x + dx, ny = y + dy;
         if (!isPassable(nx, ny)) return;
         const ncell = state.grid[ny][nx];
         const tIsCanal = ncell.build && ncell.build.type === 'canal';
-        const tIsFeature = ncell.feature && ['farm','village','wheel','spring'].includes(ncell.feature.type);
+        const tIsFeature = ncell.feature && ['farm','village','wheel','spring','pond'].includes(ncell.feature.type);
         if (!tIsCanal && !tIsFeature) return;
         const tk = key(nx, ny);
         if (!newWater.has(tk)) {
@@ -5938,7 +5903,8 @@ er-section" id="baxt">
               const allGoalsReached =
                 (!state.goals.farm || state.goals.farm.length === 0 || state.reached.farm) &&
                 (!state.goals.village || state.goals.village.length === 0 || state.reached.village) &&
-                (!state.goals.wheel || state.goals.wheel.length === 0 || state.reached.wheel);
+                (!state.goals.wheel || state.goals.wheel.length === 0 || state.reached.wheel) &&
+                (!state.goals.pond || state.goals.pond.length === 0 || state.reached.pond);
               if (allGoalsReached && !victoryShown) {
                 setTimeout(() => {
                   const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
@@ -5946,7 +5912,8 @@ er-section" id="baxt">
                   const goalCount =
                     (state.reached.farm ? 1 : 0) +
                     (state.reached.village ? 1 : 0) +
-                    (state.reached.wheel ? 1 : 0);
+                    (state.reached.wheel ? 1 : 0) +
+                    (state.reached.pond ? 1 : 0);
                   showVictory('Goal Reached', {
                     drops: state.dropsPlaced || state.waterCells.size,
                     goals: goalCount,
@@ -6437,9 +6404,13 @@ er-section" id="baxt">
     document.querySelectorAll('.mode-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.mode === mode);
     });
-    // Show/hide palette and share button
+    // Show/hide palette, share button, and play tool selector
     const palette = document.getElementById('stagePalette');
     const share = document.getElementById('stageShare');
+    const playToolSel = document.getElementById('playToolSelector');
+    if (playToolSel) {
+      playToolSel.style.display = (mode === 'play') ? 'flex' : 'none';
+    }
     if (mode === 'build') {
       if (palette) palette.hidden = false;
       if (share) share.hidden = false;
@@ -6817,9 +6788,11 @@ er-section" id="baxt">
     if (state.undoStack.length === 0) return false;
     const last = state.undoStack.pop();
     const cell = state.grid[last.y][last.x];
-    if (cell.build && cell.build.type === 'canal') {
+    if (cell.build) {
+      if (cell.build.type === 'canal') {
+        state.inventory.canal++;
+      }
       cell.build = null;
-      state.inventory.canal++;
       // Remove this cell and any descendants from the water flow
       // (simplest: just let the next tick re-propagate, but here we clear)
       state.waterCells.delete(key(last.x, last.y));
@@ -7129,7 +7102,7 @@ er-section" id="baxt">
         state.goals = parsed2.goals;
         state.waterCells = new Map();
         state.sources = parsed2.sources.slice();
-        state.reached = { spring: false, farm: false, village: false, wheel: false };
+        state.reached = { spring: false, farm: false, village: false, wheel: false, pond: false };
         state.dropsPlaced = 0;
         state.levelStartTime = Date.now();
         state.inventory.canal = 30;
@@ -7203,6 +7176,27 @@ er-section" id="baxt">
       if (tag) {
         tag.innerHTML = `<span style="font-size:14px">🔥</span> ${state.streakCount}-day streak · ${level.name}`;
       }
+    }
+
+    // ---- Play Mode Tool Selector ----
+    state.playTool = 'canal'; // default
+    const playToolCanal = document.getElementById('playToolCanal');
+    const playToolDam = document.getElementById('playToolDam');
+    if (playToolCanal && playToolDam) {
+      playToolCanal.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.playTool = 'canal';
+        playToolCanal.classList.add('active');
+        playToolDam.classList.remove('active');
+        Sound.click();
+      });
+      playToolDam.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.playTool = 'dam';
+        playToolDam.classList.add('active');
+        playToolCanal.classList.remove('active');
+        Sound.click();
+      });
     }
 
     // ---- Settings cog + modal ----
@@ -7995,5 +7989,6 @@ er-section" id="baxt">
 })();
 
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b9f94c0c3accb0',t:'MTc4NDEzMTE2MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1ba19514f09a627',t:'MTc4NDEzMjQ3Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
