@@ -2777,6 +2777,118 @@
   transform: scale(1.15) translateY(-2px) !important;
 }
 
+
+/* =========================================================
+   FLUID STAGE HEIGHT OVERRIDES (Milestone 6 Layout Fix)
+   ========================================================= */
+.hero-stage {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+
+/* =========================================================
+   ONBOARDING TOOL LABELS (Milestone 6)
+   ========================================================= */
+.stage-tool-label {
+  font-family: var(--f-display);
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--sun);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .stage-tool-label {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   ONBOARDING MISSION BANNER (Milestone 6)
+   ========================================================= */
+.stage-mission-banner {
+  background: linear-gradient(135deg, rgba(255,200,87,0.12) 0%, rgba(255,200,87,0.04) 100%);
+  border: 2px solid rgba(255,200,87,0.25);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--sun);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.mission-icon {
+  font-size: 1.25rem;
+}
+.mission-text {
+  letter-spacing: 0.03em;
+}
+
+
+/* =========================================================
+   HERO VIEWPORT CUT-OFF FIX (Milestone 6 Layout)
+   ========================================================= */
+.hero {
+  min-height: auto !important;
+  height: auto !important;
+  overflow: visible !important; /* Prevent cutting off of stage or words! */
+  padding: 8rem 1.6rem 4rem !important;
+}
+.hero-inner {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 3rem !important;
+  align-items: flex-start !important;
+  max-width: 1280px !important;
+  width: 100% !important;
+}
+.hero-content {
+  flex: 1.1 !important;
+  max-width: 600px !important;
+}
+.hero-stage {
+  flex: 1 !important;
+  max-width: 580px !important;
+}
+
+/* Responsive adjustment for tablets/mobile (Stacking vertically) */
+@media (max-width: 900px) {
+  .hero {
+    padding: 5rem 1rem 3rem !important;
+  }
+  .hero-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 2rem !important;
+  }
+  .hero-content {
+    order: 2 !important; /* Move text below the canvas so they can see the game first! */
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .hero-stage {
+    order: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .hero-cta-row {
+    justify-content: center !important;
+  }
+  .hero-meta {
+    justify-content: center !important;
+  }
+}
+
   </style>
   <style>
   /* =========================================================
@@ -4265,17 +4377,30 @@
           <div class="stage-seed" id="stageSeed" aria-live="polite">Daily Level</div>
         </div>
 
+        <!-- Mission Goal Banner (Milestone 6 - Spaced Out HUD) -->
+        <div class="stage-mission-banner" id="stageMissionBanner">
+          <span class="mission-icon">🎯</span>
+          <span class="mission-text" id="stageMissionText">MISSION: Guide a River to the Dam, then tap to RELEASE water to the Waterwheel!</span>
+        </div>
+
         <!-- Selector Row (Outside the Canvas, Spaced Out) -->
         <div class="stage-selector-row">
-          <!-- Floating Play Mode Tool Selector (Canal vs Dam) -->
+          <!-- Text Label on the Left -->
+          <div class="stage-tool-label">🛠️ TOOLS:</div>
+
+          <!-- Floating Play Mode Tool Selector (River vs Dam vs Gate) -->
           <div class="play-tool-selector" id="playToolSelector">
-            <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="Water Canal (Conducts flow)">
+            <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="River Channel (Conducts flow)">
               <span class="play-tool-icon">💧</span>
-              <span class="play-tool-label">Canal</span>
+              <span class="play-tool-label">River</span>
             </button>
             <button class="play-tool-btn" id="playToolDam" data-tool="dam" title="Log Dam (Blocks flow)">
               <span class="play-tool-icon">🪵</span>
               <span class="play-tool-label">Dam</span>
+            </button>
+            <button class="play-tool-btn" id="playToolGate" data-tool="gate" title="Water Gate (Taps to open/close & release water!)">
+              <span class="play-tool-icon">🚪</span>
+              <span class="play-tool-label">Gate</span>
             </button>
           </div>
 
@@ -4340,6 +4465,7 @@
           <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
           <button class="pal-btn" data-tool="pond" title="Pond">🌊</button>
           <button class="pal-btn" data-tool="dam" title="Dam">🪵</button>
+          <button class="pal-btn" data-tool="gate" title="Water Gate">🚪</button>
           <button class="pal-btn" data-tool="canal" title="Canal">🛠️</button>
           <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
           <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
@@ -4533,56 +4659,52 @@
         <div class="map-connector-line" id="lineLvl2"></div>
 
         <!-- River Crossing (Level 2) -->
-        <button class="map-region level-node locked" id="nodeLvl2" data-level="1" disabled>
+        <button class="map-region level-node current" id="nodeLvl2" data-level="1">
           <div class="node-marker">
             <span class="node-icon">🌉</span>
-            <div class="lock-overlay">🔒</div>
           </div>
           <div class="region-info">
             <h4 class="region-title">River Crossing</h4>
-            <span class="region-status-badge">Locked</span>
+            <span class="region-status-badge">Level 2</span>
           </div>
         </button>
 
         <div class="map-connector-line" id="lineLvl3"></div>
 
         <!-- Beaver Creek (Level 3) -->
-        <button class="map-region level-node locked" id="nodeLvl3" data-level="2" disabled>
+        <button class="map-region level-node current" id="nodeLvl3" data-level="2">
           <div class="node-marker">
             <span class="node-icon">🦫</span>
-            <div class="lock-overlay">🔒</div>
           </div>
           <div class="region-info">
             <h4 class="region-title">Beaver Creek</h4>
-            <span class="region-status-badge">Locked</span>
+            <span class="region-status-badge">Level 3</span>
           </div>
         </button>
 
         <div class="map-connector-line" id="lineLvl4"></div>
 
         <!-- Millstone Valley (Level 4) -->
-        <button class="map-region level-node locked" id="nodeLvl4" data-level="3" disabled>
+        <button class="map-region level-node current" id="nodeLvl4" data-level="3">
           <div class="node-marker">
             <span class="node-icon">⚙️</span>
-            <div class="lock-overlay">🔒</div>
           </div>
           <div class="region-info">
             <h4 class="region-title">Millstone Valley</h4>
-            <span class="region-status-badge">Locked</span>
+            <span class="region-status-badge">Level 4</span>
           </div>
         </button>
 
         <div class="map-connector-line" id="lineLvl5"></div>
 
         <!-- Harvest Plains (Level 5) -->
-        <button class="map-region level-node locked" id="nodeLvl5" data-level="4" disabled>
+        <button class="map-region level-node current" id="nodeLvl5" data-level="4">
           <div class="node-marker">
             <span class="node-icon">🌾</span>
-            <div class="lock-overlay">🔒</div>
           </div>
           <div class="region-info">
             <h4 class="region-title">Harvest Plains</h4>
-            <span class="region-status-badge">Locked</span>
+            <span class="region-status-badge">Level 5</span>
           </div>
         </button>
 
@@ -4749,7 +4871,7 @@ er-section" id="baxt">
         <!-- Dynamic Trivia Panel (Hidden by default) -->
         <div class="baxt-quiz-box" id="baxtQuizBox" style="display: none;">
           <div class="baxt-quiz-question">Hydrology Question:</div>
-          <p id="baxtQuizText">If we narrow a channel's width while pressure remains constant, what happens to the water speed?</p>
+          <p id="baxtQuizText">If we narrow a River's width while pressure remains constant, what happens to the water speed?</p>
           <button class="baxt-quiz-option" id="baxtOptA">It speeds up (Venturi Effect)!</button>
           <button class="baxt-quiz-option" id="baxtOptB">It slows down!</button>
         </div>
@@ -5891,20 +6013,20 @@ window.WaterSystem = WaterSystem;
   // The "tutorial" flag marks the first level a brand-new player sees.
   const STARTER_LEVELS = [
     {
-      id: '1-1', name: 'Moving Water', tutorial: true,
+      id: '1-1', name: 'The Gateway', tutorial: true,
       grid: [
         '...............',
         '...............',
+        '..#######......',
         '...............',
-        '..~............',
+        '..~----d----W..',
         '...............',
-        '...............',
-        '.............F.',
+        '......#######..',
         '...............',
         '...............',
       ],
-      goals: { spring: { x: 2, y: 3 }, farm: { x: 13, y: 6 } },
-      par: { drops: 12, time: 60 },
+      goals: { spring: { x: 2, y: 4 }, wheel: { x: 12, y: 4 } },
+      par: { drops: 10, time: 60 },
     },
     {
       id: '1-2', name: 'Diverting the Flow',
@@ -5913,62 +6035,30 @@ window.WaterSystem = WaterSystem;
         '..~............',
         '..c............',
         '..c............',
-        '..c............',
+        '..c....d....W..',
         '...............',
-        '.......P.......',
-        '...............',
-        '...............',
-      ],
-      goals: { spring: { x: 2, y: 1 }, pond: { x: 7, y: 6 } },
-      par: { drops: 8, time: 90 },
-    },
-    {
-      id: '1-3', name: 'Ancient Water Wheel',
-      grid: [
-        '...............',
-        '..~............',
-        '..#######......',
-        '........#......',
-        '........#...W..',
-        '..#######......',
         '...............',
         '...............',
         '...............',
       ],
       goals: { spring: { x: 2, y: 1 }, wheel: { x: 12, y: 4 } },
-      par: { drops: 15, time: 100 },
+      par: { drops: 8, time: 90 },
     },
     {
-      id: '1-4', name: 'Saving the Village',
-      grid: [
-        '...............',
-        '..~............',
-        '..#######......',
-        '..#............',
-        '..#............',
-        '..#.#######....',
-        '..........V....',
-        '...............',
-        '...............',
-      ],
-      goals: { spring: { x: 2, y: 1 }, village: { x: 10, y: 6 } },
-      par: { drops: 18, time: 120 },
-    },
-    {
-      id: '1-5', name: 'Origins: The Living World',
+      id: '1-3', name: 'Origins: Rivers & Wheels',
       grid: [
         '..~............',
         '..c............',
         '..c......W.....',
         '..c............',
-        '.....P.........',
+        '.........d.....',
         '...............',
-        '..F.........V..',
+        '............W..',
         '...............',
         '...............',
       ],
-      goals: { spring: { x: 2, y: 0 }, farm: { x: 2, y: 6 }, wheel: { x: 9, y: 2 }, village: { x: 12, y: 6 }, pond: { x: 5, y: 4 } },
-      par: { drops: 25, time: 180 },
+      goals: { spring: { x: 2, y: 0 }, wheel: { x: 12, y: 6 } },
+      par: { drops: 20, time: 180 },
     }
   ];
 
@@ -5998,6 +6088,19 @@ window.WaterSystem = WaterSystem;
   function loadLevelByIndex(idx) {
     if (idx < 0 || idx >= STARTER_LEVELS.length) return false;
     const lvl = STARTER_LEVELS[idx];
+    
+    // Update the mission banner text dynamically based on level index!
+    const missionText = document.getElementById('stageMissionText');
+    if (missionText) {
+      const missions = [
+        "MISSION: Guide a River to the Farm to start Production!",
+        "MISSION: Build a Dam to block the stream and fill the Lake!",
+        "MISSION: Guide the River to spin the Wheel and start Power Production!",
+        "MISSION: Direct the River to help the Village and start Community Production!",
+        "MISSION: Combined Challenge! Connect all Production sites and fill the Lake!"
+      ];
+      missionText.textContent = missions[idx] || "MISSION: Guide water from sources to destinations!";
+    }
     // Replace the active level (mutating properties of the existing object)
     level.id = lvl.id;
     level.name = lvl.name;
@@ -6016,10 +6119,11 @@ window.WaterSystem = WaterSystem;
     state.dropsPlaced = 0;
     state.undoStack = [];
     state.levelStartTime = Date.now();
-    state.inventory.canal = 30;
+    state.inventory.river = 30;
     state.tutorialActive = !!lvl.tutorial;  // only show tutorial for level 1-1
-    // Restart the spring
+    // Restart the spring and enable fluid flow simulation!
     stopFlow();
+    state.running = true; // CRITICAL FIX: ENABLE FLOW ENGINE!
     parsed.sources.forEach((s, idx) => {
       state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
     });
@@ -6038,7 +6142,7 @@ window.WaterSystem = WaterSystem;
     {
       id: 'hello',
       title: 'Welcome, engineer.',
-      body: "I'm Baxter. Every civilization starts with a single drop. Let's find it together.",
+      body: "I'm Baxter. Let's learn how we build Rivers, Dams, and Waterwheels!",
       bubbleSide: 'right',
       highlight: null,
       requireClick: null,
@@ -6048,10 +6152,10 @@ window.WaterSystem = WaterSystem;
     },
     {
       id: 'spring',
-      title: 'There it is.',
-      body: "A spring — water bubbling out of the rock. Everything we build starts here. Notice how it just… sits. It doesn't know where to go yet.",
+      title: 'The Water Source.',
+      body: "Here is our water source. We need to carve a River to lead water to the closed Dam, and then release it to the Waterwheel!",
       bubbleSide: 'right',
-      highlight: { x: 2, y: 3 },
+      highlight: { x: 2, y: 4 },
       requireClick: null,
       requireReach: null,
       advance: 'click-anywhere',
@@ -6059,89 +6163,32 @@ window.WaterSystem = WaterSystem;
     },
     {
       id: 'place-1',
-      title: 'Build a canal.',
-      body: "Drag a canal from the spring toward the farm. Water will follow it. Try the cell right next to the spring.",
-      bubbleSide: 'right',
-      highlight: { x: 3, y: 3 },
-      requireClick: { x: 3, y: 3 },
-      requireReach: null,
-      advance: 'click-cell',
-      advanceLabel: 'Place a canal here',
-    },
-    {
-      id: 'flow',
-      title: 'See what happens?',
-      body: "Water found the canal. Now it has somewhere to go. The flow won't stop until it hits a wall, a dam, or its destination.",
-      bubbleSide: 'right',
-      highlight: null,
-      requireClick: null,
-      requireReach: null,
-      advance: 'auto',
-      advanceLabel: '',
-      autoDelay: 2400,
-    },
-    {
-      id: 'bend',
-      title: 'Bend the path.',
-      body: "Water flows along canals — turn them however you like. Lead the stream down and to the right, toward that little cottage on the hill.",
+      title: 'Carve a River.',
+      body: "Tap on the highlighted cell next to the Water Source to make your first River. The water will flow automatically and stop at the Dam!",
       bubbleSide: 'right',
       highlight: { x: 3, y: 4 },
       requireClick: { x: 3, y: 4 },
       requireReach: null,
       advance: 'click-cell',
-      advanceLabel: 'Place a canal here',
+      advanceLabel: 'Tap here',
     },
     {
-      id: 'reach',
-      title: 'Almost there.',
-      body: "Keep going. The farm is waiting. Try drawing a path that leads to it.",
+      id: 'flow',
+      title: 'Water is Flowing!',
+      body: "See? The water flows along your River and accumulates at the closed Dam. Now, tap directly on the Dam block (🪵) to OPEN/RELEASE the water!",
       bubbleSide: 'right',
-      highlight: { x: 13, y: 6 },
-      requireClick: null,
-      requireReach: 'farm',
-      advance: 'reach',
-      advanceLabel: '',
-    },
-    {
-      id: 'win',
-      title: 'You did it.',
-      body: "Water reached the farm. Crops are growing. People will eat this winter. That's the whole job of an engineer — making sure the drops get where they need to go.",
-      bubbleSide: 'right',
-      highlight: null,
-      requireClick: null,
-      requireReach: null,
-      advance: 'auto',
-      advanceLabel: '',
-      autoDelay: 4000,
-    },
-    {
-      id: 'free',
-      title: "Now it's yours.",
-      body: "Keep playing. Place canals, dams, and gates. Break it. Fix it. Baxter will keep an eye on you.",
-      bubbleSide: 'right',
-      highlight: null,
+      highlight: { x: 7, y: 4 },
       requireClick: null,
       requireReach: null,
       advance: 'click-anywhere',
-      advanceLabel: 'Got it',
-    },
-    {
-      id: 'returning',
-      title: "Welcome back, engineer.",
-      body: "The spring is still flowing. Place a canal anywhere to start the water moving — or just explore.",
-      bubbleSide: 'right',
-      highlight: null,
-      requireClick: null,
-      requireReach: null,
-      advance: 'click-anywhere',
-      advanceLabel: 'Let me play',
-    },
+      advanceLabel: 'Tap to continue',
+    }
   ];
 
   // ---- State ----
   const state = {
     grid: [],
-    inventory: { canal: 30 },
+    inventory: { river: 30 },
     waterCells: new Map(),
     reached: { spring: false, farm: false, village: false, wheel: false },
     running: false,
@@ -6528,6 +6575,42 @@ window.WaterSystem = WaterSystem;
       ctx.moveTo(px + 12, py + 4); ctx.lineTo(px + 12, py + TILE - 4);
       ctx.moveTo(px + TILE - 12, py + 4); ctx.lineTo(px + TILE - 12, py + TILE - 4);
       ctx.stroke();
+    } else if (build.type === 'gate') {
+      // Draw Water Gate
+      const open = build.open;
+      // Frame
+      ctx.fillStyle = '#7A7064';
+      ctx.fillRect(px + 4, py + 4, TILE - 8, TILE - 8);
+      ctx.strokeStyle = '#5C3A24'; ctx.lineWidth = 2;
+      ctx.strokeRect(px + 4, py + 4, TILE - 8, TILE - 8);
+      
+      if (!open) {
+        // Closed state: heavy solid door with iron cross-beams
+        ctx.fillStyle = '#C49A6C';
+        ctx.fillRect(px + 8, py + 8, TILE - 16, TILE - 16);
+        ctx.strokeStyle = '#3D2415'; ctx.lineWidth = 2;
+        ctx.strokeRect(px + 8, py + 8, TILE - 16, TILE - 16);
+        // Iron bars
+        ctx.strokeStyle = '#7A7064'; ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(px + 8, py + 8); ctx.lineTo(px + TILE - 8, py + TILE - 8);
+        ctx.moveTo(px + TILE - 8, py + 8); ctx.lineTo(px + 8, py + TILE - 8);
+        ctx.stroke();
+      } else {
+        // Open state: door slid up/open, rushing water showing!
+        ctx.fillStyle = '#0A4A6B';
+        ctx.fillRect(px + 8, py + 8, TILE - 16, TILE - 16);
+        ctx.fillStyle = '#1A6E94';
+        ctx.fillRect(px + 8, py + TILE/2 - 4, TILE - 16, 8);
+        // Water spray drops
+        ctx.fillStyle = '#EAF7FB';
+        const ripple = (Date.now() / 150) % 3;
+        ctx.fillRect(px + 10 + ripple * 4, py + TILE/2 - 2, 2, 2);
+        // Slid open door panels on the sides
+        ctx.fillStyle = '#A66E3F';
+        ctx.fillRect(px + 4, py + 8, 4, TILE - 16);
+        ctx.fillRect(px + TILE - 8, py + 8, 4, TILE - 16);
+      }
     }
   }
 
@@ -6960,7 +7043,7 @@ window.WaterSystem = WaterSystem;
         return;
       }
     }
-    const canPlaceHere = !cell.build && !cell.feature && cell.terrain === 'grass' && state.inventory.canal > 0;
+    const canPlaceHere = !cell.build && !cell.feature && cell.terrain === 'grass' && state.inventory.river > 0;
     ctx.fillStyle = canPlaceHere ? 'rgba(125,211,245,.25)' : 'rgba(192,70,58,.2)';
     ctx.fillRect(px, py, TILE, TILE);
     ctx.strokeStyle = canPlaceHere ? '#7DD3F5' : '#C0463A';
@@ -7000,8 +7083,8 @@ window.WaterSystem = WaterSystem;
     if (!cell || cell.feature) return false;
     if (cell.build) return false;
     if (cell.terrain !== 'grass') return false;
-    if (state.playTool === 'dam') return true;
-    if (state.inventory.canal <= 0) return false;
+    if (state.playTool === 'dam' || state.playTool === 'gate') return true;
+    if (state.inventory.river <= 0) return false;
     return true;
   }
 
@@ -7017,7 +7100,13 @@ window.WaterSystem = WaterSystem;
       }
     }
     const cell = state.grid[y][x];
-    if (state.playTool === 'dam') {
+    if (state.playTool === 'dam') { // Map Dam directly to Gate internally for simplified water releasing!
+      cell.build = { type: 'gate', open: false }; // closed by default
+      state.dropsPlaced = (state.dropsPlaced || 0) + 1;
+      state.undoStack.push({ x, y, tool: 'gate' });
+      Sound.place();
+      spawnBurst(x, y, ['#7A7064', '#B5ADA0', '#5C3A24'], 6, 35, 'spark');
+    } else if (state.playTool === 'dam') {
       cell.build = { type: 'dam' };
       state.dropsPlaced = (state.dropsPlaced || 0) + 1;
       state.undoStack.push({ x, y, tool: 'dam' });
@@ -7025,7 +7114,7 @@ window.WaterSystem = WaterSystem;
       spawnBurst(x, y, ['#8B5A3C', '#C49A6C', '#D9A86C'], 6, 35, 'spark');
     } else {
       cell.build = { type: 'canal' };
-      state.inventory.canal--;
+      state.inventory.river--;
       state.dropsPlaced = (state.dropsPlaced || 0) + 1;
       state.undoStack.push({ x, y, tool: 'canal' });
       Sound.place();
@@ -7101,19 +7190,12 @@ window.WaterSystem = WaterSystem;
               spawnBurst(nx, ny, ['#7DD3F5', '#5B6FE8', '#F4B5E4'], 14, 50, 'mixed');
               // If all goals in this level are now reached, show the victory
               const allGoalsReached =
-                (!state.goals.farm || state.goals.farm.length === 0 || state.reached.farm) &&
-                (!state.goals.village || state.goals.village.length === 0 || state.reached.village) &&
-                (!state.goals.wheel || state.goals.wheel.length === 0 || state.reached.wheel) &&
-                (!state.goals.pond || state.goals.pond.length === 0 || state.reached.pond);
+                (!state.goals.wheel || state.goals.wheel.length === 0 || state.reached.wheel);
               if (allGoalsReached && !victoryShown) {
                 setTimeout(() => {
                   const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
                   const m = Math.floor(elapsed / 60), s = elapsed % 60;
-                  const goalCount =
-                    (state.reached.farm ? 1 : 0) +
-                    (state.reached.village ? 1 : 0) +
-                    (state.reached.wheel ? 1 : 0) +
-                    (state.reached.pond ? 1 : 0);
+                  const goalCount = (state.reached.wheel ? 1 : 0);
                   showVictory('Goal Reached', {
                     drops: state.dropsPlaced || state.waterCells.size,
                     goals: goalCount,
@@ -7391,6 +7473,11 @@ window.WaterSystem = WaterSystem;
   function updateTutorialUI() {
     const step = STEPS[state.tutorialIndex];
     const bubble = document.getElementById('baxterBubble');
+    if (bubble) {
+      bubble.classList.remove('dismissed');
+      // Bypasses display:none or hidden styles
+      bubble.style.display = '';
+    }
     const title = document.getElementById('baxterTitle');
     const body = document.getElementById('baxterBody');
     const advance = document.getElementById('baxterAdvance');
@@ -7506,6 +7593,29 @@ window.WaterSystem = WaterSystem;
     Sound.click();
     if (state.mode === 'build') {
       handleBuildClick(x, y);
+      return;
+    }
+    
+    // Tap to Toggle Water Gates and release flow!
+    const targetCell = state.grid[y] ? state.grid[y][x] : null;
+    if (targetCell && targetCell.build && targetCell.build.type === 'gate') {
+      targetCell.build.open = !targetCell.build.open;
+      if (targetCell.build.open) {
+        // Play epic water releasing gush sound!
+        try {
+          if (window.SoundSystem) {
+            window.SoundSystem.steam();
+            setTimeout(() => window.SoundSystem.advance(), 120);
+          }
+        } catch (err) {}
+        spawnBurst(x, y, ['#7DD3F5', '#FAF7FF', '#1A6E94'], 12, 50, 'spark');
+      } else {
+        // Closed sound
+        try {
+          if (window.SoundSystem) window.SoundSystem.place();
+        } catch (err) {}
+      }
+      render();
       return;
     }
     if (state.tutorialActive) {
@@ -7680,14 +7790,16 @@ window.WaterSystem = WaterSystem;
       state.dropsPlaced = 0;
       state.undoStack = [];
       state.levelStartTime = Date.now();
-      state.inventory.canal = 30; // give plenty of canals to test!
+      state.inventory.river = 30; // give plenty of canals to test!
       
       stopFlow();
+      state.running = true; // CRITICAL FIX: ENABLE FLOW ENGINE FOR SANDBOX!
       state.sources.forEach((s, idx) => {
         state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
       });
       state.reached.spring = true;
       state.tickHandle = setInterval(tickFlow, WATER_SPEED);
+      state.renderHandle = setInterval(render, 60);
     }
     render();
   }
@@ -7755,6 +7867,13 @@ window.WaterSystem = WaterSystem;
       cell.terrain = 'grass';
       cell.feature = null;
       cell.build = { type: state.buildTool };
+      render();
+      return;
+    }
+    if (state.buildTool === 'gate') {
+      cell.terrain = 'grass';
+      cell.feature = null;
+      cell.build = { type: 'gate', open: false };
       render();
       return;
     }
@@ -8059,7 +8178,7 @@ window.WaterSystem = WaterSystem;
     const cell = state.grid[last.y][last.x];
     if (cell.build) {
       if (cell.build.type === 'canal') {
-        state.inventory.canal++;
+        state.inventory.river++;
       }
       cell.build = null;
       // Remove this cell and any descendants from the water flow
@@ -8474,7 +8593,7 @@ window.WaterSystem = WaterSystem;
         state.reached = { spring: false, farm: false, village: false, wheel: false, pond: false };
         state.dropsPlaced = 0;
         state.levelStartTime = Date.now();
-        state.inventory.canal = 30;
+        state.inventory.river = 30;
         stopFlow();
         // Restart the spring
         parsed2.sources.forEach((s, idx) => {
@@ -8551,19 +8670,44 @@ window.WaterSystem = WaterSystem;
     state.playTool = 'canal'; // default
     const playToolCanal = document.getElementById('playToolCanal');
     const playToolDam = document.getElementById('playToolDam');
-    if (playToolCanal && playToolDam) {
+    const playToolGate = document.getElementById('playToolGate');
+    if (playToolCanal && playToolDam && playToolGate) {
       playToolCanal.addEventListener('click', (e) => {
         e.stopPropagation();
         state.playTool = 'canal';
         playToolCanal.classList.add('active');
         playToolDam.classList.remove('active');
+        playToolGate.classList.remove('active');
         Sound.click();
       });
       playToolDam.addEventListener('click', (e) => {
         e.stopPropagation();
         state.playTool = 'dam';
+        // Auto-disable tutorial locks so player can place dams anywhere immediately!
+        state.tutorialActive = false;
+        const bubble = document.getElementById('baxterBubble');
+        if (bubble) {
+          bubble.classList.add('dismissed');
+          bubble.style.display = 'none';
+        }
         playToolDam.classList.add('active');
         playToolCanal.classList.remove('active');
+        playToolGate.classList.remove('active');
+        Sound.click();
+      });
+      playToolGate.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.playTool = 'gate';
+        // Auto-disable tutorial locks so player can place gates anywhere immediately!
+        state.tutorialActive = false;
+        const bubble = document.getElementById('baxterBubble');
+        if (bubble) {
+          bubble.classList.add('dismissed');
+          bubble.style.display = 'none';
+        }
+        playToolGate.classList.add('active');
+        playToolCanal.classList.remove('active');
+        playToolDam.classList.remove('active');
         Sound.click();
       });
     }
@@ -8649,7 +8793,7 @@ window.WaterSystem = WaterSystem;
   let lastIdleHintIndex = -1;
   const IDLE_HINTS = [
     { title: "Still there?",
-      body: "Tap a grass cell to drop a canal. Water follows canals — even around corners." },
+      body: "Tap a grass cell to carve a River. Water follows Rivers — even around corners." },
     { title: "Try a bend.",
       body: "Canals turn. Lead the stream in any direction you like, as long as there's a connected path." },
     { title: "Need a pause?",
@@ -9434,15 +9578,15 @@ window.WaterSystem = WaterSystem;
   // Interactive lessons configuration
   const LESSONS = {
     flow: {
-      text: '"Apprentice, water is the lifeblood of civilization! But water uncontrolled washes away our hard work. Canals guide, dams store. We carve pathways so every drop reaches a destination. That is how we grow society!"',
+      text: '"Apprentice, water is the lifeblood of civilization! But water uncontrolled washes away our hard work. Rivers guide, Dams store. We carve pathways so every drop reaches a destination. That is how we grow society!"',
       action: 'waving'
     },
-    dams: {
-      text: '"A log dam is an engineer\'s finest friend! By blocking a downstream path, we construct high pressure reservoirs. This lets us power water mills, store water for droughts, and direct flow into secondary networks!"',
+    Dams: {
+      text: '"A Dam is our best tool! By building a Dam, we block the River to store water and fill up our Lakes. This lets us divert flow exactly where we need it!"',
       action: 'pointing'
     },
     society: {
-      text: '"An engineer builds for the village! When water feeds a farm, crops sprout. When it spins the water wheel, flour is milled. When it supplies fresh running channels to cottages, villages thrive! Every drop has a job, remember that!"',
+      text: '"An engineer builds for the Village Production! When water feeds a Farm Production, crops sprout. When it spins the Wheel Production, flour is milled. When it supplies fresh running channels to cottages, Village Productions thrive! Every drop has a job, remember that!"',
       action: 'waving'
     }
   };
@@ -9455,7 +9599,7 @@ window.WaterSystem = WaterSystem;
     
     const activeBtn = {
       flow: btnFlow,
-      dams: btnDams,
+      Dams: btnDams,
       society: btnSociety,
       trivia: btnTrivia
     }[key];
@@ -9485,7 +9629,7 @@ window.WaterSystem = WaterSystem;
 
   // Set up event listeners
   if (btnFlow) btnFlow.addEventListener('click', () => selectLesson('flow'));
-  if (btnDams) btnDams.addEventListener('click', () => selectLesson('dams'));
+  if (btnDams) btnDams.addEventListener('click', () => selectLesson('Dams'));
   if (btnSociety) btnSociety.addEventListener('click', () => selectLesson('society'));
   if (btnTrivia) btnTrivia.addEventListener('click', () => {
     selectLesson('trivia');
@@ -9587,7 +9731,7 @@ window.WaterSystem = WaterSystem;
 
     // First, let's trace progress
     // Lvl 1 is always unlocked.
-    let lastUnlockedIdx = 0;
+    let lastUnlockedIdx = 5; // All levels unlocked by default for sandbox play!
     
     // Check which levels are completed
     LEVEL_IDS.forEach((id, idx) => {
@@ -9772,5 +9916,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bad239d99ac963',t:'MTc4NDE0MDA0Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bb3c57ff9cd32b',t:'MTc4NDE0NDM5Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
