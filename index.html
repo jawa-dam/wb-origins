@@ -622,27 +622,26 @@
      BAXTER SPEECH BUBBLE — the tutorial narrator
      ========================================================= */
   .bubble-wrap {
-    position: absolute;
-    bottom: 56px; left: 16px; right: 16px;
-    max-width: 360px;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 10px;
     display: flex; gap: .8rem; align-items: flex-start;
     padding: .9rem 1rem;
     background: rgba(10,22,38,.92);
-    backdrop-filter: none !important;
-    border: 1px solid rgba(125,211,245,.25);
+    border: 2px solid rgba(125,211,245,.25);
     border-radius: var(--r-md);
     box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.08);
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity .4s var(--ease-splash), transform .4s var(--ease-splash), visibility .4s;
-    pointer-events: none;
-    visibility: hidden;
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transition: opacity .3s, transform .3s;
   }
-  .bubble-wrap:not(.dismissed) {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    pointer-events: auto !important;
-    visibility: visible !important;
+  .bubble-wrap.dismissed {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
   }
   .bubble-wrap.bubble-enter {
     opacity: 1;
@@ -1022,7 +1021,7 @@
     .sp-btn svg { width: 16px; height: 16px; }
     .mode-btn { padding: .4em .8em; font-size: .62rem; }
     .stage-mute { width: 40px; height: 40px; }
-    .bubble-wrap { bottom: 150px; }
+    
   }
 
   /* =========================================================
@@ -4396,7 +4395,7 @@
           <!-- Text Label on the Left -->
           <div class="stage-tool-label">🛠️ TOOLS:</div>
 
-          <!-- Floating Play Mode Tool Selector (River vs Dam) -->
+          <!-- Floating Play Mode Tool Selector (River vs Dam vs Gate) -->
           <div class="play-tool-selector" id="playToolSelector">
             <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="River Channel (Conducts flow)">
               <span class="play-tool-icon">💧</span>
@@ -4416,8 +4415,13 @@
               </svg>
             </button>
             <button class="stage-fullscreen" id="stageFullscreen" title="Toggle fullscreen" aria-label="Fullscreen">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+              <!-- Expand Icon -->
+              <svg class="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>
+              </svg>
+              <!-- Shrink / Exit Icon (Visible in virtual fullscreen) -->
+              <svg class="ic-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; display: none;">
+                <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/>
               </svg>
             </button>
           </div>
@@ -4610,7 +4614,7 @@
           </div>
 
           <!-- Baxter speech bubble -->
-          <div class="bubble-wrap" id="baxterBubble">
+          <div class="bubble-wrap dismissed" id="baxterBubble">
             <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
             <button class="bubble-dismiss" id="bubbleDismiss" title="Hide Baxter" aria-label="Hide Baxter">×</button>
             <div class="bubble-portrait" aria-hidden="true">
@@ -7503,11 +7507,11 @@ window.WaterSystem = WaterSystem;
 
   // Skip the entire tutorial — jump to the last step (free play)
   function skipTutorial() {
-    if (!state.tutorialActive) return;
-    state.tutorialIndex = STEPS.length - 1;
-    Sound.advance();
-    updateTutorialUI();
-    Sound.click();
+    state.tutorialActive = false;
+    dismissBubble();
+    try {
+      if (window.SoundSystem) window.SoundSystem.advance();
+    } catch (e) {}
   }
 
   // Dismiss the bubble entirely (hide it, show reopen pill)
@@ -9986,5 +9990,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bb6367cd8d9172',t:'MTc4NDE0NTk5Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bb6e83e85a2bdc',t:'MTc4NDE0NjQ0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
