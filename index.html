@@ -37,6 +37,12 @@
     --f-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Courier New',monospace;
   }
   * { box-sizing: border-box; }
+  /* ===== HARD LOCKDOWN: prevent horizontal page scroll on phones =====
+     iOS Safari sometimes ignores `overflow-x: hidden` on body if a
+     child element is wider than the viewport. We use `overflow-x: clip`
+     (a stricter version of hidden that doesn't create a scroll
+     container) on BOTH html and body, plus `position: relative` so the
+     clip is honored, plus a `max-width: 100%` cap. */
   html, body {
     margin: 0; padding: 0;
     font-family: var(--f-body);
@@ -44,7 +50,13 @@
     background: var(--night-0);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip; /* stricter than `hidden` on iOS Safari */
+    max-width: 100%;
+    position: relative;
+  }
+  /* Belt-and-suspenders: prevent any media from pushing the viewport */
+  img, video, svg, canvas, iframe {
+    max-width: 100%;
   }
   button { font-family: inherit; color: inherit; }
   a { color: var(--w-glow); text-decoration: none; transition: color .2s; }
@@ -413,6 +425,12 @@
     position: relative; min-height: 100vh;
     display: flex; align-items: center;
     padding: 8rem 1.6rem 5rem; overflow: hidden;
+  }
+  /* Defensive: never let the hero's children push the page wider
+     than the viewport (this caused horizontal page scroll on phones
+     when the canvas was mis-sized or an absolute child overflowed). */
+  .hero-inner, .hero-content, .hero-stage, .stage-frame, .stage-toolbar {
+    max-width: 100%;
   }
   .hero-inner {
     max-width: 1280px; width: 100%; margin: 0 auto;
@@ -814,20 +832,31 @@
        taller box, which made the wider grid overflow horizontally
        and appear stretched/cropped on small screens.
        We add extra height (~100px) for the bottom toolbar so
-       the grid + toolbar both fit cleanly. */
+       the grid + toolbar both fit cleanly.
+       IMPORTANT: width and height are both bounded by 100vw/100vh
+       so the stage NEVER exceeds the viewport on any phone. */
     .hero-stage {
       aspect-ratio: auto;
-      width: 100%;
-      max-width: 100%;
-      height: calc(100vw * 0.6 + 120px); /* grid (60% of width) + toolbar */
+      width: min(100%, 100vw);
+      max-width: 100vw;
+      height: calc(min(100vw, 100%) * 0.6 + 120px); /* grid (60% of width) + toolbar */
       min-height: 380px;
       max-height: 70vh;
+      overflow: hidden; /* hard clip — never lets children escape */
     }
     .stage-frame {
       border-radius: 18px;
       box-shadow: 0 0 0 1px rgba(125,211,245,.25),
                   0 0 60px rgba(125,211,245,.25),
                   0 20px 60px rgba(0,0,0,.5);
+      max-width: 100%;
+      overflow: hidden;
+    }
+    /* Canvas explicitly clamped to its frame so it cannot extend
+       past the right edge of the phone. */
+    #heroCanvas {
+      max-width: 100%;
+      max-height: 100%;
     }
 
     /* === SINGLE-BAR BOTTOM TOOLBAR === */
@@ -932,7 +961,13 @@
   /* Extra-small phones (≤ 380px) — even tighter */
   @media (max-width: 380px) {
     /* On tiny phones: 100vw*0.6 + 110 = 338px (still fits) */
-    .hero-stage { height: calc(100vw * 0.6 + 100px); min-height: 340px; }
+    .hero-stage {
+      height: calc(100vw * 0.6 + 100px);
+      min-height: 340px;
+      width: 100vw; /* belt-and-suspenders: explicitly bound to viewport */
+      max-width: 100vw;
+    }
+    .stage-frame { max-width: 100vw; }
     .pal-btn { width: 40px; height: 40px; }
     .sp-btn { width: 32px; height: 32px; }
     .sp-btn svg { width: 16px; height: 16px; }
@@ -3324,6 +3359,7 @@ er-section" id="baxt">
     state.grid = parsed.grid;
     state.goals = parsed.goals;
     state.waterCells = new Map();
+    state.sources = parsed.sources.slice();
     state.reached = { spring: false, farm: false, village: false, wheel: false };
     state.dropsPlaced = 0;
     state.undoStack = [];
@@ -4151,31 +4187,146 @@ er-section" id="baxt">
   }
 
   function drawWaterOverlay() {
+    // ===== VISIBLE FLOW: each water cell now shows a moving
+    // droplet, a flow-direction chevron, and an arrival ripple
+    // (when the water first reaches the cell). This makes the
+    // water feel like it's actively travelling rather than just
+    // appearing cell-by-cell. =====
     state.waterCells.forEach((data, k) => {
       const [x, y] = k.split(',').map(Number);
       const px = x * TILE, py = y * TILE;
       const now = Date.now();
-      // ===== Soft life: water shimmers in alpha + a slow hue shift =====
-      // Base alpha oscillates with flow time, then we layer in a
-      // slow, low-amplitude "breathe" using the cell's source-id
-      // as a phase so the field doesn't pulse in lockstep.
-      const alpha = 0.55 + 0.25 * Math.sin(data.t * 4);
-      const phaseBreathe = 0.5 + 0.5 * Math.sin(now / 1100 + (data.sourceId || 0) * 0.7 + x * 0.3 + y * 0.5);
-      const aFinal = alpha * (0.85 + phaseBreathe * 0.25);
+      const sourcePhase = (data.sourceId || 0) * 0.7;
+      const cellPhase = x * 0.3 + y * 0.5;
+
+      // ===== Arrival brightness boost =====
+      // For the first ~1.5s after water arrives at this cell, the
+      // cell is visibly brighter (a "wave front" feel).
+      const arrivalBoost = Math.max(0, 1 - data.t * 0.18);
+
+      // ===== Alpha breathing (stronger than before) =====
+      // 0.50–0.92 instead of 0.30–0.80 — much more visible pulsing.
+      const breath = 0.5 + 0.5 * Math.sin(now / 600 + sourcePhase + cellPhase);
+      const alpha = 0.50 + 0.42 * breath;
+      const aFinal = Math.min(1, alpha + arrivalBoost * 0.25);
+
       // Main fill
       ctx.fillStyle = `rgba(79,179,217,${aFinal})`;
       ctx.fillRect(px + 2, py + 2, TILE - 4, TILE - 4);
+
       // Foam line: a brighter horizontal band that ripples up/down
-      const ripple = Math.sin(now / 400 + x + y) * 1.5;
-      ctx.fillStyle = `rgba(125,211,245,${aFinal * 0.85})`;
+      const ripple = Math.sin(now / 350 + x + y) * 1.8;
+      ctx.fillStyle = `rgba(125,211,245,${aFinal * 0.9})`;
       ctx.fillRect(px + 4, py + TILE/2 - 1 + ripple, TILE - 8, 2);
-      // ===== A second subtle band for depth (below the foam) =====
-      ctx.fillStyle = `rgba(125,211,245,${aFinal * 0.25})`;
+      // Second subtle depth band below the foam
+      ctx.fillStyle = `rgba(125,211,245,${aFinal * 0.28})`;
       ctx.fillRect(px + 4, py + TILE - 8 + Math.sin(now / 500 + x) * 0.8, TILE - 8, 1);
-      // ===== A rare tiny glint — feels like a sun-catch on water =====
-      // ~3% chance per cell per frame (effectively sparse).
+
+      // ===== MOVING DROPLET — visible "head" of the water =====
+      // Bobs in a small elliptical path inside the cell, faster
+      // when arrivalBoost is high (the droplet is "leading" the flow).
+      const dropSpeed = 800 + (1 - breath) * 400; // 400–800ms per loop
+      const dropAng = (now / dropSpeed + sourcePhase + cellPhase) * Math.PI * 2;
+      const dropRadiusX = 14;     // horizontal sway (px)
+      const dropRadiusY = 6;      // vertical sway (px)
+      const dropCx = px + TILE/2 + Math.cos(dropAng) * dropRadiusX;
+      const dropCy = py + TILE/2 + Math.sin(dropAng * 1.3) * dropRadiusY;
+
+      // Trailing wisp — a small streak behind the droplet
+      const trailDx = -Math.sin(dropAng) * 6;
+      const trailDy = -Math.cos(dropAng * 1.3) * 3;
+      ctx.fillStyle = `rgba(255,255,255,${0.35 * aFinal})`;
+      ctx.fillRect(dropCx + trailDx - 2, dropCy + trailDy - 0.5, 5, 1);
+      // Tiny secondary wisp
+      ctx.fillStyle = `rgba(125,211,245,${0.5 * aFinal})`;
+      ctx.fillRect(dropCx + trailDx * 1.8 - 1, dropCy + trailDy * 1.8 - 0.5, 3, 1);
+
+      // The droplet itself — a small bright teardrop
+      ctx.fillStyle = `rgba(255,255,255,${0.85 * aFinal})`;
+      ctx.beginPath();
+      ctx.arc(dropCx, dropCy, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+      // Soft glow around the droplet
+      ctx.fillStyle = `rgba(125,211,245,${0.55 * aFinal})`;
+      ctx.beginPath();
+      ctx.arc(dropCx, dropCy, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ===== FLOW-DIRECTION CHEVRON =====
+      // Look at the 4 neighbors; the one with the lowest `t` is
+      // upstream. We draw a small chevron pointing in the flow
+      // direction so the user can see where the water is heading.
+      // (If no upstream neighbor found, the cell is the source —
+      // show a small radial pulse instead.)
+      let fromX = 0, fromY = 0, foundUpstream = false;
+      const t = data.t;
+      // Check the 4 orthogonal neighbors
+      const neighborOffsets = [[1,0],[-1,0],[0,1],[0,-1]];
+      let bestT = -Infinity;
+      for (let i = 0; i < 4; i++) {
+        const nx = x + neighborOffsets[i][0];
+        const ny = y + neighborOffsets[i][1];
+        if (nx < 0 || ny < 0 || nx >= GRID_W || ny >= GRID_H) continue;
+        const nk = key(nx, ny);
+        const nd = state.waterCells.get(nk);
+        if (nd && nd.t < t && nd.t > bestT) {
+          bestT = nd.t;
+          fromX = neighborOffsets[i][0];
+          fromY = neighborOffsets[i][1];
+          foundUpstream = true;
+        }
+      }
+
+      if (foundUpstream) {
+        // The water came FROM (fromX, fromY) and is flowing TOWARD
+        // (-fromX, -fromY). Draw a chevron pointing in the flow
+        // direction. Subtle — just a hint.
+        const cx = px + TILE/2;
+        const cy = py + TILE/2;
+        const dist = 8; // how far from center
+        const tipX = cx - fromX * dist;
+        const tipY = cy - fromY * dist;
+        const baseAX = cx + fromX * 3 - fromY * 4;
+        const baseAY = cy + fromY * 3 + fromX * 4;
+        const baseBX = cx + fromX * 3 + fromY * 4;
+        const baseBY = cy + fromY * 3 - fromX * 4;
+        // Fade the chevron based on alpha pulse
+        const chevAlpha = 0.18 + 0.12 * breath;
+        ctx.fillStyle = `rgba(234,247,251,${chevAlpha})`;
+        ctx.beginPath();
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(baseAX, baseAY);
+        ctx.lineTo(baseBX, baseBY);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        // Source cell — small radial pulse (the spring is the origin)
+        const pulse = 0.5 + 0.5 * Math.sin(now / 500);
+        const ringR = 8 + pulse * 6;
+        ctx.strokeStyle = `rgba(234,247,251,${0.25 + 0.15 * pulse})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(px + TILE/2, py + TILE/2, ringR, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // ===== ARRIVAL RIPPLE — when water first reaches this cell =====
+      // For the first 8 frames after arrival, draw an expanding ring
+      // (it grows and fades out, like a stone dropped in water).
+      if (data.t < 8) {
+        const ringT = data.t / 8; // 0..1
+        const ringR = 4 + ringT * (TILE * 0.6);
+        const ringAlpha = (1 - ringT) * 0.5;
+        ctx.strokeStyle = `rgba(234,247,251,${ringAlpha})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(px + TILE/2, py + TILE/2, ringR, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // ===== A rare sun-catch glint (~3% of cells) =====
       if (((x * 53 + y * 17 + Math.floor(now / 600)) % 31) === 0) {
-        ctx.fillStyle = 'rgba(255,255,255,.18)';
+        ctx.fillStyle = 'rgba(255,255,255,.22)';
         ctx.fillRect(px + 8 + ((x*7) % (TILE - 16)), py + 8 + ((y*5) % (TILE - 16)), 1.5, 1.5);
       }
     });
@@ -4637,12 +4788,102 @@ er-section" id="baxt">
       });
     });
     state.waterCells = newWater;
+
+    // ===== WISP AUTO-SPAWN: a small white particle drifts in a
+    // random water cell every tick, biased in the flow direction.
+    // This makes the water feel like it has a current — you can
+    // see the "stuff" in the water moving. =====
+    if (newWater.size > 0) {
+      const cellCount = newWater.size;
+      // Spawn 1 wisp per ~6 cells (so a small level has 1-2 wisps,
+      // a big level has 5-6). Throttled to keep the particle array
+      // manageable.
+      const wispCount = Math.max(1, Math.floor(cellCount / 6));
+      for (let i = 0; i < wispCount; i++) {
+        // Pick a random water cell
+        const keys = [...newWater.keys()];
+        const rk = keys[Math.floor(Math.random() * keys.length)];
+        const [wx, wy] = rk.split(',').map(Number);
+        const cellData = newWater.get(rk);
+        // Find the downstream direction (where the water is heading)
+        // by looking at the cell's neighbors. The neighbor with the
+        // HIGHER t is downstream (water arrived later).
+        let dx = 0, dy = 0;
+        let bestT = -Infinity;
+        const neighborOffsets = [[1,0],[-1,0],[0,1],[0,-1]];
+        for (let j = 0; j < 4; j++) {
+          const nx = wx + neighborOffsets[j][0];
+          const ny = wy + neighborOffsets[j][1];
+          if (nx < 0 || ny < 0 || nx >= GRID_W || ny >= GRID_H) continue;
+          const nd = newWater.get(key(nx, ny));
+          if (nd && nd.t > cellData.t && nd.t > bestT) {
+            bestT = nd.t;
+            dx = neighborOffsets[j][0];
+            dy = neighborOffsets[j][1];
+          }
+        }
+        // If no downstream found, just go in a random direction
+        if (dx === 0 && dy === 0) {
+          const idx = Math.floor(Math.random() * 4);
+          dx = neighborOffsets[idx][0];
+          dy = neighborOffsets[idx][1];
+        }
+        // Slight random offset so multiple wisps don't all spawn
+        // from the exact center
+        const ox = (Math.random() - 0.5) * 6;
+        const oy = (Math.random() - 0.5) * 6;
+        // Push a single tiny wisp into the particle array
+        if (typeof particles !== 'undefined' && particles) {
+          particles.push({
+            x: wx * TILE + TILE/2 + ox,
+            y: wy * TILE + TILE/2 + oy,
+            vx: dx * (0.7 + Math.random() * 0.4),
+            vy: dy * (0.7 + Math.random() * 0.4),
+            life: 0,
+            maxLife: 30 + Math.random() * 15,
+            color: Math.random() < 0.5 ? '#EAF7FB' : '#7DD3F5',
+            size: 1.2 + Math.random() * 1.0,
+            gravity: 0,
+            shape: 'spark',
+            rot: Math.random() * Math.PI * 2,
+            spin: (Math.random() - 0.5) * 0.1,
+            trail: 0,
+          });
+        }
+      }
+    }
+
+    // ===== SPRING BUBBLES: every 3rd tick, spawn a small rising
+    // bubble at each spring. Makes the source feel alive. =====
+    if (tickCounter === undefined) tickCounter = 0;
+    tickCounter++;
+    if (tickCounter % 3 === 0 && state.sources) {
+      state.sources.forEach(s => {
+        if (typeof particles !== 'undefined' && particles) {
+          particles.push({
+            x: s.x * TILE + TILE/2 + (Math.random() - 0.5) * 6,
+            y: s.y * TILE + TILE - 8,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: -0.5 - Math.random() * 0.3,
+            life: 0,
+            maxLife: 40 + Math.random() * 20,
+            color: '#EAF7FB',
+            size: 1 + Math.random() * 1.2,
+            gravity: -0.02, // float up slowly
+            shape: 'circle',
+            rot: 0, spin: 0,
+            trail: 0,
+          });
+        }
+      });
+    }
   }
 
   function startFlow() {
     if (state.running) return;
     state.running = true;
     const parsed = parseLevel(level);
+    state.sources = parsed.sources.slice(); // keep a copy for bubble spawning
     parsed.sources.forEach((s, idx) => {
       state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
     });
@@ -5023,6 +5264,7 @@ er-section" id="baxt">
       stopFlow();
       // Clear water cells
       state.waterCells = new Map();
+      state.sources = [];
       // Don't run tutorial in build mode
       state.tutorialActive = false;
       // Hide the bubble in build mode
@@ -5703,6 +5945,7 @@ er-section" id="baxt">
         state.grid = parsed2.grid;
         state.goals = parsed2.goals;
         state.waterCells = new Map();
+        state.sources = parsed2.sources.slice();
         state.reached = { spring: false, farm: false, village: false, wheel: false };
         state.dropsPlaced = 0;
         state.levelStartTime = Date.now();
@@ -6099,5 +6342,5 @@ er-section" id="baxt">
   })();
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1b4be1998bc05a4',t:'MTc4NDA3NjMwNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
