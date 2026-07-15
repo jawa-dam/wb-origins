@@ -108,7 +108,7 @@
     .splash-ambient .clouds { position: absolute; inset: 0; }
     .splash-ambient .cloud {
       position: absolute; background: rgba(125,211,245,.05);
-      border-radius: 100px; filter: blur(3px);
+      border-radius: 100px; filter: none !important;
     }
     .splash-ambient .cloud::before, .splash-ambient .cloud::after {
       content: ""; position: absolute; background: rgba(125,211,245,.05); border-radius: 50%;
@@ -339,7 +339,7 @@
   @keyframes float-y { 50% { transform: translateY(-10px); } }
   .clouds { position: absolute; inset: 0; }
   .cloud {
-    position: absolute; background: rgba(125,211,245,.05); border-radius: 100px; filter: blur(3px);
+    position: absolute; background: rgba(125,211,245,.05); border-radius: 100px; filter: none !important;
   }
   .cloud::before, .cloud::after { content: ""; position: absolute; background: rgba(125,211,245,.05); border-radius: 50%; }
   .cloud-a { top: 20%; left: -10%; width: 260px; height: 60px; animation: drift 35s linear infinite; }
@@ -378,8 +378,8 @@
     display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
     padding: 1rem 1.6rem;
     background: linear-gradient(180deg, rgba(5,11,20,.85) 0%, rgba(5,11,20,0) 100%);
-    backdrop-filter: saturate(140%) blur(10px);
-    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   .brand { display: flex; align-items: center; gap: .8rem; color: var(--ink); }
   .brand-mark { position: relative; width: 40px; height: 50px; display: grid; place-items: center; }
@@ -594,7 +594,7 @@
     position: absolute; bottom: 16px; left: 16px;
     display: inline-flex; align-items: center; gap: .5em;
     padding: .4em .85em;
-    background: rgba(5,11,20,.65); backdrop-filter: blur(8px);
+    background: rgba(5,11,20,.65); backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2); border-radius: var(--r-pill);
     font-family: var(--f-mono); font-size: .68rem;
     text-transform: uppercase; letter-spacing: .15em;
@@ -609,7 +609,7 @@
   .stage-hint {
     position: absolute; top: 64px; right: 16px;
     padding: .35em .8em;
-    background: rgba(5,11,20,.6); backdrop-filter: blur(6px);
+    background: rgba(5,11,20,.6); backdrop-filter: none !important;
     border: 1px solid rgba(255,200,87,.2); border-radius: var(--r-pill);
     font-family: var(--f-mono); font-size: .65rem;
     color: var(--sun); letter-spacing: .1em;
@@ -628,7 +628,7 @@
     display: flex; gap: .8rem; align-items: flex-start;
     padding: .9rem 1rem;
     background: rgba(10,22,38,.92);
-    backdrop-filter: blur(12px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.25);
     border-radius: var(--r-md);
     box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.08);
@@ -804,7 +804,7 @@
     display: inline-flex; gap: 4px;
     padding: 4px;
     background: rgba(5,11,20,.7);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: var(--r-pill);
     z-index: 6;
@@ -836,7 +836,7 @@
     display: inline-flex; gap: 0;
     padding: 3px;
     background: rgba(5,11,20,.7);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: var(--r-pill);
     z-index: 6;
@@ -1038,7 +1038,7 @@
   .stage-undo, .stage-fullscreen {
     width: 32px; height: 32px;
     background: rgba(5,11,20,.6);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: 8px;
     color: var(--ink-soft);
@@ -1254,7 +1254,7 @@
     top: 90px; right: 1.6rem;
     width: 40px; height: 40px;
     background: rgba(15,32,54,.7);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: 50%;
     color: var(--ink-soft);
@@ -1269,7 +1269,7 @@
   .settings-modal {
     position: fixed; inset: 0;
     background: rgba(5,11,20,.75);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     z-index: 250;
     display: flex; align-items: center; justify-content: center;
     padding: 1.5rem;
@@ -1403,7 +1403,7 @@
     align-items: center; justify-content: center;
     flex-direction: column;
     background: radial-gradient(ellipse at center, rgba(255,200,87,.18) 0%, rgba(10,22,38,.85) 60%, rgba(5,11,20,.95) 100%);
-    backdrop-filter: blur(6px);
+    backdrop-filter: none !important;
     border-radius: var(--r-xl);
     z-index: 60;
     padding: 1.5rem;
@@ -1531,7 +1531,7 @@
     display: flex; flex-direction: column; gap: 6px;
     padding: 6px;
     background: rgba(5,11,20,.7);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: var(--r-md);
     z-index: 6;
@@ -1586,7 +1586,7 @@
     position: absolute; inset: 0;
     display: grid; place-items: center;
     background: rgba(5,11,20,.85);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border-radius: var(--r-xl);
     z-index: 50;
     padding: 20px;
@@ -1722,7 +1722,7 @@
     display: none; align-items: center; gap: .4rem;
     padding: .35em .8em .35em .35em;
     background: rgba(10,22,38,.85);
-    backdrop-filter: blur(10px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: var(--r-pill);
     cursor: pointer;
@@ -1749,7 +1749,7 @@
     top: 16px; left: 16px;
     width: 32px; height: 32px;
     background: rgba(5,11,20,.6);
-    backdrop-filter: blur(8px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.2);
     border-radius: 50%;
     color: var(--w-glow);
@@ -1776,7 +1776,7 @@
     transform: translateX(-50%) translateY(-10px);
     padding: .5em 1em;
     background: rgba(10,22,38,.92);
-    backdrop-filter: blur(10px);
+    backdrop-filter: none !important;
     border: 1px solid rgba(125,211,245,.3);
     border-radius: var(--r-pill);
     font-family: var(--f-mono);
@@ -2761,11 +2761,14 @@
   border: 2px solid rgba(125,211,245,0.15) !important;
   border-radius: var(--r-md) !important;
   padding: 8px 12px !important;
-  display: flex !important;
+  display: flex;
   justify-content: center !important;
   gap: 8px !important;
   width: 100% !important;
   margin-top: 6px;
+}
+.stage-palette[hidden] {
+  display: none !important;
 }
 .pal-btn {
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
@@ -2885,7 +2888,7 @@
   position: absolute;
   background: rgba(255, 255, 255, 0.12);
   border-radius: 100px;
-  filter: blur(4px);
+  filter: none !important;
 }
 
 .intro-cloud::before, .intro-cloud::after {
@@ -3019,7 +3022,7 @@
   position: absolute;
   background: rgba(255, 255, 255, 0.25);
   border-radius: 50%;
-  filter: blur(2px);
+  filter: none !important;
   pointer-events: none;
   z-index: 6;
   animation: smoke-float 3s ease-out forwards;
@@ -3607,7 +3610,7 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  backdrop-filter: blur(8px);
+  backdrop-filter: none !important;
 }
 
 .intro-skip:hover {
@@ -4335,6 +4338,9 @@
           <button class="pal-btn" data-tool="farm" title="Farm">🌾</button>
           <button class="pal-btn" data-tool="village" title="Village">🏠</button>
           <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
+          <button class="pal-btn" data-tool="pond" title="Pond">🌊</button>
+          <button class="pal-btn" data-tool="dam" title="Dam">🪵</button>
+          <button class="pal-btn" data-tool="canal" title="Canal">🛠️</button>
           <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
           <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
           <button class="pal-btn pal-clear" data-tool="clear" title="Clear all">🗑</button>
@@ -5889,16 +5895,16 @@ window.WaterSystem = WaterSystem;
       grid: [
         '...............',
         '...............',
-        '..#######......',
         '...............',
-        '..~---------F..',
+        '..~............',
         '...............',
-        '......#######..',
+        '...............',
+        '.............F.',
         '...............',
         '...............',
       ],
-      goals: { spring: { x: 2, y: 4 }, farm: { x: 12, y: 4 } },
-      par: { drops: 10, time: 60 },
+      goals: { spring: { x: 2, y: 3 }, farm: { x: 13, y: 6 } },
+      par: { drops: 12, time: 60 },
     },
     {
       id: '1-2', name: 'Diverting the Flow',
@@ -7585,13 +7591,38 @@ window.WaterSystem = WaterSystem;
   state.mode = 'play';
   state.buildTool = 'spring';
 
+    function parseActiveGrid() {
+    const sources = [];
+    const goals = { farm: [], village: [], wheel: [], pond: [] };
+    for (let y = 0; y < GRID_H; y++) {
+      for (let x = 0; x < GRID_W; x++) {
+        const cell = state.grid[y][x];
+        state.waterCells.delete(key(x, y));
+        if (cell.feature && cell.feature.type === 'spring') {
+          sources.push({ x, y });
+        } else if (cell.feature && cell.feature.type === 'farm') {
+          goals.farm.push({ x, y });
+        } else if (cell.feature && cell.feature.type === 'village') {
+          goals.village.push({ x, y });
+        } else if (cell.feature && cell.feature.type === 'wheel') {
+          goals.wheel.push({ x, y });
+        } else if (cell.feature && cell.feature.type === 'pond') {
+          goals.pond.push({ x, y });
+        }
+      }
+    }
+    return { sources, goals };
+  }
+
   function setMode(mode) {
     if (mode === state.mode) return;
     state.mode = mode;
+    
     // Update mode buttons
     document.querySelectorAll('.mode-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.mode === mode);
     });
+    
     // Show/hide palette, share button, and play tool selector
     const palette = document.getElementById('stagePalette');
     const share = document.getElementById('stageShare');
@@ -7599,6 +7630,7 @@ window.WaterSystem = WaterSystem;
     if (playToolSel) {
       playToolSel.style.display = (mode === 'play') ? 'flex' : 'none';
     }
+    
     if (mode === 'build') {
       if (palette) palette.hidden = false;
       if (share) share.hidden = false;
@@ -7617,9 +7649,24 @@ window.WaterSystem = WaterSystem;
       if (share) share.hidden = true;
       const bubble = document.getElementById('baxterBubble');
       if (bubble) bubble.style.display = '';
-      state.tutorialActive = true;
-      // Restart the level
-      loadLevel(state.levelIndex);
+      
+      // Load custom grid designed in Build Mode for live sandboxed testing!
+      const parsedCustom = parseActiveGrid();
+      state.sources = parsedCustom.sources;
+      state.goals = parsedCustom.goals;
+      state.waterCells = new Map();
+      state.reached = { spring: false, farm: false, village: false, wheel: false, pond: false };
+      state.dropsPlaced = 0;
+      state.undoStack = [];
+      state.levelStartTime = Date.now();
+      state.inventory.canal = 30; // give plenty of canals to test!
+      
+      stopFlow();
+      state.sources.forEach((s, idx) => {
+        state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
+      });
+      state.reached.spring = true;
+      state.tickHandle = setInterval(tickFlow, WATER_SPEED);
     }
     render();
   }
@@ -7683,8 +7730,15 @@ window.WaterSystem = WaterSystem;
       render();
       return;
     }
+    if (state.buildTool === 'dam' || state.buildTool === 'canal') {
+      cell.terrain = 'grass';
+      cell.feature = null;
+      cell.build = { type: state.buildTool };
+      render();
+      return;
+    }
     // Goals: farm, village, wheel
-    const goalTypes = ['farm', 'village', 'wheel'];
+    const goalTypes = ['farm', 'village', 'wheel', 'pond'];
     if (goalTypes.includes(state.buildTool)) {
       // Clear any existing goal of this type (only one of each for simplicity)
       for (let yy = 0; yy < GRID_H; yy++) {
@@ -7713,6 +7767,9 @@ window.WaterSystem = WaterSystem;
         else if (c.feature && c.feature.type === 'farm') out += 'F';
         else if (c.feature && c.feature.type === 'village') out += 'V';
         else if (c.feature && c.feature.type === 'wheel') out += 'W';
+        else if (c.feature && c.feature.type === 'pond') out += 'P';
+        else if (c.build && c.build.type === 'canal') out += 'c';
+        else if (c.build && c.build.type === 'dam') out += 'd';
         else if (c.terrain === 'rock') out += '#';
         else out += '.';
       }
@@ -7733,6 +7790,9 @@ window.WaterSystem = WaterSystem;
         else if (ch === 'F') cell.feature = { type: 'farm' };
         else if (ch === 'V') cell.feature = { type: 'village' };
         else if (ch === 'W') cell.feature = { type: 'wheel' };
+        else if (ch === 'P') cell.feature = { type: 'pond' };
+        else if (ch === 'c') cell.build = { type: 'canal' };
+        else if (ch === 'd') cell.build = { type: 'dam' };
         row.push(cell);
       }
       grid.push(row);
@@ -8208,7 +8268,26 @@ window.WaterSystem = WaterSystem;
     document.querySelectorAll('.pal-btn').forEach(b => {
       b.addEventListener('click', (e) => {
         e.stopPropagation();
-        setBuildTool(b.dataset.tool);
+        const tool = b.dataset.tool;
+        if (tool === 'clear') {
+          // Instant clear the entire canvas on tap!
+          if (confirm('Clear the entire canvas to start fresh?')) {
+            for (let yy = 0; yy < GRID_H; yy++) {
+              for (let xx = 0; xx < GRID_W; xx++) {
+                state.grid[yy][xx] = { terrain: 'grass', build: null, feature: null };
+              }
+            }
+            // Pre-place a spring and a farm as a starting canvas template
+            state.grid[3][2] = { terrain: 'rock', build: null, feature: { type: 'spring' } };
+            state.grid[6][13] = { terrain: 'grass', build: null, feature: { type: 'farm' } };
+            render();
+            try {
+              if (window.SoundSystem) window.SoundSystem.place();
+            } catch (err) {}
+          }
+        } else {
+          setBuildTool(tool);
+        }
       });
     });
 
@@ -9606,5 +9685,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bac8511fb623ad',t:'MTc4NDEzOTY0MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
