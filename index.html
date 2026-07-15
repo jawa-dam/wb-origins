@@ -2889,6 +2889,14 @@
   }
 }
 
+
+/* =========================================================
+   FULLSCREEN ICON TOGGLES (Milestone 6)
+   ========================================================= */
+.stage-fullscreen .ic-shrink { display: none !important; }
+.stage-fullscreen.active .ic-expand { display: none !important; }
+.stage-fullscreen.active .ic-shrink { display: inline !important; }
+
   </style>
   <style>
   /* =========================================================
@@ -4388,7 +4396,7 @@
           <!-- Text Label on the Left -->
           <div class="stage-tool-label">🛠️ TOOLS:</div>
 
-          <!-- Floating Play Mode Tool Selector (River vs Dam vs Gate) -->
+          <!-- Floating Play Mode Tool Selector (River vs Dam) -->
           <div class="play-tool-selector" id="playToolSelector">
             <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="River Channel (Conducts flow)">
               <span class="play-tool-icon">💧</span>
@@ -4397,10 +4405,6 @@
             <button class="play-tool-btn" id="playToolDam" data-tool="dam" title="Log Dam (Blocks flow)">
               <span class="play-tool-icon">🪵</span>
               <span class="play-tool-label">Dam</span>
-            </button>
-            <button class="play-tool-btn" id="playToolGate" data-tool="gate" title="Water Gate (Taps to open/close & release water!)">
-              <span class="play-tool-icon">🚪</span>
-              <span class="play-tool-label">Gate</span>
             </button>
           </div>
 
@@ -4412,8 +4416,13 @@
               </svg>
             </button>
             <button class="stage-fullscreen" id="stageFullscreen" title="Toggle fullscreen" aria-label="Fullscreen">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+              <!-- Expand Icon -->
+              <svg class="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>
+              </svg>
+              <!-- Shrink / Exit Icon (Visible in virtual fullscreen) -->
+              <svg class="ic-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; display: none;">
+                <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/>
               </svg>
             </button>
           </div>
@@ -4460,12 +4469,8 @@
         <!-- Build palette (only shown in Build mode) -->
         <div class="stage-palette" id="stagePalette" hidden>
           <button class="pal-btn active" data-tool="spring" title="Spring">💧</button>
-          <button class="pal-btn" data-tool="farm" title="Farm">🌾</button>
-          <button class="pal-btn" data-tool="village" title="Village">🏠</button>
           <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
-          <button class="pal-btn" data-tool="pond" title="Pond">🌊</button>
           <button class="pal-btn" data-tool="dam" title="Dam">🪵</button>
-          <button class="pal-btn" data-tool="gate" title="Water Gate">🚪</button>
           <button class="pal-btn" data-tool="canal" title="Canal">🛠️</button>
           <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
           <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
@@ -6019,7 +6024,7 @@ window.WaterSystem = WaterSystem;
         '...............',
         '..#######......',
         '...............',
-        '..~----d----W..',
+        '..~.cccdccccW..',
         '...............',
         '......#######..',
         '...............',
@@ -6294,7 +6299,7 @@ window.WaterSystem = WaterSystem;
         else if (ch === 'W') { cell.feature = { type: 'wheel' }; goals.wheel.push({ x, y }); }
         else if (ch === 'P') { cell.feature = { type: 'pond' }; goals.pond = goals.pond || []; goals.pond.push({ x, y }); }
         else if (ch === 'c') { cell.build = { type: 'canal' }; }
-        else if (ch === 'd') { cell.build = { type: 'dam' }; }
+        else if (ch === 'd') { cell.build = { type: 'gate', open: false }; }
         line.push(cell);
       }
       grid.push(line);
@@ -7078,6 +7083,7 @@ window.WaterSystem = WaterSystem;
 
   // ---- Logic ----
   function canPlace(x, y) {
+    if (typeof x === 'object' && x !== null) { y = x.y; x = x.x; }
     if (x < 0 || y < 0 || x >= GRID_W || y >= GRID_H) return false;
     const cell = state.grid[y][x];
     if (!cell || cell.feature) return false;
@@ -7089,6 +7095,7 @@ window.WaterSystem = WaterSystem;
   }
 
   function place(x, y) {
+    if (typeof x === 'object' && x !== null) { y = x.y; x = x.x; }
     if (!canPlace(x, y)) return false;
     // Tutorial gate
     if (state.tutorialActive) {
@@ -7590,6 +7597,7 @@ window.WaterSystem = WaterSystem;
   }
 
   function handleCanvasClick(x, y) {
+    if (typeof x === 'object' && x !== null) { y = x.y; x = x.x; }
     Sound.click();
     if (state.mode === 'build') {
       handleBuildClick(x, y);
@@ -7813,6 +7821,7 @@ window.WaterSystem = WaterSystem;
 
   // Build mode click handler
   function handleBuildClick(x, y) {
+    if (typeof x === 'object' && x !== null) { y = x.y; x = x.x; }
     if (x < 0 || y < 0 || x >= GRID_W || y >= GRID_H) return;
     const cell = state.grid[y][x];
     if (!cell) return;
@@ -7932,7 +7941,7 @@ window.WaterSystem = WaterSystem;
         else if (ch === 'W') cell.feature = { type: 'wheel' };
         else if (ch === 'P') cell.feature = { type: 'pond' };
         else if (ch === 'c') cell.build = { type: 'canal' };
-        else if (ch === 'd') cell.build = { type: 'dam' };
+        else if (ch === 'd') cell.build = { type: 'gate', open: false };
         row.push(cell);
       }
       grid.push(row);
@@ -8264,6 +8273,14 @@ window.WaterSystem = WaterSystem;
     
     // Toggle virtual fullscreen class for compatibility with sandboxed iframes
     stage.classList.toggle('virtual-fs');
+    
+    // Toggle active class on the button itself to switch between expand and exit icons
+    const fsBtn = document.getElementById('stageFullscreen');
+    if (fsBtn) {
+      const isFS = stage.classList.contains('virtual-fs');
+      fsBtn.classList.toggle('active', isFS);
+      fsBtn.title = isFS ? "Exit Fullscreen" : "Toggle Fullscreen";
+    }
     
     // Fallback to native fullscreen if supported and permitted
     try {
@@ -9916,5 +9933,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bb3c57ff9cd32b',t:'MTc4NDE0NDM5Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bb551279f8e644',t:'MTc4NDE0NTQwNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
