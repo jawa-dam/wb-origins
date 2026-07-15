@@ -634,8 +634,15 @@
     box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.08);
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity .4s var(--ease-splash), transform .4s var(--ease-splash);
-    pointer-events: auto;
+    transition: opacity .4s var(--ease-splash), transform .4s var(--ease-splash), visibility .4s;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .bubble-wrap:not(.dismissed) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
   }
   .bubble-wrap.bubble-enter {
     opacity: 1;
@@ -1390,9 +1397,10 @@
   /* =========================================================
      VICTORY OVERLAY — appears when a goal is reached
      ========================================================= */
-  .victory-overlay {
+.victory-overlay {
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
+    display: none !important;
+    align-items: center; justify-content: center;
     flex-direction: column;
     background: radial-gradient(ellipse at center, rgba(255,200,87,.18) 0%, rgba(10,22,38,.85) 60%, rgba(5,11,20,.95) 100%);
     backdrop-filter: blur(6px);
@@ -1403,7 +1411,11 @@
     pointer-events: none;
     transition: opacity .5s var(--ease-splash);
   }
-  .victory-overlay.show { opacity: 1; pointer-events: auto; }
+.victory-overlay.show { 
+    display: flex !important;
+    opacity: 1; 
+    pointer-events: auto; 
+  }
   .victory-rays {
     position: absolute; inset: 0;
     background: conic-gradient(from 0deg,
@@ -2547,6 +2559,219 @@
 .stage-frame.virtual-fs #heroCanvas {
   width: 100% !important;
   height: calc(100% - 60px) !important; /* reserve space for toolbar */
+}
+
+
+/* =========================================================
+   SPACED-OUT GAME AREA LAYOUT (Milestone 6)
+   ========================================================= */
+.hero-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 580px;
+  justify-self: end;
+  background: transparent;
+}
+
+/* Header Row */
+.stage-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+.stage-tag {
+  position: static !important;
+  background: rgba(125,211,245,0.12) !important;
+  border: 1px solid rgba(125,211,245,0.2) !important;
+  border-radius: var(--r-sm);
+  padding: 4px 10px;
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  color: var(--w-glow);
+}
+
+/* Selector & Extra Row */
+.stage-selector-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15,32,54,0.4);
+  border: 2px solid rgba(125,211,245,0.15);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  gap: 12px;
+}
+.play-tool-selector {
+  position: static !important;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px;
+}
+
+/* Beautiful Interactive Buttons Animating on Hover */
+.play-tool-btn, .stage-undo, .stage-fullscreen, .stage-mute, .sp-btn, .mode-btn {
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+.play-tool-btn:hover, .stage-undo:hover, .stage-fullscreen:hover, .stage-mute:hover, .sp-btn:hover, .mode-btn:hover {
+  transform: scale(1.12) translateY(-2px) !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4) !important;
+  filter: brightness(1.1);
+}
+.play-tool-btn:active, .stage-undo:active, .stage-fullscreen:active, .stage-mute:active, .sp-btn:active, .mode-btn:active {
+  transform: scale(0.94) translateY(2px) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+/* Spaced out extra controls (Undo & Fullscreen) */
+.stage-extra-controls {
+  position: static !important;
+  display: flex !important;
+  gap: 8px;
+  padding: 0;
+}
+.stage-undo, .stage-fullscreen {
+  position: static !important;
+  width: 38px !important;
+  height: 38px !important;
+  background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%) !important;
+  border: 2px solid #3D2415 !important;
+  border-radius: var(--r-md) !important;
+  color: var(--cream) !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #3D2415 !important;
+}
+
+/* Core Canvas Frame Container - Fully Clean */
+.stage-frame {
+  position: relative !important;
+  width: 100% !important;
+  aspect-ratio: 1.667 / 1 !important; /* Lock to 15:9 aspect ratio */
+  border-radius: var(--r-lg) !important;
+  overflow: hidden !important;
+  box-shadow: 
+    0 0 0 1px rgba(125,211,245,.25), 
+    0 0 80px rgba(125,211,245,.2), 
+    0 25px 60px rgba(0,0,0,.6) !important;
+  background: var(--night-1) !important;
+}
+#heroCanvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Spaced Out Controls Row below Canvas */
+.stage-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15,32,54,0.4);
+  border: 2px solid rgba(125,211,245,0.15);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  gap: 12px;
+}
+
+/* Beautiful Handcrafted Volume Button (Wooden look!) */
+.stage-mute {
+  position: static !important;
+  width: 42px !important;
+  height: 42px !important;
+  background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%) !important;
+  border: 2px solid #3D2415 !important;
+  border-radius: var(--r-md) !important;
+  color: var(--cream) !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #3D2415, 0 4px 8px rgba(0,0,0,0.3) !important;
+}
+.stage-mute svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+.stage-mute.muted {
+  background: linear-gradient(135deg, #B5ADA0 0%, #7A7064 100%) !important;
+  border-color: #5A5048 !important;
+  box-shadow: 0 4px 0 #5A5048, 0 4px 8px rgba(0,0,0,0.2) !important;
+  color: #1A1208 !important;
+}
+
+/* Spaced Sound Mood Picker */
+.stage-sound-picker {
+  position: static !important;
+  display: flex !important;
+  background: rgba(5,11,20,0.6) !important;
+  border: 1px solid rgba(125,211,245,0.2) !important;
+  border-radius: var(--r-pill) !important;
+  padding: 4px;
+  gap: 4px;
+}
+.sp-btn {
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--r-pill) !important;
+  padding: 5px 12px !important;
+  color: var(--ink-soft) !important;
+  font-family: var(--f-body) !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
+.sp-btn.active {
+  background: linear-gradient(135deg, #4FB3D9 0%, #1A6E94 100%) !important;
+  color: var(--night-0) !important;
+}
+
+/* Spaced Mode Selector */
+.stage-mode {
+  position: static !important;
+  display: flex !important;
+  background: rgba(5,11,20,0.6) !important;
+  border: 1px solid rgba(125,211,245,0.2) !important;
+  border-radius: var(--r-pill) !important;
+  padding: 4px;
+  gap: 4px;
+}
+.mode-btn {
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--r-pill) !important;
+  padding: 5px 12px !important;
+  color: var(--ink-soft) !important;
+  font-family: var(--f-body) !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
+.mode-btn.active {
+  background: linear-gradient(135deg, #4FB3D9 0%, #1A6E94 100%) !important;
+  color: var(--night-0) !important;
+}
+
+/* Spaced Palette below stage */
+.stage-palette {
+  position: static !important;
+  background: rgba(15,32,54,0.4) !important;
+  border: 2px solid rgba(125,211,245,0.15) !important;
+  border-radius: var(--r-md) !important;
+  padding: 8px 12px !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-top: 6px;
+}
+.pal-btn {
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+.pal-btn:hover {
+  transform: scale(1.15) translateY(-2px) !important;
 }
 
   </style>
@@ -4028,12 +4253,17 @@
         </button>
       </div>
 
-      <!-- Interactive preview stage -->
+      <!-- Interactive spaced-out stage (Milestone 6) -->
       <div class="hero-stage">
-        <div class="stage-glow"></div>
-        <div class="stage-frame">
-          <canvas id="heroCanvas" aria-label="Interactive Water Builder preview — try placing a canal"></canvas>
+        
+        <!-- Header Row (Outside the Canvas) -->
+        <div class="stage-header-row">
+          <div class="stage-tag">World 1 · Live</div>
+          <div class="stage-seed" id="stageSeed" aria-live="polite">Daily Level</div>
+        </div>
 
+        <!-- Selector Row (Outside the Canvas, Spaced Out) -->
+        <div class="stage-selector-row">
           <!-- Floating Play Mode Tool Selector (Canal vs Dam) -->
           <div class="play-tool-selector" id="playToolSelector">
             <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="Water Canal (Conducts flow)">
@@ -4045,72 +4275,72 @@
               <span class="play-tool-label">Dam</span>
             </button>
           </div>
-          <div class="stage-overlay"></div>
-          <div class="stage-tag">World 1 · Live</div>
-          <div class="stage-hint" id="stageHint">Click the highlighted cell</div>
 
-          <!-- Bottom toolbar (visible on mobile; on desktop these are positioned absolutely) -->
-          <div class="stage-toolbar" aria-label="Game controls">
-            <!-- Mute toggle -->
-            <button class="stage-mute" id="stageMute" title="Toggle sound" aria-label="Toggle sound">
-              <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-              </svg>
-              <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                <line x1="23" y1="9" x2="17" y2="15"/>
-                <line x1="17" y1="9" x2="23" y2="15"/>
-              </svg>
-            </button>
-
-            <!-- Sound picker (forest / river / storm) -->
-            <div class="stage-sound-picker" id="stageSoundPicker" role="radiogroup" aria-label="Ambient sound">
-              <button class="sp-btn" data-mood="forest" title="Forest" aria-label="Forest">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L6 10 L9 10 L5 16 L10 16 L8 22 L16 22 L14 16 L19 16 L15 10 L18 10 Z"/></svg>
-              </button>
-              <button class="sp-btn active" data-mood="river" title="River" aria-label="River">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 12 C 4 8, 6 16, 8 12 S 12 8, 14 12 S 18 16, 20 12 S 22 8, 22 12 L 22 18 L 2 18 Z"/></svg>
-              </button>
-              <button class="sp-btn" data-mood="storm" title="Storm" aria-label="Storm">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4 L18 4 L14 11 L18 11 L8 20 L11 13 L7 13 Z"/></svg>
-              </button>
-            </div>
-
-            <!-- Mode toggle: Build / Play -->
-            <div class="stage-mode" id="stageMode" role="tablist" aria-label="Mode">
-              <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
-              <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
-            </div>
-          </div>
-
-          <!-- Top-right floating buttons: fullscreen + undo -->
+          <!-- Top-right controls: undo + fullscreen -->
           <div class="stage-extra-controls" aria-label="Game actions">
-            <button class="stage-undo" id="stageUndo" title="Undo last canal" aria-label="Undo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M9 14L4 9l5-5"/>
-                <path d="M4 9h11a5 5 0 0 1 0 10h-3"/>
+            <button class="stage-undo" id="stageUndo" title="Undo last action" aria-label="Undo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                <path d="M3 7v6h6M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
               </svg>
             </button>
-            <button class="stage-fullscreen" id="stageFullscreen" title="Fullscreen" aria-label="Fullscreen">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/>
+            <button class="stage-fullscreen" id="stageFullscreen" title="Toggle fullscreen" aria-label="Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>
               </svg>
             </button>
           </div>
+        </div>
 
-          <!-- Build palette (only shown in Build mode) -->
-          <div class="stage-palette" id="stagePalette" hidden>
-            <button class="pal-btn active" data-tool="spring" title="Spring">💧</button>
-            <button class="pal-btn" data-tool="farm" title="Farm">🌾</button>
-            <button class="pal-btn" data-tool="village" title="Village">🏠</button>
-            <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
-            <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
-            <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
-            <button class="pal-btn pal-clear" data-tool="clear" title="Clear all">🗑</button>
+        <!-- Core Canvas Container (completely clear of overlapping absolute buttons) -->
+        <div class="stage-frame">
+          <canvas id="heroCanvas" aria-label="Interactive Water Builder preview — try placing a canal"></canvas>
+          <div class="stage-overlay"></div>
+          <div class="stage-hint" id="stageHint">Click the highlighted cell</div>
+        </div>
+
+        <!-- Bottom Controls Row (Outside the Canvas, Spaced Out) -->
+        <div class="stage-controls-row">
+          <!-- Highly visible, beautifully styled volume button -->
+          <button class="stage-mute" id="stageMute" title="Toggle sound" aria-label="Toggle sound">
+            <!-- Icon On -->
+            <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            <!-- Icon Off -->
+            <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <line x1="23" y1="9" x2="17" y2="15"/>
+              <line x1="17" y1="9" x2="23" y2="15"/>
+            </svg>
+          </button>
+
+          <!-- Ambient sound mood picker -->
+          <div class="stage-sound-picker" id="stageSoundPicker" role="radiogroup" aria-label="Ambient sound">
+            <button class="sp-btn active" data-mood="river" role="radio" aria-checked="true">🌊 River</button>
+            <button class="sp-btn" data-mood="forest" role="radio" aria-checked="false">🌲 Forest</button>
+            <button class="sp-btn" data-mood="storm" role="radio" aria-checked="false">⚡ Storm</button>
           </div>
 
-          <!-- Share button removed (not needed per user feedback) -->
+          <!-- Mode selector: Play / Build -->
+          <div class="stage-mode" id="stageMode" role="tablist" aria-label="Mode">
+            <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
+            <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
+          </div>
+        </div>
+
+        <!-- Build palette (only shown in Build mode) -->
+        <div class="stage-palette" id="stagePalette" hidden>
+          <button class="pal-btn active" data-tool="spring" title="Spring">💧</button>
+          <button class="pal-btn" data-tool="farm" title="Farm">🌾</button>
+          <button class="pal-btn" data-tool="village" title="Village">🏠</button>
+          <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
+          <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
+          <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
+          <button class="pal-btn pal-clear" data-tool="clear" title="Clear all">🗑</button>
+        </div>
+
+      </div>
 
           <!-- Save modal -->
           <div class="stage-modal" id="stageModal" hidden>
@@ -4190,7 +4420,7 @@
           </div>
 
           <!-- Baxter speech bubble -->
-          <div class="bubble-wrap" id="baxterBubble">
+          <div class="bubble-wrap dismissed" id="baxterBubble">
             <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
             <button class="bubble-dismiss" id="bubbleDismiss" title="Hide Baxter" aria-label="Hide Baxter">×</button>
             <div class="bubble-portrait" aria-hidden="true">
@@ -9376,5 +9606,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1ba51429b1f0bb1',t:'MTc4NDEzNDc2Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
