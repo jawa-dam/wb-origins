@@ -3536,7 +3536,7 @@ button,
 }
 
 .intro-wheel.speeding {
-  animation-duration: 2.5s !important;
+  animation-duration: 0.6s !important; /* Spins lightning fast! */
 }
 
 /* Splashes from rotating water wheel */
@@ -3716,7 +3716,7 @@ button,
 .intro-baxter-container {
   position: absolute;
   bottom: 3.5vh;
-  right: 22%;
+  right: 34%; /* Moved further left, away from the tree! */
   width: 140px;
   height: 140px;
   z-index: 11;
@@ -3725,6 +3725,19 @@ button,
   /* Baxter enters walk timeline */
   transform: translateX(120vw);
   animation: baxter-enter-walk 4.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+/* Baxter tap bounce and squash-and-stretch cartoon movement */
+.intro-baxter-container.tapped {
+  animation: baxter-tapped-bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+@keyframes baxter-tapped-bounce {
+  0% { transform: scale(1) translateY(0); }
+  25% { transform: scale(1.2, 0.85) translateY(4px); } /* squish */
+  50% { transform: scale(0.9, 1.15) translateY(-35px); } /* jump high! */
+  75% { transform: scale(1.05, 0.95) translateY(2px); } /* squish land */
+  100% { transform: scale(1) translateY(0); }
 }
 
 @keyframes baxter-enter-walk {
@@ -9405,14 +9418,17 @@ window.WaterSystem = WaterSystem;
 
   // --- INTERACTIVE DETAILS ---
   function setupInteractions() {
-    // Click Baxter -> waves, smile/blink, happy sound
+    // Click Baxter -> waves, smile/blink, bounce high, happy double sounds
     baxter.addEventListener('click', (e) => {
       e.stopPropagation();
+      baxter.classList.add('tapped');
       baxter.classList.add('waving');
       baxter.classList.remove('pointing');
-      playLocalSound('chime');
+      playLocalSound('discover');
+      setTimeout(() => playLocalSound('chime'), 150); // double layer happy sounds!
       
       setTimeout(() => {
+        baxter.classList.remove('tapped');
         baxter.classList.remove('waving');
         if (signContainer.classList.contains('show')) {
           baxter.classList.add('pointing');
@@ -9420,11 +9436,12 @@ window.WaterSystem = WaterSystem;
       }, 2000);
     });
 
-    // Click Water Wheel -> spins faster, splashes, steam hiss sound
+    // Click Water Wheel -> spins lightning fast, splashes, steam hiss and chime sound!
     wheel.addEventListener('click', (e) => {
       e.stopPropagation();
       wheel.classList.add('speeding');
       playLocalSound('steam');
+      setTimeout(() => playLocalSound('chime'), 80); // water wheel chime splash sound!
       spawnWheelSplashes();
 
       setTimeout(() => {
@@ -10137,5 +10154,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bd59495bb3b7d7',t:'MTc4NDE2NjU0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bd6b7a2c192060',t:'MTc4NDE2NzI5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
