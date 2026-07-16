@@ -3107,6 +3107,63 @@ button,
   }
 }
 
+/* Bouncing Cinematic Achievement Toast */
+.cinematic-achievement-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120px);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #16304E 0%, #0A1626 100%);
+  border: 4px solid #FFD27D; /* Golden border! */
+  border-radius: 24px;
+  padding: 12px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  animation: cat-slide-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: none;
+}
+.cinematic-achievement-toast.hide {
+  animation: cat-slide-out 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+}
+
+@keyframes cat-slide-in {
+  0% { transform: translateX(-50%) translateY(-120px); }
+  100% { transform: translateX(-50%) translateY(0); }
+}
+@keyframes cat-slide-out {
+  0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-120px); opacity: 0; }
+}
+
+.cat-badge {
+  font-size: 2.5rem;
+  animation: cat-badge-bounce 1s ease-in-out infinite alternate;
+}
+@keyframes cat-badge-bounce {
+  from { transform: scale(1) rotate(-5deg); }
+  to { transform: scale(1.15) rotate(5deg); }
+}
+
+.cat-body {
+  display: flex;
+  flex-direction: column;
+}
+.cat-title {
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #FFD27D;
+}
+.cat-desc {
+  font-family: var(--f-body);
+  font-size: 0.9rem;
+  color: var(--cream);
+  margin-top: 2px;
+}
+
   </style>
   <style>
   /* =========================================================
@@ -3128,6 +3185,29 @@ button,
   align-items: center;
   transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 1.2s;
   user-select: none;
+}
+
+/* Screen shake effect for River clicks */
+.cinematic-intro.shaking {
+  animation: screen-shake 0.4s cubic-bezier(.36,.07,.19,.97) both !important;
+}
+
+@keyframes screen-shake {
+  10%, 90% { transform: translate3d(-2px, 2px, 0) rotate(-0.5deg); }
+  20%, 80% { transform: translate3d(3px, -3px, 0) rotate(0.5deg); }
+  30%, 50%, 70% { transform: translate3d(-4px, 4px, 0) rotate(-1deg); }
+  40%, 60% { transform: translate3d(4px, -4px, 0) rotate(1deg); }
+}
+
+/* Flowers glow and pulse effect */
+.intro-flowers-patch.glowing {
+  animation: flowers-glow-pulse 0.8s ease-in-out !important;
+}
+
+@keyframes flowers-glow-pulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  50% { transform: scale(1.3); filter: drop-shadow(0 0 15px #FFD27D) brightness(1.3); } /* golden pulse glow! */
+  100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
 }
 
 .cinematic-intro.hide {
@@ -3600,14 +3680,16 @@ button,
 }
 
 .intro-tree-svg.rustling {
-  animation: tree-rustle 0.8s ease-in-out;
+  animation: tree-sway-breeze 1.6s cubic-bezier(0.445, 0.05, 0.55, 0.95) forwards !important;
 }
 
-@keyframes tree-rustle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-3deg); }
-  50% { transform: rotate(2deg); }
-  75% { transform: rotate(-1deg); }
+@keyframes tree-sway-breeze {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-6deg) scaleX(0.98); } /* tilt left, slightly squeeze */
+  45% { transform: rotate(5deg) scaleX(1.02); }  /* smooth sway right, stretch */
+  70% { transform: rotate(-3deg) scaleX(0.99); } /* settle back left */
+  85% { transform: rotate(1deg) scaleX(1.01); }  /* minor rebound */
+  100% { transform: rotate(0deg); }
 }
 
 /* Falling Leaf from tree click */
@@ -3642,7 +3724,7 @@ button,
 .intro-flowers-patch {
   position: absolute;
   bottom: 1vh;
-  left: 25%;
+  left: 14%; /* Moved further left to clear the centered beaver! */
   pointer-events: auto;
   cursor: pointer;
 }
@@ -3683,7 +3765,7 @@ button,
 .intro-duck-container {
   position: absolute;
   bottom: 2vh;
-  left: 50%;
+  left: 68%; /* Moved away from the centered beaver! */
   width: 60px;
   height: 50px;
   pointer-events: auto;
@@ -3703,20 +3785,23 @@ button,
 }
 
 .intro-duck-container.quacking {
-  animation: duck-quack-shake 0.5s ease-in-out;
+  animation: duck-quack-backflip 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }
 
-@keyframes duck-quack-shake {
-  0%, 100% { transform: scale(1.2) rotate(0deg); }
-  30% { transform: scale(1.2, 0.8) rotate(-8deg); }
-  60% { transform: scale(1.2, 1.2) rotate(8deg); }
+@keyframes duck-quack-backflip {
+  0% { transform: translateY(0) rotate(1deg) scale(1); }
+  25% { transform: translateY(3px) rotate(-15deg) scale(1.2, 0.8); } /* squish preparing to jump */
+  55% { transform: translateY(-25px) rotate(180deg) scale(0.9, 1.15); } /* jump & backflip! */
+  75% { transform: translateY(-4px) rotate(360deg) scale(1.15, 0.9); } /* hit water splash */
+  100% { transform: translateY(0) rotate(1deg) scale(1); }
 }
 
 /* Baxter the Beaver Character Layout */
 .intro-baxter-container {
   position: absolute;
   bottom: 3.5vh;
-  right: 34%; /* Moved further left, away from the tree! */
+  left: 50%; /* Centered horizontally! */
+  margin-left: -70px; /* Offset half width for perfect centering */
   width: 140px;
   height: 140px;
   z-index: 11;
@@ -4211,7 +4296,27 @@ button,
     <!-- Parallax Mountains & Hills -->
     <div class="intro-mountains">
       <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
-        <path d="M0,240 L160,160 L320,200 L480,100 L640,180 L800,120 L960,200 L1120,130 L1280,220 L1440,160 L1440,320 L0,320 Z" fill="#0A1626"/>
+        <!-- Mountain base path -->
+        <path d="M0,240 L160,160 L320,200 L480,100 L640,180 L800,120 L960,200 L1120,130 L1280,220 L1440,160 L1440,320 L0,320 Z" fill="#0E2338" stroke="#1F3D54" stroke-width="2"/>
+        
+        <!-- Crevice/Ridge shading lines on the peaks for dramatic detailed ridges! -->
+        <path d="M160,160 L180,210" stroke="#081424" stroke-width="2"/>
+        <path d="M480,100 L510,180" stroke="#081424" stroke-width="3"/>
+        <path d="M480,100 L460,160" stroke="#162F44" stroke-width="2"/>
+        <path d="M800,120 L830,190" stroke="#081424" stroke-width="2"/>
+        <path d="M1120,130 L1140,195" stroke="#081424" stroke-width="2"/>
+
+        <!-- Soft snow-shading beneath snow caps -->
+        <polygon points="160,160 140,180 152,185 160,192 168,184 180,180" fill="#9CDCFE" opacity="0.3"/>
+        <polygon points="480,100 450,130 467,137 480,147 493,134 510,130" fill="#9CDCFE" opacity="0.3"/>
+        <polygon points="800,120 770,150 787,157 800,164 813,155 830,150" fill="#9CDCFE" opacity="0.3"/>
+        <polygon points="1120,130 1090,160 1107,165 1120,174 1133,164 1150,160" fill="#9CDCFE" opacity="0.3"/>
+
+        <!-- Crisp white snow caps on the highest peaks -->
+        <polygon points="160,160 142,178 152,181 160,188 168,181 178,178" fill="#FFFFFF"/>
+        <polygon points="480,100 452,128 467,132 480,142 493,131 508,128" fill="#FFFFFF"/>
+        <polygon points="800,120 772,148 787,152 800,159 813,151 828,148" fill="#FFFFFF"/>
+        <polygon points="1120,130 1092,158 1107,162 1120,169 1133,161 1148,158" fill="#FFFFFF"/>
       </svg>
     </div>
     <div class="intro-hills">
@@ -5463,6 +5568,27 @@ const SoundSystem = (function () {
       playSynth(220, 'sine', 0.4, 0.03, 440);
       setTimeout(() => playSynth(440, 'sine', 0.4, 0.03, 880), 120);
       setTimeout(() => playSynth(880, 'sine', 0.5, 0.04, 1760), 240);
+    },
+    quack: () => {
+      const c = ensure(); if (!c || muted) return;
+      const t = c.currentTime;
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      const filter = c.createBiquadFilter();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(320, t);
+      osc.frequency.exponentialRampToValueAtTime(240, t + 0.15);
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(900, t);
+      filter.Q.setValueAtTime(3.0, t);
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(0.06, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(c.destination);
+      osc.start(t);
+      osc.stop(t + 0.18);
     }
   };
 })();
@@ -5595,7 +5721,8 @@ const AchievementSystem = (function () {
     undo: { title: "Water Bender", desc: "Utilized undo controls to rewrite water flow history.", icon: "↩️" },
     undo_5: { title: "Trial and Error", desc: "Used undo 5 or more times in a single level.", icon: "🤔" },
     explorer: { title: "Sound Explorer", desc: "Toggled between 3 ambient audio moods.", icon: "🌍" },
-    hydraulics_scholar: { title: "Hydraulics Scholar", desc: "Answered Baxter's hydraulics quiz correctly!", icon: "🎓" }
+    hydraulics_scholar: { title: "Hydraulics Scholar", desc: "Answered Baxter's hydraulics quiz correctly!", icon: "🎓" },
+    living_world: { title: "Living World Explorer", desc: "Discovered all secrets in the opening scene.", icon: "🌍" }
   };
 
   function isUnlocked(id) {
@@ -8385,6 +8512,7 @@ window.WaterSystem = WaterSystem;
     explorer:        { title: 'Explorer',             desc: 'Switch ambient sound moods 3 times',  icon: '🌍' },
     double_threat:   { title: 'Double Threat',        desc: 'Complete Level 3 (Rivers & Wheels!)', icon: '⚙️' },
     undo_5:          { title: 'Perfectionist',        desc: 'Use undo 5 times in one level',       icon: '🎨' },
+    living_world:    { title: 'Living World Explorer', desc: 'Discovered all secrets in the opening scene', icon: '🌍' },
   };
 
   function unlockAchievement(id) {
@@ -9119,7 +9247,8 @@ window.WaterSystem = WaterSystem;
   }
 
   // Expose
-  window.WB = { state, place, sound: Sound, loadLevelByIndex };
+  window.unlockAchievement = unlockAchievement;
+  window.WB = { state, place, sound: Sound, loadLevelByIndex, unlockAchievement };
 })();
 
   
@@ -9288,6 +9417,7 @@ window.WaterSystem = WaterSystem;
   let leafTimer = null;
   let ambientTickTimer = null;
   let butterflyCount = 0;
+  const discoveredSecrets = new Set();
 
   // DOM Elements
   const intro = document.getElementById('cinematicIntro');
@@ -9357,6 +9487,7 @@ window.WaterSystem = WaterSystem;
         else if (soundName === 'advance' && s.advance) s.advance();
         else if (soundName === 'discover' && s.discover) s.discover();
         else if (soundName === 'flow' && s.flowTick) s.flowTick();
+        else if (soundName === 'quack' && s.quack) s.quack();
       }
     } catch (e) {
       console.warn("Sound engine not ready yet:", e);
@@ -9427,6 +9558,9 @@ window.WaterSystem = WaterSystem;
       playLocalSound('discover');
       setTimeout(() => playLocalSound('chime'), 150); // double layer happy sounds!
       
+      discoveredSecrets.add('baxter');
+      checkLivingWorldAchievement();
+
       setTimeout(() => {
         baxter.classList.remove('tapped');
         baxter.classList.remove('waving');
@@ -9444,12 +9578,15 @@ window.WaterSystem = WaterSystem;
       setTimeout(() => playLocalSound('chime'), 80); // water wheel chime splash sound!
       spawnWheelSplashes();
 
+      discoveredSecrets.add('wheel');
+      checkLivingWorldAchievement();
+
       setTimeout(() => {
         wheel.classList.remove('speeding');
       }, 3000);
     });
 
-    // Click River -> ripple expand, splash sound
+    // Click River -> ripple expand, splash sound, shake screen!
     river.addEventListener('click', (e) => {
       // Create expanding water ripple
       const rect = river.getBoundingClientRect();
@@ -9463,6 +9600,19 @@ window.WaterSystem = WaterSystem;
       
       document.body.appendChild(ripple);
       playLocalSound('drip');
+      playLocalSound('steam'); // layered splash sound!
+
+      // Trigger powerful screenshake on the intro container!
+      const introContainer = document.getElementById('cinematicIntro');
+      if (introContainer) {
+        introContainer.classList.add('shaking');
+        setTimeout(() => {
+          introContainer.classList.remove('shaking');
+        }, 400); // matches the 0.4s screenshake duration!
+      }
+
+      discoveredSecrets.add('river');
+      checkLivingWorldAchievement();
 
       setTimeout(() => {
         if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
@@ -9483,34 +9633,45 @@ window.WaterSystem = WaterSystem;
         }, i * 150);
       }
 
+      discoveredSecrets.add('tree');
+      checkLivingWorldAchievement();
+
       setTimeout(() => {
         tree.classList.remove('rustling');
-      }, 800);
+      }, 1600); // match the 1.6s breeze sway duration!
     });
 
-    // Click Flowers -> butterflies spawn and fly away, discover sound
+    // Click Flowers -> butterflies spawn and fly away, discover sound, glow pulse!
     flowers.addEventListener('click', (e) => {
       e.stopPropagation();
+      flowers.classList.add('glowing');
       playLocalSound('discover');
       const rect = flowers.getBoundingClientRect();
       
       for (let i = 0; i < 5; i++) {
         spawnButterfly(rect);
       }
+
+      discoveredSecrets.add('flowers');
+      checkLivingWorldAchievement();
+
+      setTimeout(() => {
+        flowers.classList.remove('glowing');
+      }, 800); // matches the 0.8s glow pulse duration!
     });
 
-    // Click Duck -> quack, bouncy squeeze, quack procedural sound
+    // Click Duck -> quack backflip & play authentic procedural quack sound!
     duck.addEventListener('click', (e) => {
       e.stopPropagation();
       duck.classList.add('quacking');
-      
-      // Synthesize a quack using chime + click
-      playLocalSound('click');
-      setTimeout(() => playLocalSound('chime'), 80);
+      playLocalSound('quack');
+
+      discoveredSecrets.add('duck');
+      checkLivingWorldAchievement();
       
       setTimeout(() => {
         duck.classList.remove('quacking');
-      }, 500);
+      }, 800); // matches the 0.8s backflip duration!
     });
 
     // Click Enter sign -> transition to the game
@@ -9730,6 +9891,47 @@ window.WaterSystem = WaterSystem;
         intro.parentNode.removeChild(intro);
       }
     }, 1200);
+  }
+
+  function checkLivingWorldAchievement() {
+    if (discoveredSecrets.size === 6) {
+      try {
+        if (window.unlockAchievement) {
+          window.unlockAchievement('living_world');
+        } else if (window.WB && window.WB.unlockAchievement) {
+          window.WB.unlockAchievement('living_world');
+        }
+      } catch (e) {
+        console.warn("Could not trigger global achievement:", e);
+      }
+      showCinematicAchievementToast();
+    }
+  }
+
+  function showCinematicAchievementToast() {
+    if (document.getElementById('cinematicToast')) return;
+    const toast = document.createElement('div');
+    toast.id = 'cinematicToast';
+    toast.className = 'cinematic-achievement-toast';
+    toast.innerHTML = `
+      <div class="cat-badge">🌍</div>
+      <div class="cat-body">
+        <div class="cat-title">Living World Explorer!</div>
+        <div class="cat-desc">You tapped and discovered all 6 secrets in Baxter's valley!</div>
+      </div>
+    `;
+    document.body.appendChild(toast);
+    
+    // Play celebratory sound
+    playLocalSound('discover');
+    setTimeout(() => playLocalSound('chime'), 220);
+
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 500);
+    }, 5000);
   }
 
   // Expose starting mechanism to preloader
@@ -10154,5 +10356,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bd6b7a2c192060',t:'MTc4NDE2NzI5NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bdee66a92f05e8',t:'MTc4NDE3MjY1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
