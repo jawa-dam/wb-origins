@@ -2629,6 +2629,24 @@
   padding: 8px 12px;
   gap: 12px;
 }
+.stage-selector-row.virtual-fs {
+  position: fixed !important;
+  bottom: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: 90% !important;
+  z-index: 100000 !important;
+  background: rgba(15, 32, 54, 0.95) !important;
+  border: 3.5px solid #2E1D11 !important; /* Thick wooden/organic cartoon border! */
+  border-radius: 24px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important;
+  margin: 0 !important;
+  padding: 10px 18px !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 12px !important;
+}
 .play-tool-selector {
   position: static !important;
   display: flex !important;
@@ -4596,8 +4614,14 @@ button,
             <span class="play-tool-icon">🪵</span>
             <span class="play-tool-label">Dam</span>
           </button>
+
+          <!-- 3. Waterwheel tool -->
+          <button class="play-tool-btn" id="playToolWheel" data-tool="wheel" title="Waterwheel (Tap to place a wheel that spins in water!)">
+            <span class="play-tool-icon">⚙️</span>
+            <span class="play-tool-label">Wheel</span>
+          </button>
           
-          <!-- 3. Repeat/Restart button -->
+          <!-- 4. Repeat/Restart button -->
           <button class="play-tool-btn" id="toolRepeat" title="Repeat (Clears & restarts the level!)" style="background: linear-gradient(135deg, #FFB347 0%, #FF9F1C 100%);">
             <span class="play-tool-icon">🔁</span>
             <span class="play-tool-label">Repeat</span>
@@ -6592,7 +6616,7 @@ window.WaterSystem = WaterSystem;
       ctx.strokeRect(px + 4, py + TILE - 12, TILE - 8, 8);
 
       // Active Glow
-      const active = state.reached.wheel;
+      const active = state.waterCells && state.waterCells.has(key(x, y));
       if (active) {
         const glowPulse = 0.3 + 0.2 * Math.sin(t / 200);
         ctx.fillStyle = `rgba(56,211,255,${0.25 * glowPulse})`;
@@ -7219,6 +7243,7 @@ window.WaterSystem = WaterSystem;
     if (cell.build) return false;
     if (cell.terrain !== 'grass') return false;
     if (state.playTool === 'dam' || state.playTool === 'gate') return true;
+    if (state.playTool === 'wheel') return true;
     if (state.inventory.river <= 0) return false;
     return true;
   }
@@ -7242,12 +7267,14 @@ window.WaterSystem = WaterSystem;
       state.undoStack.push({ x, y, tool: 'gate' });
       Sound.place();
       spawnBurst(x, y, ['#7A7064', '#B5ADA0', '#5C3A24'], 6, 35, 'spark');
-    } else if (state.playTool === 'dam') {
-      cell.build = { type: 'dam' };
+    } else if (state.playTool === 'wheel') {
+      cell.feature = { type: 'wheel' };
+      if (!state.goals.wheel) state.goals.wheel = [];
+      state.goals.wheel.push({ x, y });
       state.dropsPlaced = (state.dropsPlaced || 0) + 1;
-      state.undoStack.push({ x, y, tool: 'dam' });
+      state.undoStack.push({ x, y, tool: 'wheel' });
       Sound.place();
-      spawnBurst(x, y, ['#8B5A3C', '#C49A6C', '#D9A86C'], 6, 35, 'spark');
+      spawnBurst(x, y, ['#8B4119', '#D47A43', '#FFB347'], 8, 45, 'spark');
     } else {
       cell.build = { type: 'canal' };
       state.inventory.river--;
@@ -7297,58 +7324,7 @@ window.WaterSystem = WaterSystem;
           newWater.set(tk, { t: data.t + 1, sourceId: data.sourceId });
           Sound.flowTick();
           Sound.drip(); // gentle water "plink" as flow advances
-          if (ncell.feature && ncell.feature.type === 'farm' && !state.reached.farm) {
-            state.reached.farm = true;
-            Sound.chime();
-            // Big smile for the "You did it!" moment
-            baxterSmile();
-            setTimeout(() => baxterSmile(), 350);
-            // ===== Shiny burst at the goal =====
-            // Wave 1: warm golds + cream
-            spawnBurst(nx, ny, ['#FFC857', '#FFE082', '#FAF7FF'], 26, 80, 'mixed');
-            // Wave 2: brand pink + gold for the "celebrate" feel
-            setTimeout(() => spawnBurst(nx, ny, ['#F4B5E4', '#FFC857', '#FFE082'], 16, 60, 'mixed'), 180);
-            // Trigger tutorial advance if waiting for reach
-            if (state.tutorialActive && STEPS[state.tutorialIndex].requireReach === 'farm') {
-              advanceTutorial();
-              // Show the victory splash for the tutorial win
-              setTimeout(() => {
-                const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
-                const m = Math.floor(elapsed / 60), s = elapsed % 60;
-                showVictory('You did it!', {
-                  drops: state.dropsPlaced || state.waterCells.size,
-                  goals: 1,
-                  time: m + ':' + (s < 10 ? '0' : '') + s
-                });
-              }, 1200);
-            } else {
-              // Free-play goal reach: smaller burst, no victory overlay
-              spawnBurst(nx, ny, ['#7DD3F5', '#5B6FE8', '#F4B5E4'], 14, 50, 'mixed');
-              // If all goals in this level are now reached, show the victory
-              const allGoalsReached =
-                (!state.goals.wheel || state.goals.wheel.length === 0 || state.reached.wheel);
-              if (allGoalsReached && !victoryShown) {
-                setTimeout(() => {
-                  const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
-                  const m = Math.floor(elapsed / 60), s = elapsed % 60;
-                  const goalCount = (state.reached.wheel ? 1 : 0);
-                  showVictory('Goal Reached', {
-                    drops: state.dropsPlaced || state.waterCells.size,
-                    goals: goalCount,
-                    time: m + ':' + (s < 10 ? '0' : '') + s
-                  });
-                }, 800);
-              }
-            }
-          }
-          // Also particles for village and wheel — upgraded to bursts
-          if (ncell.feature && ncell.feature.type === 'village' && !state.reached.village) {
-            state.reached.village = true;
-            spawnBurst(nx, ny, ['#F4B5E4', '#FAF7FF', '#FFC857'], 18, 70, 'mixed');
-            Sound.chime();
-          }
-          if (ncell.feature && ncell.feature.type === 'wheel' && !state.reached.wheel) {
-            state.reached.wheel = true;
+          if (ncell.feature && ncell.feature.type === 'wheel') {
             spawnBurst(nx, ny, ['#7DD3F5', '#5B6FE8', '#FAF7FF'], 18, 70, 'mixed');
             Sound.chime();
           }
@@ -7356,6 +7332,38 @@ window.WaterSystem = WaterSystem;
       });
     });
     state.waterCells = newWater;
+
+    // Unified, bulletproof Victory check for the 3-step loop!
+    // The player wins if there is at least one Waterwheel, and ALL Waterwheels on the grid are spinning!
+    if (state.goals.wheel && state.goals.wheel.length > 0) {
+      const allWheelsReached = state.goals.wheel.every(g => state.waterCells.has(key(g.x, g.y)));
+      if (allWheelsReached && !victoryShown) {
+        // Automatically advance the tutorial if active and the wheel is reached!
+        if (state.tutorialActive) {
+          advanceTutorial();
+          setTimeout(() => {
+            const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
+            const m = Math.floor(elapsed / 60), s = elapsed % 60;
+            showVictory('You did it! 🎉', {
+              drops: state.dropsPlaced,
+              goals: state.goals.wheel.length,
+              time: m + ':' + (s < 10 ? '0' : '') + s
+            });
+          }, 1200);
+        } else {
+          // Free play level victory splash!
+          setTimeout(() => {
+            const elapsed = state.levelStartTime ? Math.floor((Date.now() - state.levelStartTime) / 1000) : 0;
+            const m = Math.floor(elapsed / 60), s = elapsed % 60;
+            showVictory('Goal Reached! ⚙️', {
+              drops: state.dropsPlaced,
+              goals: state.goals.wheel.length,
+              time: m + ':' + (s < 10 ? '0' : '') + s
+            });
+          }, 800);
+        }
+      }
+    }
 
     // ===== WISP AUTO-SPAWN: a small white particle drifts in a
     // random water cell every tick, biased in the flow direction.
@@ -7679,13 +7687,29 @@ window.WaterSystem = WaterSystem;
               advanceTutorial();
             }
           } else if (cur.advance === 'click-cell') {
-            // Tell user to click the cell
-            bubble.animate([
-              { transform: 'translateX(0)' },
-              { transform: 'translateX(-4px)' },
-              { transform: 'translateX(4px)' },
-              { transform: 'translateX(0)' }
-            ], { duration: 300, iterations: 1 });
+            // Tapping the button automatically performs the required grid click for them!
+            if (cur.requireClick) {
+              const rx = cur.requireClick.x;
+              const ry = cur.requireClick.y;
+              if (place(rx, ry)) {
+                render();
+                // After water reaches this cell, advance
+                const checkWater = setInterval(() => {
+                  if (state.waterCells.has(key(rx, ry))) {
+                    clearInterval(checkWater);
+                    setTimeout(() => advanceTutorial(), 600);
+                  }
+                }, 100);
+              }
+            } else {
+              // Fallback shake
+              bubble.animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-4px)' },
+                { transform: 'translateX(4px)' },
+                { transform: 'translateX(0)' }
+              ], { duration: 300, iterations: 1 });
+            }
           }
         }
       };
@@ -8314,27 +8338,25 @@ window.WaterSystem = WaterSystem;
     if (state.undoStack.length === 0) return false;
     const last = state.undoStack.pop();
     const cell = state.grid[last.y][last.x];
-    if (cell.build) {
+    if (last.tool === 'wheel') {
+      cell.feature = null;
+      if (state.goals.wheel) {
+        state.goals.wheel = state.goals.wheel.filter(g => g.x !== last.x || g.y !== last.y);
+      }
+    } else if (cell.build) {
       if (cell.build.type === 'canal') {
         state.inventory.river++;
       }
       cell.build = null;
-      // Remove this cell and any descendants from the water flow
-      // (simplest: just let the next tick re-propagate, but here we clear)
-      state.waterCells.delete(key(last.x, last.y));
-      // Wipe all downstream water — it will regenerate from the spring
-      // by re-running from the sources
-      const sources = [];
-      for (let y = 0; y < GRID_H; y++) for (let x = 0; x < GRID_W; x++) {
-        const c = state.grid[y][x];
-        if (c.feature && c.feature.type === 'spring') sources.push({x, y});
-      }
-      // Actually we can't easily re-run tickFlow backwards, so just keep current
-      Sound.click();
-      render();
-      return true;
     }
-    return false;
+    // Wipe water cells and re-propagate safely
+    state.waterCells = new Map();
+    state.sources.forEach((s, idx) => {
+      state.waterCells.set(key(s.x, s.y), { t: 0, sourceId: idx });
+    });
+    Sound.click();
+    render();
+    return true;
   }
 
   // ---- Achievement system ----
@@ -8400,6 +8422,11 @@ window.WaterSystem = WaterSystem;
     
     // Toggle virtual fullscreen class for compatibility with sandboxed iframes
     stage.classList.toggle('virtual-fs');
+
+    const selectorRow = document.querySelector('.stage-selector-row');
+    if (selectorRow) {
+      selectorRow.classList.toggle('virtual-fs', stage.classList.contains('virtual-fs'));
+    }
     
     // Toggle active class on the button itself to switch between expand and exit icons
     const fsBtn = document.getElementById('stageFullscreen');
@@ -8838,12 +8865,14 @@ window.WaterSystem = WaterSystem;
     state.playTool = 'canal'; // default
     const playToolCanal = document.getElementById('playToolCanal');
     const playToolDam = document.getElementById('playToolDam');
-    if (playToolCanal && playToolDam) {
+    const playToolWheel = document.getElementById('playToolWheel');
+    if (playToolCanal && playToolDam && playToolWheel) {
       playToolCanal.addEventListener('click', (e) => {
         e.stopPropagation();
         state.playTool = 'canal';
         playToolCanal.classList.add('active');
         playToolDam.classList.remove('active');
+        playToolWheel.classList.remove('active');
         Sound.click();
       });
       playToolDam.addEventListener('click', (e) => {
@@ -8858,6 +8887,22 @@ window.WaterSystem = WaterSystem;
         }
         playToolDam.classList.add('active');
         playToolCanal.classList.remove('active');
+        playToolWheel.classList.remove('active');
+        Sound.click();
+      });
+      playToolWheel.addEventListener('click', (e) => {
+        e.stopPropagation();
+        state.playTool = 'wheel';
+        // Auto-disable tutorial locks so player can place wheels anywhere immediately!
+        state.tutorialActive = false;
+        const bubble = document.getElementById('baxterBubble');
+        if (bubble) {
+          bubble.classList.add('dismissed');
+          bubble.style.display = 'none';
+        }
+        playToolWheel.classList.add('active');
+        playToolCanal.classList.remove('active');
+        playToolDam.classList.remove('active');
         Sound.click();
       });
     }
@@ -10092,5 +10137,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bd17f03d91e5c9',t:'MTc4NDE2Mzg3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bd59495bb3b7d7',t:'MTc4NDE2NjU0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
