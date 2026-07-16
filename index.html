@@ -3475,7 +3475,22 @@ button,
   right: 0;
   height: 35vh;
   z-index: 4;
-  pointer-events: none;
+  pointer-events: auto !important; /* Set to auto so mountains are clickable/tapped! */
+  cursor: pointer;
+}
+
+/* Shiver animation on snow polygons inside mountains when tapped! */
+.intro-mountains.shaking-ice polygon {
+  animation: ice-shiver 0.5s ease-in-out;
+  transform-origin: 480px 100px; /* pivot around Peak 2! */
+}
+
+@keyframes ice-shiver {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-3px, -2px) rotate(-1.5deg); }
+  40% { transform: translate(3px, 1px) rotate(1deg); }
+  60% { transform: translate(-2px, 2px) rotate(-1deg); }
+  80% { transform: translate(2px, -1px) rotate(0.5deg); }
 }
 
 .intro-mountains svg {
@@ -3671,7 +3686,7 @@ button,
   left: 5%;
   width: 380px; /* Scaled up to be massive and easy to tap for kids! */
   height: 304px; /* Scaled up proportionally */
-  z-index: 9;
+  z-index: 12 !important; /* PLACED ON TOP OF THE RIVER (z-index:10) TO RESOLVE TOUCH OVERLAPPING! */
 }
 
 .intro-mill-svg {
@@ -4372,7 +4387,7 @@ button,
     </div>
 
     <!-- Parallax Mountains & Hills -->
-    <div class="intro-mountains">
+    <div class="intro-mountains" id="introMountains">
       <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
         <!-- Mountain base path -->
         <path d="M0,240 L160,160 L320,200 L480,100 L640,180 L800,120 L960,200 L1120,130 L1280,220 L1440,160 L1440,320 L0,320 Z" fill="#0E2338" stroke="#1F3D54" stroke-width="2"/>
@@ -9784,6 +9799,20 @@ window.WaterSystem = WaterSystem;
       }, 800); // matches the 0.8s glow pulse duration!
     });
 
+    // Click Mountains -> snow caps shiver/shake, play ice chime sound!
+    const mountains = document.getElementById('introMountains');
+    if (mountains) {
+      mountains.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mountains.classList.add('shaking-ice');
+        playLocalSound('chime');
+        
+        setTimeout(() => {
+          mountains.classList.remove('shaking-ice');
+        }, 500); // matches the 0.5s shiver duration!
+      });
+    }
+
     // Click Duck -> quack backflip & play authentic procedural quack sound!
     duck.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -10514,5 +10543,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1be5c05ec74e617',t:'MTc4NDE3NzE0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1be7ac91cde2ade',t:'MTc4NDE3ODQwNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
