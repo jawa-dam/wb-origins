@@ -1387,6 +1387,12 @@
   .settings-footer {
     display: flex; gap: .6rem; justify-content: space-between;
   }
+  @media (max-width: 440px) {
+    .settings-footer {
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+  }
   .settings-btn {
     padding: .6em 1.1em;
     border: none; border-radius: var(--r-pill);
@@ -1395,6 +1401,14 @@
     font-size: .8rem;
     cursor: pointer;
     transition: all .2s;
+  }
+  @media (max-width: 440px) {
+    .settings-btn {
+      width: 100% !important;
+      padding: 0.8em !important;
+      font-size: 0.9rem !important;
+      text-align: center !important;
+    }
   }
   .settings-btn-primary {
     background: linear-gradient(135deg, var(--w-bright), var(--w-glow));
@@ -3765,7 +3779,7 @@ button,
 .intro-duck-container {
   position: absolute;
   bottom: 2vh;
-  left: 68%; /* Moved away from the centered beaver! */
+  left: 74%; /* Perfectly positioned midway between the centered beaver and the right-aligned tree! */
   width: 60px;
   height: 50px;
   pointer-events: auto;
@@ -5722,7 +5736,7 @@ const AchievementSystem = (function () {
     undo_5: { title: "Trial and Error", desc: "Used undo 5 or more times in a single level.", icon: "🤔" },
     explorer: { title: "Sound Explorer", desc: "Toggled between 3 ambient audio moods.", icon: "🌍" },
     hydraulics_scholar: { title: "Hydraulics Scholar", desc: "Answered Baxter's hydraulics quiz correctly!", icon: "🎓" },
-    living_world: { title: "Living World Explorer", desc: "Discovered all secrets in the opening scene.", icon: "🌍" }
+    living_world: { title: "Living World Explorer", desc: "Discovered all secrets in the opening scene.", icon: "⭐" }
   };
 
   function isUnlocked(id) {
@@ -8470,7 +8484,19 @@ window.WaterSystem = WaterSystem;
       state.tickHandle = setInterval(tickFlow, actualSpeed);
     }
     state._waterSpeed = actualSpeed;
-    Sound.setMuted(!state.settings.soundEnabled);
+    
+    // Safety check: toggle sound mute correctly using fallback wrappers
+    if (Sound) {
+      if (typeof Sound.setMuted === 'function') {
+        Sound.setMuted(!state.settings.soundEnabled);
+      } else {
+        const currentlyMuted = Sound.isMuted();
+        const shouldBeMuted = !state.settings.soundEnabled;
+        if (currentlyMuted !== shouldBeMuted) {
+          Sound.toggleMute();
+        }
+      }
+    }
   }
 
   // ---- Undo system ----
@@ -8512,7 +8538,7 @@ window.WaterSystem = WaterSystem;
     explorer:        { title: 'Explorer',             desc: 'Switch ambient sound moods 3 times',  icon: '🌍' },
     double_threat:   { title: 'Double Threat',        desc: 'Complete Level 3 (Rivers & Wheels!)', icon: '⚙️' },
     undo_5:          { title: 'Perfectionist',        desc: 'Use undo 5 times in one level',       icon: '🎨' },
-    living_world:    { title: 'Living World Explorer', desc: 'Discovered all secrets in the opening scene', icon: '🌍' },
+    living_world:    { title: 'Living World Explorer', desc: 'Discovered all secrets in the opening scene', icon: '⭐' },
   };
 
   function unlockAchievement(id) {
@@ -9123,6 +9149,24 @@ window.WaterSystem = WaterSystem;
         applySettings();
       });
     }
+
+    // Touchscreen-friendly settings-row tapping: toggles checkbox instantly on clicking anywhere on the row!
+    document.querySelectorAll('.settings-row').forEach(row => {
+      // Skip the label and stat rows that don't have inputs
+      const cb = row.querySelector('input[type="checkbox"]');
+      if (!cb) return;
+      
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', (e) => {
+        // Prevent infinite click loop when clicking directly on the input itself
+        if (e.target.tagName === 'INPUT') return;
+        
+        e.stopPropagation();
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event('change'));
+        Sound.click();
+      });
+    });
     if (settingsReset) {
       settingsReset.addEventListener('click', () => {
         if (confirm('Reset all progress? This will clear your levels, achievements, and streak.')) {
@@ -9247,6 +9291,7 @@ window.WaterSystem = WaterSystem;
   }
 
   // Expose
+  window.spawnConfetti = spawnConfetti;
   window.unlockAchievement = unlockAchievement;
   window.WB = { state, place, sound: Sound, loadLevelByIndex, unlockAchievement };
 })();
@@ -9914,7 +9959,7 @@ window.WaterSystem = WaterSystem;
     toast.id = 'cinematicToast';
     toast.className = 'cinematic-achievement-toast';
     toast.innerHTML = `
-      <div class="cat-badge">🌍</div>
+      <div class="cat-badge">⭐</div>
       <div class="cat-body">
         <div class="cat-title">Living World Explorer!</div>
         <div class="cat-desc">You tapped and discovered all 6 secrets in Baxter's valley!</div>
@@ -9922,9 +9967,15 @@ window.WaterSystem = WaterSystem;
     `;
     document.body.appendChild(toast);
     
-    // Play celebratory sound
+    // Play celebratory sound and trigger DOM paper confetti!
     playLocalSound('discover');
     setTimeout(() => playLocalSound('chime'), 220);
+    try {
+      if (window.spawnConfetti) {
+        window.spawnConfetti(140);
+        setTimeout(() => window.spawnConfetti(60), 300);
+      }
+    } catch (e) {}
 
     setTimeout(() => {
       toast.classList.add('hide');
@@ -10356,5 +10407,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bdee66a92f05e8',t:'MTc4NDE3MjY1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1be193edce505e8',t:'MTc4NDE3NDQxMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
