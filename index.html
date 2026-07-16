@@ -3682,10 +3682,10 @@ button,
 /* Water Wheel & Mill Container */
 .intro-mill-container {
   position: absolute;
-  bottom: 12vh; /* Moved higher to stand majestic and clear of river touch area! */
+  bottom: 14vh; /* Moved higher to stand majestic, clear of river, and look supersized! */
   left: 5%;
-  width: 380px; /* Scaled up to be massive and easy to tap for kids! */
-  height: 304px; /* Scaled up proportionally */
+  width: 440px; /* SUPERSIZED for incredible prominence and effortless tapping! */
+  height: 352px; /* Scaled up proportionally */
   z-index: 12 !important; /* PLACED ON TOP OF THE RIVER (z-index:10) TO RESOLVE TOUCH OVERLAPPING! */
 }
 
@@ -3858,7 +3858,7 @@ button,
 .intro-duck-container {
   position: absolute;
   bottom: 2vh;
-  left: 74%; /* Perfectly positioned midway between the centered beaver and the right-aligned tree! */
+  left: 82%; /* Positioned beautifully beside the right-aligned tree, well away from the centered beaver! */
   width: 60px;
   height: 50px;
   pointer-events: auto;
@@ -9908,12 +9908,13 @@ window.WaterSystem = WaterSystem;
       }, 2000);
     });
 
-    // Click Water Wheel -> spins lightning fast, splashes, steam hiss and chime sound!
+    // Click Water Wheel -> spins lightning fast, splashes, steam hiss, drip, and chime sound!
     wheel.addEventListener('click', (e) => {
       e.stopPropagation();
       wheel.classList.add('speeding');
       playLocalSound('steam');
-      setTimeout(() => playLocalSound('chime'), 80); // water wheel chime splash sound!
+      setTimeout(() => playLocalSound('drip'), 40); // watery splash sound!
+      setTimeout(() => playLocalSound('chime'), 120); // water wheel chime splash sound!
       spawnWheelSplashes();
 
       if (!discoveredSecrets.has('wheel')) {
@@ -10017,6 +10018,12 @@ window.WaterSystem = WaterSystem;
         e.stopPropagation();
         mountains.classList.add('shaking-ice');
         playLocalSound('chime');
+
+        if (!discoveredSecrets.has('mountains')) {
+          discoveredSecrets.add('mountains');
+          showDiscoveryProgressToast(discoveredSecrets.size);
+          checkLivingWorldAchievement();
+        }
         
         setTimeout(() => {
           mountains.classList.remove('shaking-ice');
@@ -10261,7 +10268,7 @@ window.WaterSystem = WaterSystem;
   }
 
   function checkLivingWorldAchievement() {
-    if (discoveredSecrets.size === 6) {
+    if (discoveredSecrets.size === 7) {
       try {
         if (window.unlockAchievement) {
           window.unlockAchievement('living_world');
@@ -10284,7 +10291,7 @@ window.WaterSystem = WaterSystem;
       <div class="cat-badge">⭐</div>
       <div class="cat-body">
         <div class="cat-title">Living World Explorer!</div>
-        <div class="cat-desc">You tapped and discovered all 6 secrets in Baxter's valley!</div>
+        <div class="cat-desc">You tapped and discovered all 7 secrets in Baxter's valley!</div>
       </div>
     `;
     document.body.appendChild(toast);
@@ -10308,7 +10315,7 @@ window.WaterSystem = WaterSystem;
   }
 
   function showDiscoveryProgressToast(count) {
-    if (count >= 6) return;
+    if (count >= 7) return;
 
     let toast = document.getElementById('discoveryProgressToast');
     if (toast) {
@@ -10320,7 +10327,7 @@ window.WaterSystem = WaterSystem;
     toast.className = 'discovery-progress-toast';
     toast.innerHTML = `
       <span class="dpt-star">✨</span>
-      <span class="dpt-text">Secret Found! <b>${count} / 6</b></span>
+      <span class="dpt-text">Secret Found! <b>${count} / 7</b></span>
     `;
     document.body.appendChild(toast);
 
@@ -10754,5 +10761,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1be93eff95bf289',t:'MTc4NDE3OTQzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bea68d5eb2a130',t:'MTc4NDE4MDIwMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
