@@ -25,10 +25,10 @@
      ========================================================= */
   :root {
     --night-0:#050B14; --night-1:#0A1626; --night-2:#0F2036; --night-3:#16304E; --night-4:#1E3F60;
-    --w-deep:#0A4A6B; --w-mid:#1A6E94; --w-bright:#4FB3D9; --w-glow:#7DD3F5; --w-foam:#EAF7FB;
-    --leaf-1:#6FBF73; --leaf-2:#3F8E4B; --leaf-3:#A8D49C;
-    --earth-1:#8B5A3C; --earth-2:#5C3A24; --wheat:#FFC857; --bark:#C49A6C;
-    --stone-1:#B5ADA0; --stone-2:#7A7064; --sun:#FFD27D; --sun-hot:#FFA94D;
+    --w-deep:#005CB3; --w-mid:#00A3FF; --w-bright:#38D3FF; --w-glow:#8CE8FF; --w-foam:#FFFFFF;
+    --leaf-1:#8EE03F; --leaf-2:#56AB12; --leaf-3:#A8D49C;
+    --earth-1:#D47A43; --earth-2:#8B4119; --wheat:#FFC857; --bark:#C49A6C;
+    --stone-1:#D1D9E0; --stone-2:#8595A1; --sun:#FFD27D; --sun-hot:#FFA94D;
     --cottage:#F4D3A8; --roof:#B5533C;
     --beaver:#A66E3F; --beaver-d:#6E4422; --beaver-belly:#D9A86C; --hat:#FFC53D; --vest:#3B6FB5;
     --ink:#E8F2FA; --ink-soft:#A8BDD2; --ink-faint:#6A819A; --ink-dim:#2A4055;
@@ -494,9 +494,9 @@
   position: relative; overflow: hidden;
 }
 .btn-primary {
-  background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%);
+  background: linear-gradient(135deg, #FFB347 0%, #FF9F1C 100%);
   color: var(--cream) !important;
-  border: 2px solid #3D2415;
+  border: 3px solid #2E1D11;
   box-shadow: 
     0 4px 0 #3D2415, 
     0 6px 12px rgba(0,0,0,0.3), 
@@ -627,15 +627,41 @@
     max-width: 100%;
     margin-top: 10px;
     display: flex; gap: .8rem; align-items: flex-start;
-    padding: .9rem 1rem;
-    background: rgba(10,22,38,.92);
-    border: 2px solid rgba(125,211,245,.25);
-    border-radius: var(--r-md);
-    box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(125,211,245,.08);
+    padding: 1rem 1.2rem;
+    background: #FFFBF0; /* Fluffy white/cream */
+    border: 3.5px solid #2E1D11; /* Thick cartoon border */
+    color: #2E1D11 !important;
+    border-radius: 20px;
+    box-shadow: 0 12px 0 #2E1D11, 0 16px 25px rgba(0,0,0,0.3);
     opacity: 1;
     pointer-events: auto;
     visibility: visible;
     transition: opacity .3s, transform .3s;
+  }
+  .bubble-wrap .bubble-title {
+    color: #8B4119 !important;
+    font-weight: 800;
+  }
+  .bubble-wrap .bubble-text {
+    color: #2E1D11 !important;
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  .bubble-advance {
+    background: linear-gradient(135deg, #FFB347 0%, #FF9F1C 100%) !important;
+    border: 2px solid #2E1D11 !important;
+    box-shadow: 0 3px 0 #2E1D11 !important;
+    color: #FFFBF0 !important;
+    border-radius: 8px !important;
+  }
+  .bubble-skip {
+    color: #8595A1 !important;
+    font-weight: bold;
+  }
+  .bubble-dismiss {
+    color: #2E1D11 !important;
+    font-size: 1.4rem !important;
+    font-weight: bold;
   }
   .bubble-wrap.dismissed {
     display: none !important;
@@ -2176,36 +2202,36 @@
   z-index: 100;
 }
 .play-tool-btn {
-  background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%);
-  border: 2px solid #3D2415;
-  border-radius: var(--r-md);
+  background: linear-gradient(135deg, #FFB347 0%, #FF9F1C 100%);
+  border: 4px solid #2E1D11;
+  border-radius: 20px;
   color: var(--cream);
-  padding: 6px 12px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
   font-family: var(--f-body);
-  font-weight: 600;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 0 #3D2415, 0 4px 8px rgba(0,0,0,0.3);
+  font-weight: 800;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 0 #2E1D11, 0 4px 8px rgba(0,0,0,0.3);
   transition: all 0.2s var(--ease-bounce);
 }
 .play-tool-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 0 #3D2415, 0 6px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 0 #3D2415, 0 6px 12px rgba(0,0,0,0.4);
 }
 .play-tool-btn.active {
   background: linear-gradient(135deg, #4FB3D9 0%, #1A6E94 100%);
   border-color: #0A4A6B;
-  box-shadow: 0 4px 0 #0A4A6B, 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 0 #0A4A6B, 0 4px 8px rgba(0,0,0,0.3);
 }
 .play-tool-btn:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 #3D2415, 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 0 #3D2415, 0 2px 4px rgba(0,0,0,0.2);
 }
 .play-tool-icon {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 .play-tool-label {
   font-family: var(--f-display);
@@ -2277,8 +2303,8 @@
   }
 }
 .baxt-lesson-btn {
-  background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%);
-  border: 2px solid #3D2415;
+  background: linear-gradient(135deg, #FFB347 0%, #FF9F1C 100%);
+  border: 3px solid #2E1D11;
   border-radius: var(--r-md);
   color: var(--cream);
   padding: 0.7rem 1rem;
@@ -2286,7 +2312,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 0 #3D2415, 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 0 #2E1D11, 0 4px 8px rgba(0,0,0,0.3);
   transition: all 0.2s var(--ease-bounce);
   display: flex;
   align-items: center;
@@ -2569,7 +2595,7 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 580px;
+  max-width: 720px;
   justify-self: end;
   background: transparent;
 }
@@ -2633,8 +2659,8 @@
 }
 .stage-undo, .stage-fullscreen {
   position: static !important;
-  width: 38px !important;
-  height: 38px !important;
+  width: 42px !important;
+  height: 42px !important;
   background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%) !important;
   border: 2px solid #3D2415 !important;
   border-radius: var(--r-md) !important;
@@ -2642,7 +2668,7 @@
   display: inline-grid !important;
   place-items: center !important;
   cursor: pointer;
-  box-shadow: 0 3px 0 #3D2415 !important;
+  box-shadow: 0 4px 0 #2E1D11, 0 4px 8px rgba(0,0,0,0.3) !important;
 }
 
 /* Core Canvas Frame Container - Fully Clean */
@@ -2657,6 +2683,39 @@
     0 0 80px rgba(125,211,245,.2), 
     0 25px 60px rgba(0,0,0,.6) !important;
   background: var(--night-1) !important;
+}
+
+/* Floating Exit Fullscreen Button inside stage-frame */
+.stage-exit-fs {
+  display: none !important;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100000;
+  background: linear-gradient(135deg, #FF6B6B 0%, #D63031 100%) !important;
+  border: 3px solid #2E1D11 !important;
+  border-radius: var(--r-md) !important;
+  color: var(--cream) !important;
+  padding: 8px 16px !important;
+  font-family: var(--f-body) !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #2E1D11, 0 4px 10px rgba(0,0,0,0.4) !important;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s var(--ease-bounce);
+}
+.stage-exit-fs:hover {
+  transform: scale(1.08) !important;
+  filter: brightness(1.1);
+}
+.stage-exit-fs:active {
+  transform: scale(0.95) !important;
+  box-shadow: 0 1px 0 #2E1D11, 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+.stage-frame.virtual-fs .stage-exit-fs {
+  display: flex !important;
 }
 #heroCanvas {
   width: 100% !important;
@@ -2679,8 +2738,8 @@
 /* Beautiful Handcrafted Volume Button (Wooden look!) */
 .stage-mute {
   position: static !important;
-  width: 42px !important;
-  height: 42px !important;
+  width: 46px !important;
+  height: 46px !important;
   background: linear-gradient(135deg, #8B5A3C 0%, #5C3A24 100%) !important;
   border: 2px solid #3D2415 !important;
   border-radius: var(--r-md) !important;
@@ -2688,7 +2747,7 @@
   display: inline-grid !important;
   place-items: center !important;
   cursor: pointer;
-  box-shadow: 0 4px 0 #3D2415, 0 4px 8px rgba(0,0,0,0.3) !important;
+  box-shadow: 0 5px 0 #2E1D11, 0 4px 8px rgba(0,0,0,0.3) !important;
 }
 .stage-mute svg {
   width: 20px !important;
@@ -2715,11 +2774,11 @@
   background: transparent !important;
   border: none !important;
   border-radius: var(--r-pill) !important;
-  padding: 5px 12px !important;
+  padding: 8px 16px !important;
   color: var(--ink-soft) !important;
   font-family: var(--f-body) !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
   cursor: pointer;
 }
 .sp-btn.active {
@@ -2850,12 +2909,12 @@
   width: 100% !important;
 }
 .hero-content {
-  flex: 1.1 !important;
-  max-width: 600px !important;
+  flex: 1 !important;
+  max-width: 500px !important;
 }
 .hero-stage {
-  flex: 1 !important;
-  max-width: 580px !important;
+  flex: 1.4 !important;
+  max-width: 720px !important;
 }
 
 /* Responsive adjustment for tablets/mobile (Stacking vertically) */
@@ -2895,6 +2954,140 @@
 .stage-fullscreen .ic-shrink { display: none !important; }
 .stage-fullscreen.active .ic-expand { display: none !important; }
 .stage-fullscreen.active .ic-shrink { display: inline !important; }
+
+
+/* =========================================================
+   MOBILE TAP ACCESSIBILITY & STAGE SIZING (Milestone 6)
+   ========================================================= */
+/* Disable mobile double-tap delays and tap highlight overlays */
+button, 
+.play-tool-btn, 
+.mode-btn, 
+.sp-btn, 
+.pal-btn, 
+.stage-undo, 
+.stage-fullscreen, 
+.stage-mute {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Make the game screen significantly larger */
+.hero-stage {
+  max-width: 680px !important;
+  width: 100% !important;
+}
+.stage-frame {
+  border-radius: 24px !important;
+  border: 3.5px solid #2E1D11 !important; /* Thick cartoon border matching buttons! */
+  box-shadow: 
+    0 12px 0 #2E1D11, 
+    0 20px 40px rgba(0,0,0,0.4) !important;
+}
+
+/* Enlarge button target sizes for reliable finger taps (48px H.I.G. standards) */
+.play-tool-btn {
+  height: 48px !important;
+  padding: 0 18px !important;
+  font-size: 1.1rem !important;
+}
+.stage-undo, .stage-fullscreen {
+  width: 44px !important;
+  height: 44px !important;
+}
+.stage-mute {
+  width: 48px !important;
+  height: 48px !important;
+}
+.sp-btn {
+  padding: 8px 16px !important;
+  font-size: 0.95rem !important;
+}
+.stage-mode {
+  padding: 4px !important;
+}
+.mode-btn {
+  padding: 8px 16px !important;
+  font-size: 0.95rem !important;
+}
+.stage-palette {
+  gap: 10px !important;
+  padding: 10px 14px !important;
+}
+.pal-btn {
+  width: 46px !important;
+  height: 46px !important;
+  font-size: 1.4rem !important;
+}
+
+
+/* =========================================================
+   MAXIMUM FULL-BLEED MOBILE STAGE SIZING (Milestone 6)
+   ========================================================= */
+@media (max-width: 640px) {
+  /* Force the hero container to have zero left/right padding to let the game stage touch the edges! */
+  .hero {
+    padding: 3rem 0rem 2rem !important;
+  }
+  .hero-inner {
+    padding: 0 !important;
+    gap: 1.5rem !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  .hero-content {
+    padding: 0 16px !important;
+  }
+  
+  /* Make the game stage occupy 100% full-bleed width of the mobile phone screen! */
+  .hero-stage {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Remove rounded borders on full-bleed mobile stage to maximize every single pixel of grid space! */
+  .stage-frame {
+    border-radius: 0px !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    aspect-ratio: 1.667 / 1 !important; /* Lock to 15:9 grid aspect */
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Space out selectors and controls nicely on mobile */
+  .stage-selector-row, .stage-controls-row {
+    margin: 0 10px !important;
+    border-radius: var(--r-md) !important;
+    padding: 6px 10px !important;
+    gap: 6px !important;
+  }
+}
+
+/* Prevent sound picker buttons from overlapping on narrow screens (under 520px) */
+@media (max-width: 520px) {
+  .sp-btn-label {
+    display: none !important;
+  }
+  .sp-btn {
+    padding: 6px 12px !important;
+    font-size: 1.2rem !important;
+  }
+  .stage-sound-picker {
+    padding: 2px !important;
+    gap: 2px !important;
+  }
+  .play-tool-label {
+    display: none !important;
+  }
+  .play-tool-btn {
+    padding: 10px 14px !important;
+    border-radius: 16px !important;
+  }
+}
 
   </style>
   <style>
@@ -4391,40 +4584,24 @@
         </div>
 
         <!-- Selector Row (Outside the Canvas, Spaced Out) -->
-        <div class="stage-selector-row">
-          <!-- Text Label on the Left -->
-          <div class="stage-tool-label">🛠️ TOOLS:</div>
-
-          <!-- Floating Play Mode Tool Selector (River vs Dam vs Gate) -->
-          <div class="play-tool-selector" id="playToolSelector">
-            <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="River Channel (Conducts flow)">
-              <span class="play-tool-icon">💧</span>
-              <span class="play-tool-label">River</span>
-            </button>
-            <button class="play-tool-btn" id="playToolDam" data-tool="dam" title="Log Dam (Blocks flow)">
-              <span class="play-tool-icon">🪵</span>
-              <span class="play-tool-label">Dam</span>
-            </button>
-          </div>
-
-          <!-- Top-right controls: undo + fullscreen -->
-          <div class="stage-extra-controls" aria-label="Game actions">
-            <button class="stage-undo" id="stageUndo" title="Undo last action" aria-label="Undo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
-                <path d="M3 7v6h6M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
-              </svg>
-            </button>
-            <button class="stage-fullscreen" id="stageFullscreen" title="Toggle fullscreen" aria-label="Fullscreen">
-              <!-- Expand Icon -->
-              <svg class="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>
-              </svg>
-              <!-- Shrink / Exit Icon (Visible in virtual fullscreen) -->
-              <svg class="ic-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; display: none;">
-                <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/>
-              </svg>
-            </button>
-          </div>
+        <div class="stage-selector-row" style="justify-content: center; gap: 16px;">
+          <!-- 1. River tool -->
+          <button class="play-tool-btn active" id="playToolCanal" data-tool="canal" title="River (Carves flow paths)">
+            <span class="play-tool-icon">💧</span>
+            <span class="play-tool-label">River</span>
+          </button>
+          
+          <!-- 2. Dam tool -->
+          <button class="play-tool-btn" id="playToolDam" data-tool="dam" title="Dam (Tap to open/close & release water!)">
+            <span class="play-tool-icon">🪵</span>
+            <span class="play-tool-label">Dam</span>
+          </button>
+          
+          <!-- 3. Repeat/Restart button -->
+          <button class="play-tool-btn" id="toolRepeat" title="Repeat (Clears & restarts the level!)" style="background: linear-gradient(135deg, #FFB347 0%, #FF9F1C 100%);">
+            <span class="play-tool-icon">🔁</span>
+            <span class="play-tool-label">Repeat</span>
+          </button>
         </div>
 
         <!-- Core Canvas Container (completely clear of overlapping absolute buttons) -->
@@ -4433,255 +4610,205 @@
           <div class="stage-overlay"></div>
           <div class="stage-hint" id="stageHint">Click the highlighted cell</div>
 
-          <!-- Baxter speech bubble placed INSIDE the canvas frame to prevent overlapping buttons! -->
-          <div class="bubble-wrap dismissed" id="baxterBubble">
-            <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
-            <button class="bubble-dismiss" id="bubbleDismiss" title="Hide Baxter" aria-label="Hide Baxter">×</button>
-            <div class="bubble-portrait" aria-hidden="true">
-              <svg viewBox="0 0 60 60" width="44" height="44">
-                <!-- Tail (animated) -->
-                <ellipse class="baxter-tail" cx="14" cy="36" rx="6" ry="5" fill="#D9A86C"/>
-                <ellipse class="baxter-tail" cx="14" cy="36" rx="4" ry="3.5" fill="none" stroke="#6E4422" stroke-width=".4" stroke-dasharray="1.5 1.5"/>
-                <!-- Body -->
-                <ellipse cx="30" cy="36" rx="14" ry="13" fill="#A66E3F"/>
-                <ellipse cx="30" cy="40" rx="10" ry="6" fill="#C28A5C" opacity=".6"/>
-                <!-- Left arm (waving) -->
-                <ellipse class="baxter-arm-l" cx="17" cy="34" rx="3.5" ry="6" fill="#A66E3F"/>
-                <circle class="baxter-arm-l" cx="16" cy="28" r="2" fill="#6E4422"/>
-                <!-- Head -->
-                <ellipse cx="30" cy="22" rx="10" ry="11" fill="#6E4422"/>
-                <ellipse cx="30" cy="20" rx="8" ry="3" fill="#8B5E3C" opacity=".5"/>
-                <!-- Ears -->
-                <ellipse cx="21" cy="16" rx="3" ry="4" fill="#3D2415"/>
-                <ellipse cx="39" cy="16" rx="3" ry="4" fill="#3D2415"/>
-                <ellipse cx="21" cy="17" rx="1.5" ry="2" fill="#FFC53D" opacity=".7"/>
-                <ellipse cx="39" cy="17" rx="1.5" ry="2" fill="#FFC53D" opacity=".7"/>
-                <!-- Hat -->
-                <rect x="20" y="20" width="20" height="6" rx="1" fill="#FFC53D"/>
-                <rect x="18" y="24" width="24" height="3" rx="1" fill="#E5A82A"/>
-                <ellipse cx="30" cy="20" rx="2" ry="1.5" fill="#E5A82A"/>
-                <!-- Eyes (blinking) -->
-                <ellipse class="baxter-eye" cx="26" cy="32" rx="1.5" ry="2" fill="#2A2018"/>
-                <ellipse class="baxter-eye" cx="34" cy="32" rx="1.5" ry="2" fill="#2A2018"/>
-                <circle cx="26.5" cy="31.5" r=".5" fill="#fff"/>
-                <circle cx="34.5" cy="31.5" r=".5" fill="#fff"/>
-                <!-- Nose -->
-                <ellipse cx="30" cy="35" rx="1.8" ry="1.2" fill="#3D2415"/>
-                <!-- Teeth (normal) -->
-                <rect class="baxter-teeth" x="28" y="37" width="4" height="2.5" rx=".5" fill="#FFF7E6"/>
-                <line class="baxter-teeth-sep" x1="30" y1="37" x2="30" y2="39.5" stroke="#6E4422" stroke-width=".4"/>
-                <!-- Blushing -->
-                <circle cx="22" cy="35" r="1.5" fill="#B5533C" opacity="0.4"/>
-                <circle cx="38" cy="35" r="1.5" fill="#B5533C" opacity="0.4"/>
-                <!-- Whiskers -->
-                <line x1="20" y1="36" x2="14" y2="35" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
-                <line x1="20" y1="38" x2="13" y2="39" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
-                <line x1="40" y1="36" x2="46" y2="35" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
-                <line x1="40" y1="38" x2="47" y2="39" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
-              </svg>
-            </div>
-            <div class="bubble-body">
-              <div class="bubble-name">Baxter <span class="bubble-title-tag">Master Builder</span></div>
-              <div class="bubble-title" id="baxterTitle"></div>
-              <div class="bubble-text" id="baxterBody"></div>
-              <div class="bubble-actions">
-                <button class="bubble-advance" id="baxterAdvance"></button>
-              </div>
-            </div>
-            <div class="bubble-tail" aria-hidden="true"></div>
-          </div>
-        </div>
+          <!-- Floating exit fullscreen button (visible only in virtual fullscreen mode!) -->
+          <button class="stage-exit-fs" id="stageExitFullscreen" title="Exit Fullscreen" aria-label="Exit Fullscreen">
+            <span style="font-size: 1.2rem;">🚪</span>
+            <span>Exit Fullscreen</span>
+          </button>
 
-        <!-- Bottom Controls Row (Outside the Canvas, Spaced Out) -->
-        <div class="stage-controls-row">
-          <!-- Highly visible, beautifully styled volume button -->
+          <!-- Baxter speech bubble removed from here to prevent overlapping, placed outside stage-frame -->
+        </div> <!-- Closes stage-frame -->
+
+        <!-- Controls Row (Outside the Canvas, Spaced Out) -->
+        <div class="stage-controls-row" style="margin-top: 12px;">
+          <!-- 1. Volume / Mute button -->
           <button class="stage-mute" id="stageMute" title="Toggle sound" aria-label="Toggle sound">
-            <!-- Icon On -->
-            <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Sound icon -->
+            <svg class="ic ic-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
             </svg>
-            <!-- Icon Off -->
-            <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="ic ic-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
               <line x1="23" y1="9" x2="17" y2="15"/>
               <line x1="17" y1="9" x2="23" y2="15"/>
             </svg>
           </button>
 
-          <!-- Ambient sound mood picker -->
+          <!-- 2. Sound picker (forest / river / storm) -->
           <div class="stage-sound-picker" id="stageSoundPicker" role="radiogroup" aria-label="Ambient sound">
-            <button class="sp-btn active" data-mood="river" role="radio" aria-checked="true">🌊 River</button>
-            <button class="sp-btn" data-mood="forest" role="radio" aria-checked="false">🌲 Forest</button>
-            <button class="sp-btn" data-mood="storm" role="radio" aria-checked="false">⚡ Storm</button>
+            <button class="sp-btn" data-mood="forest" title="Forest" aria-label="Forest">
+              🌲 <span class="sp-btn-label">Forest</span>
+            </button>
+            <button class="sp-btn active" data-mood="river" title="River" aria-label="River">
+              💧 <span class="sp-btn-label">River</span>
+            </button>
+            <button class="sp-btn" data-mood="storm" title="Storm" aria-label="Storm">
+              ⚡ <span class="sp-btn-label">Storm</span>
+            </button>
           </div>
 
-          <!-- Mode selector: Play / Build -->
-          <div class="stage-mode" id="stageMode" role="tablist" aria-label="Mode">
-            <button class="mode-btn active" data-mode="play" role="tab">▶ Play</button>
-            <button class="mode-btn" data-mode="build" role="tab">✎ Build</button>
+          <!-- 3. Extra controls: Undo and Fullscreen -->
+          <div class="stage-extra-controls" aria-label="Game actions">
+            <button class="stage-undo" id="stageUndo" title="Undo last canal" aria-label="Undo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 14L4 9l5-5"/>
+                <path d="M4 9h11a5 5 0 0 1 0 10h-3"/>
+              </svg>
+            </button>
+            <button class="stage-fullscreen" id="stageFullscreen" title="Fullscreen" aria-label="Fullscreen">
+              <svg class="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+              </svg>
+              <svg class="ic-shrink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 14h6v6m0-6l-7 7m17-7h-6v6m0-6l7 7M4 10h6V4m0 6L3 3m17 7h-6V4m0 6l7-7"/>
+              </svg>
+            </button>
           </div>
         </div>
 
-        <!-- Build palette (only shown in Build mode) -->
-        <div class="stage-palette" id="stagePalette" hidden>
-          <button class="pal-btn active" data-tool="spring" title="Spring">💧</button>
-          <button class="pal-btn" data-tool="wheel" title="Water Wheel">⚙️</button>
-          <button class="pal-btn" data-tool="dam" title="Dam">🪵</button>
-          <button class="pal-btn" data-tool="canal" title="Canal">🛠️</button>
-          <button class="pal-btn" data-tool="rock" title="Rock">🪨</button>
-          <button class="pal-btn pal-erase" data-tool="erase" title="Erase">✕</button>
-          <button class="pal-btn pal-clear" data-tool="clear" title="Clear all">🗑</button>
-        </div>
-
-      </div>
-
-          <!-- Save modal -->
-          <div class="stage-modal" id="stageModal" hidden>
-            <div class="modal-card">
-              <button class="modal-close" id="modalClose" aria-label="Close">×</button>
-              <h4 id="modalTitle">Share this level</h4>
-              <p id="modalDesc">Copy the link or code below. Anyone with it can play your level.</p>
-              <div class="modal-row">
-                <input type="text" id="shareLink" readonly />
-                <button class="modal-btn" id="copyLinkBtn">Copy link</button>
-              </div>
-              <div class="modal-row">
-                <input type="text" id="shareCode" readonly />
-                <button class="modal-btn" id="copyCodeBtn">Copy code</button>
-              </div>
-              <div class="modal-feedback" id="modalFeedback"></div>
-              <div class="modal-divider"></div>
-              <h4 style="margin-top: 0">My Levels</h4>
-              <div class="modal-levels" id="modalLevels">
-                <p class="modal-empty">No saved levels yet. Build something and save it!</p>
-              </div>
-              <div class="modal-row">
-                <input type="text" id="saveName" placeholder="Level name" />
-                <button class="modal-btn modal-btn-primary" id="saveLevelBtn">Save</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Daily level seed indicator (shown briefly when level changes) -->
-          <div class="stage-seed" id="stageSeed" aria-live="polite"></div>
-
-          <!-- Tiny reopen pill (shown when bubble is fully dismissed) -->
-          <button class="bubble-reopen-pill" id="bubbleReopenPill" aria-label="Show Baxter again">
-            <svg viewBox="0 0 60 60" width="22" height="22" aria-hidden="true">
+        <!-- Baxter speech bubble -->
+        <div class="bubble-wrap dismissed" id="baxterBubble" style="margin-top: 12px; width: 100%;">
+          <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
+          <button class="bubble-dismiss" id="bubbleDismiss" title="Hide Baxter" aria-label="Hide Baxter">×</button>
+          <div class="bubble-portrait" aria-hidden="true">
+            <svg viewBox="0 0 60 60" width="44" height="44">
+              <!-- Tail (animated) -->
+              <ellipse class="baxter-tail" cx="14" cy="36" rx="6" ry="5" fill="#D9A86C"/>
+              <ellipse class="baxter-tail" cx="14" cy="36" rx="4" ry="3.5" fill="none" stroke="#6E4422" stroke-width=".4" stroke-dasharray="1.5 1.5"/>
+              <!-- Body -->
+              <ellipse cx="30" cy="36" rx="14" ry="13" fill="#A66E3F"/>
+              <ellipse cx="30" cy="40" rx="10" ry="6" fill="#C28A5C" opacity=".6"/>
+              <!-- Left arm (waving) -->
+              <ellipse class="baxter-arm-l" cx="17" cy="34" rx="3.5" ry="6" fill="#A66E3F"/>
+              <circle class="baxter-arm-l" cx="16" cy="28" r="2" fill="#6E4422"/>
+              <!-- Head -->
               <ellipse cx="30" cy="22" rx="10" ry="11" fill="#6E4422"/>
-              <ellipse cx="30" cy="32" rx="14" ry="13" fill="#A66E3F"/>
+              <ellipse cx="30" cy="20" rx="8" ry="3" fill="#8B5E3C" opacity=".5"/>
+              <!-- Ears -->
+              <ellipse cx="21" cy="16" rx="3" ry="4" fill="#3D2415"/>
+              <ellipse cx="39" cy="16" rx="3" ry="4" fill="#3D2415"/>
+              <ellipse cx="21" cy="17" rx="1.5" ry="2" fill="#FFC53D" opacity=".7"/>
+              <ellipse cx="39" cy="17" rx="1.5" ry="2" fill="#FFC53D" opacity=".7"/>
+              <!-- Hat -->
               <rect x="20" y="20" width="20" height="6" rx="1" fill="#FFC53D"/>
               <rect x="18" y="24" width="24" height="3" rx="1" fill="#E5A82A"/>
-              <circle cx="26" cy="32" r="1.5" fill="#2A2018"/>
-              <circle cx="34" cy="32" r="1.5" fill="#2A2018"/>
-              <ellipse cx="30" cy="36" rx="3" ry="2" fill="#FFF7E6"/>
+              <ellipse cx="30" cy="20" rx="2" ry="1.5" fill="#E5A82A"/>
+              <!-- Eyes (blinking) -->
+              <ellipse class="baxter-eye" cx="26" cy="32" rx="1.5" ry="2" fill="#2A2018"/>
+              <ellipse class="baxter-eye" cx="34" cy="32" rx="1.5" ry="2" fill="#2A2018"/>
+              <circle cx="26.5" cy="31.5" r=".5" fill="#fff"/>
+              <circle cx="34.5" cy="31.5" r=".5" fill="#fff"/>
+              <!-- Nose -->
+              <ellipse cx="30" cy="35" rx="1.8" ry="1.2" fill="#3D2415"/>
+              <!-- Teeth (normal) -->
+              <rect class="baxter-teeth" x="28" y="37" width="4" height="2.5" rx=".5" fill="#FFF7E6"/>
+              <line class="baxter-teeth" x1="30" y1="37" x2="30" y2="39.5" stroke="#6E4422" stroke-width=".3"/>
+              <!-- Big smile (shown when tutorial step completes) -->
+              <g class="baxter-smile">
+                <path d="M25 36 Q30 41 35 36" stroke="#6E4422" stroke-width=".8" fill="#FFF7E6" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="30" y1="36" x2="30" y2="40.5" stroke="#6E4422" stroke-width=".4"/>
+              </g>
+              <!-- Cheeks -->
+              <ellipse cx="23" cy="34" rx="1.5" ry="1" fill="#B5533C" opacity=".4"/>
+              <ellipse cx="37" cy="34" rx="1.5" ry="1" fill="#B5533C" opacity=".4"/>
+              <!-- Whiskers -->
+              <line x1="22" y1="35" x2="18" y2="34" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
+              <line x1="38" y1="35" x2="42" y2="34" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
             </svg>
-            <span>Baxter</span>
-          </button>
-
-          <!-- Victory overlay (hidden by default) -->
-          <div class="victory-overlay" id="victoryOverlay" aria-hidden="true">
-            <div class="victory-rays" aria-hidden="true"></div>
-            <div class="victory-card">
-              <div class="victory-badge">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M9 16.17 L4.83 12 3.41 13.41 9 19 21 7 19.59 5.59z"/>
-                </svg>
-              </div>
-              <h3 class="victory-title" id="victoryTitle">Goal Reached</h3>
-              <p class="victory-sub" id="victorySub">Water found its way.</p>
-              <div class="victory-stats">
-                <div class="victory-stat">
-                  <div class="victory-stat-num" id="victoryDrops">0</div>
-                  <div class="victory-stat-label">Drops placed</div>
-                </div>
-                <div class="victory-stat">
-                  <div class="victory-stat-num" id="victoryGoals">1</div>
-                  <div class="victory-stat-label">Goals reached</div>
-                </div>
-                <div class="victory-stat">
-                  <div class="victory-stat-num" id="victoryTime">0:00</div>
-                  <div class="victory-stat-label">Time</div>
-                </div>
-              </div>
-              <div class="victory-actions">
-                <button class="victory-btn victory-btn-primary" id="victoryNext">Next level →</button>
-                <button class="victory-btn victory-btn-ghost" id="victoryRestart">Restart</button>
-                <button class="victory-btn victory-btn-ghost" id="victoryContinue">Keep playing</button>
-              </div>
+          </div>
+          <div class="bubble-body">
+            <div class="bubble-name">
+              <span>Baxter</span>
+              <span class="bubble-title-tag">Your guide</span>
+            </div>
+            <div class="bubble-title" id="baxterTitle">Welcome, engineer.</div>
+            <div class="bubble-text" id="baxterBody">Hi, I'm Baxter. Let's guide some water!</div>
+            <div class="bubble-actions">
+              <button class="bubble-advance" id="baxterAdvance">Tap to continue</button>
+              <button class="bubble-reopen" id="bubbleReopen" title="Show Baxter">Baxter?</button>
             </div>
           </div>
+          <div class="bubble-tail" aria-hidden="true"></div>
+        </div>
 
-          <!-- Baxter speech bubble -->
-          <div class="bubble-wrap dismissed" id="baxterBubble">
-            <button class="bubble-skip" id="bubbleSkip" title="Skip tutorial">Skip tutorial</button>
-            <button class="bubble-dismiss" id="bubbleDismiss" title="Hide Baxter" aria-label="Hide Baxter">×</button>
-            <div class="bubble-portrait" aria-hidden="true">
-              <svg viewBox="0 0 60 60" width="44" height="44">
-                <!-- Tail (animated) -->
-                <ellipse class="baxter-tail" cx="14" cy="36" rx="6" ry="5" fill="#D9A86C"/>
-                <ellipse class="baxter-tail" cx="14" cy="36" rx="4" ry="3.5" fill="none" stroke="#6E4422" stroke-width=".4" stroke-dasharray="1.5 1.5"/>
-                <!-- Body -->
-                <ellipse cx="30" cy="36" rx="14" ry="13" fill="#A66E3F"/>
-                <ellipse cx="30" cy="40" rx="10" ry="6" fill="#C28A5C" opacity=".6"/>
-                <!-- Left arm (waving) -->
-                <ellipse class="baxter-arm-l" cx="17" cy="34" rx="3.5" ry="6" fill="#A66E3F"/>
-                <circle class="baxter-arm-l" cx="16" cy="28" r="2" fill="#6E4422"/>
-                <!-- Head -->
-                <ellipse cx="30" cy="22" rx="10" ry="11" fill="#6E4422"/>
-                <ellipse cx="30" cy="20" rx="8" ry="3" fill="#8B5E3C" opacity=".5"/>
-                <!-- Ears -->
-                <ellipse cx="21" cy="16" rx="3" ry="4" fill="#3D2415"/>
-                <ellipse cx="39" cy="16" rx="3" ry="4" fill="#3D2415"/>
-                <ellipse cx="21" cy="17" rx="1.5" ry="2" fill="#FFC53D" opacity=".7"/>
-                <ellipse cx="39" cy="17" rx="1.5" ry="2" fill="#FFC53D" opacity=".7"/>
-                <!-- Hat -->
-                <rect x="20" y="20" width="20" height="6" rx="1" fill="#FFC53D"/>
-                <rect x="18" y="24" width="24" height="3" rx="1" fill="#E5A82A"/>
-                <ellipse cx="30" cy="20" rx="2" ry="1.5" fill="#E5A82A"/>
-                <!-- Eyes (blinking) -->
-                <ellipse class="baxter-eye" cx="26" cy="32" rx="1.5" ry="2" fill="#2A2018"/>
-                <ellipse class="baxter-eye" cx="34" cy="32" rx="1.5" ry="2" fill="#2A2018"/>
-                <circle cx="26.5" cy="31.5" r=".5" fill="#fff"/>
-                <circle cx="34.5" cy="31.5" r=".5" fill="#fff"/>
-                <!-- Nose -->
-                <ellipse cx="30" cy="35" rx="1.8" ry="1.2" fill="#3D2415"/>
-                <!-- Teeth (normal) -->
-                <rect class="baxter-teeth" x="28" y="37" width="4" height="2.5" rx=".5" fill="#FFF7E6"/>
-                <line class="baxter-teeth" x1="30" y1="37" x2="30" y2="39.5" stroke="#6E4422" stroke-width=".3"/>
-                <!-- Big smile (shown when tutorial step completes) -->
-                <g class="baxter-smile">
-                  <path d="M25 36 Q30 41 35 36" stroke="#6E4422" stroke-width=".8" fill="#FFF7E6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <line x1="30" y1="36" x2="30" y2="40.5" stroke="#6E4422" stroke-width=".4"/>
-                </g>
-                <!-- Cheeks -->
-                <ellipse cx="23" cy="34" rx="1.5" ry="1" fill="#B5533C" opacity=".4"/>
-                <ellipse cx="37" cy="34" rx="1.5" ry="1" fill="#B5533C" opacity=".4"/>
-                <!-- Whiskers -->
-                <line x1="22" y1="35" x2="18" y2="34" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
-                <line x1="38" y1="35" x2="42" y2="34" stroke="#6E4422" stroke-width=".3" opacity=".6"/>
+        <!-- Tiny reopen pill (shown when bubble is fully dismissed) -->
+        <button class="bubble-reopen-pill" id="bubbleReopenPill" aria-label="Show Baxter again" style="position: absolute; bottom: 10px; left: 10px;">
+          <svg viewBox="0 0 60 60" width="22" height="22" aria-hidden="true">
+            <ellipse cx="30" cy="22" rx="10" ry="11" fill="#6E4422"/>
+            <ellipse cx="30" cy="32" rx="14" ry="13" fill="#A66E3F"/>
+            <rect x="20" y="20" width="20" height="6" rx="1" fill="#FFC53D"/>
+            <rect x="18" y="24" width="24" height="3" rx="1" fill="#E5A82A"/>
+            <circle cx="26" cy="32" r="1.5" fill="#2A2018"/>
+            <circle cx="34" cy="32" r="1.5" fill="#2A2018"/>
+            <ellipse cx="30" cy="36" rx="3" ry="2" fill="#FFF7E6"/>
+          </svg>
+          <span>Baxter</span>
+        </button>
+
+        <!-- Victory overlay (hidden by default) -->
+        <div class="victory-overlay" id="victoryOverlay" aria-hidden="true">
+          <div class="victory-rays" aria-hidden="true"></div>
+          <div class="victory-card">
+            <div class="victory-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M9 16.17 L4.83 12 3.41 13.41 9 19 21 7 19.59 5.59z"/>
               </svg>
             </div>
-            <div class="bubble-body">
-              <div class="bubble-name">
-                <span>Baxter</span>
-                <span class="bubble-title-tag">Your guide</span>
+            <h3 class="victory-title" id="victoryTitle">Goal Reached</h3>
+            <p class="victory-sub" id="victorySub">Water found its way.</p>
+            <div class="victory-stats">
+              <div class="victory-stat">
+                <div class="victory-stat-num" id="victoryDrops">0</div>
+                <div class="victory-stat-label">Drops placed</div>
               </div>
-              <div class="bubble-title" id="baxterTitle">Welcome, engineer.</div>
-              <div class="bubble-text" id="baxterBody">Hi, I'm Baxter. Let's build something.</div>
-              <div class="bubble-actions">
-                <button class="bubble-advance" id="baxterAdvance">Tap to continue</button>
-                <button class="bubble-reopen" id="bubbleReopen" title="Show Baxter">Baxter?</button>
+              <div class="victory-stat">
+                <div class="victory-stat-num" id="victoryGoals">1</div>
+                <div class="victory-stat-label">Goals reached</div>
+              </div>
+              <div class="victory-stat">
+                <div class="victory-stat-num" id="victoryTime">0:00</div>
+                <div class="victory-stat-label">Time</div>
               </div>
             </div>
-            <div class="bubble-tail" aria-hidden="true"></div>
+            <div class="victory-actions">
+              <button class="victory-btn victory-btn-primary" id="victoryNext">Next level →</button>
+              <button class="victory-btn victory-btn-ghost" id="victoryRestart">Restart</button>
+              <button class="victory-btn victory-btn-ghost" id="victoryContinue">Keep playing</button>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
+        <!-- Save/Share Modal (Hidden) -->
+        <div class="stage-modal" id="stageModal" hidden>
+          <div class="modal-card">
+            <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+            <h4 id="modalTitle">Share this level</h4>
+            <p id="modalDesc">Copy the link or code below. Anyone with it can play your level.</p>
+            <div class="modal-row">
+              <input type="text" id="shareLink" readonly />
+              <button class="modal-btn" id="copyLinkBtn">Copy link</button>
+            </div>
+            <div class="modal-row">
+              <input type="text" id="shareCode" readonly />
+              <button class="modal-btn" id="copyCodeBtn">Copy code</button>
+            </div>
+            <div class="modal-feedback" id="modalFeedback"></div>
+            <div class="modal-divider"></div>
+            <h4 style="margin-top: 0">My Levels</h4>
+            <div class="modal-levels" id="modalLevels">
+              <p class="modal-empty">No saved levels yet. Build something and save it!</p>
+            </div>
+            <div class="modal-row">
+              <input type="text" id="saveName" placeholder="Level name" />
+              <button class="modal-btn modal-btn-primary" id="saveLevelBtn">Save</button>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- Closes hero-stage -->
+    </div> <!-- Closes hero-inner -->
+  </section>
   <!-- =========================================================
        WORLDS
        ========================================================= -->
@@ -4713,7 +4840,7 @@
             <span class="node-icon">💧</span>
           </div>
           <div class="region-info">
-            <h4 class="region-title">Crystal Springs</h4>
+            <h4 class="region-title">The Gateway</h4>
             <span class="region-status-badge">Level 1</span>
           </div>
         </button>
@@ -4726,7 +4853,7 @@
             <span class="node-icon">🌉</span>
           </div>
           <div class="region-info">
-            <h4 class="region-title">River Crossing</h4>
+            <h4 class="region-title">Diverting the Flow</h4>
             <span class="region-status-badge">Level 2</span>
           </div>
         </button>
@@ -4736,37 +4863,11 @@
         <!-- Beaver Creek (Level 3) -->
         <button class="map-region level-node current" id="nodeLvl3" data-level="2">
           <div class="node-marker">
-            <span class="node-icon">🦫</span>
-          </div>
-          <div class="region-info">
-            <h4 class="region-title">Beaver Creek</h4>
-            <span class="region-status-badge">Level 3</span>
-          </div>
-        </button>
-
-        <div class="map-connector-line" id="lineLvl4"></div>
-
-        <!-- Millstone Valley (Level 4) -->
-        <button class="map-region level-node current" id="nodeLvl4" data-level="3">
-          <div class="node-marker">
             <span class="node-icon">⚙️</span>
           </div>
           <div class="region-info">
-            <h4 class="region-title">Millstone Valley</h4>
-            <span class="region-status-badge">Level 4</span>
-          </div>
-        </button>
-
-        <div class="map-connector-line" id="lineLvl5"></div>
-
-        <!-- Harvest Plains (Level 5) -->
-        <button class="map-region level-node current" id="nodeLvl5" data-level="4">
-          <div class="node-marker">
-            <span class="node-icon">🌾</span>
-          </div>
-          <div class="region-info">
-            <h4 class="region-title">Harvest Plains</h4>
-            <span class="region-status-badge">Level 5</span>
+            <h4 class="region-title">Rivers & Wheels</h4>
+            <span class="region-status-badge">Level 3</span>
           </div>
         </button>
 
@@ -4933,9 +5034,9 @@ er-section" id="baxt">
         <!-- Dynamic Trivia Panel (Hidden by default) -->
         <div class="baxt-quiz-box" id="baxtQuizBox" style="display: none;">
           <div class="baxt-quiz-question">Hydrology Question:</div>
-          <p id="baxtQuizText">If we narrow a River's width while pressure remains constant, what happens to the water speed?</p>
-          <button class="baxt-quiz-option" id="baxtOptA">It speeds up (Venturi Effect)!</button>
-          <button class="baxt-quiz-option" id="baxtOptB">It slows down!</button>
+          <p id="baxtQuizText">Does water flow down to the sea, or up to the mountain?</p>
+          <button class="baxt-quiz-option" id="baxtOptA">It flows down! 🌊</button>
+          <button class="baxt-quiz-option" id="baxtOptB">It flows up! 🏔️</button>
         </div>
       </div>
     </div>
@@ -5451,7 +5552,7 @@ const AchievementSystem = (function () {
   const REWARDS = {
     first_drop: { title: "First Drop Placed", desc: "Laid the first canal to guide water flow.", icon: "💧" },
     perfect_par: { title: "Perfect Par Beat", desc: "Completed a level under par limitations!", icon: "🏆" },
-    five_levels: { title: "Watershed Expert", desc: "Completed 5 playable levels in the valley!", icon: "🎖️" },
+    five_levels: { title: "Watershed Expert", desc: "Completed 3 playable levels in the valley!", icon: "🎖️" },
     speed_demon: { title: "Speed Demon", desc: "Solved an engineering puzzle in under 20 seconds!", icon: "⚡" },
     all_levels: { title: "Master Hydrologist", desc: "Beaten all standard levels in the campaign!", icon: "👑" },
     undo: { title: "Water Bender", desc: "Utilized undo controls to rewrite water flow history.", icon: "↩️" },
@@ -6155,11 +6256,9 @@ window.WaterSystem = WaterSystem;
     const missionText = document.getElementById('stageMissionText');
     if (missionText) {
       const missions = [
-        "MISSION: Guide a River to the Farm to start Production!",
-        "MISSION: Build a Dam to block the stream and fill the Lake!",
-        "MISSION: Guide the River to spin the Wheel and start Power Production!",
-        "MISSION: Direct the River to help the Village and start Community Production!",
-        "MISSION: Combined Challenge! Connect all Production sites and fill the Lake!"
+        "MISSION: Guide a River to the Dam, then tap to RELEASE water to the Waterwheel!",
+        "MISSION: Place Canals to lead the River to the Dam, then release it downstream!",
+        "MISSION: Connect both Waterwheels to complete the final challenge!"
       ];
       missionText.textContent = missions[idx] || "MISSION: Guide water from sources to destinations!";
     }
@@ -6203,47 +6302,47 @@ window.WaterSystem = WaterSystem;
   const STEPS = [
     {
       id: 'hello',
-      title: 'Welcome, engineer.',
-      body: "I'm Baxter. Let's learn how we build Rivers, Dams, and Waterwheels!",
+      title: "Hi! I'm Baxter! 👋",
+      body: "Let's play with water! 💧 We will make a River, build a Dam, and spin the Waterwheel! ⚙️",
       bubbleSide: 'right',
       highlight: null,
       requireClick: null,
       requireReach: null,
       advance: 'click-anywhere',
-      advanceLabel: 'Tap to continue',
+      advanceLabel: 'Tap to continue ▶',
     },
     {
       id: 'spring',
-      title: 'The Water Source.',
-      body: "Here is our water source. We need to carve a River to lead water to the closed Dam, and then release it to the Waterwheel!",
+      title: "Look, a Spring! 🌀",
+      body: "Water splashes out from this blue spring! Let's dig a River to guide it! 🌊",
       bubbleSide: 'right',
       highlight: { x: 2, y: 4 },
       requireClick: null,
       requireReach: null,
       advance: 'click-anywhere',
-      advanceLabel: 'Tap to continue',
+      advanceLabel: 'Next ▶',
     },
     {
       id: 'place-1',
-      title: 'Carve a River.',
-      body: "Tap on the highlighted cell next to the Water Source to make your first River. The water will flow automatically and stop at the Dam!",
+      title: "Tap here! 👇",
+      body: "Tap the glowing box to dig your River! Watch the water flow! 💧",
       bubbleSide: 'right',
       highlight: { x: 3, y: 4 },
       requireClick: { x: 3, y: 4 },
       requireReach: null,
       advance: 'click-cell',
-      advanceLabel: 'Tap here',
+      advanceLabel: 'Tap here! 🌟',
     },
     {
       id: 'flow',
-      title: 'Water is Flowing!',
-      body: "See? The water flows along your River and accumulates at the closed Dam. Now, tap directly on the Dam block (🪵) to OPEN/RELEASE the water!",
+      title: "Open the Dam! 🪵",
+      body: "The water stopped at the Dam! Tap on the brown Dam log (🪵) to OPEN it and make the Waterwheel spin! ⚙️",
       bubbleSide: 'right',
       highlight: { x: 7, y: 4 },
       requireClick: null,
       requireReach: null,
       advance: 'click-anywhere',
-      advanceLabel: 'Tap to continue',
+      advanceLabel: 'Tap the Dam! 🪵',
     }
   ];
 
@@ -6455,130 +6554,113 @@ window.WaterSystem = WaterSystem;
 
   function drawFeature(x, y, type) {
     const px = x * TILE, py = y * TILE;
+    const cx = px + TILE/2, cy = py + TILE/2;
     const t = Date.now();
+    
+    // Global Cel-Shading Thickness
+    const strokeColor = '#2E1D11';
+    
     if (type === 'spring') {
-      const pulse = 0.4 + 0.25 * Math.sin(t / 380);
-      ctx.fillStyle = `rgba(125,211,245,${0.18 * pulse})`;
-      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 30, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = `rgba(125,211,245,${0.32 * pulse})`;
-      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 18, 0, Math.PI*2); ctx.fill();
-      const ripple = Math.sin(t / 220) * 1.2;
-      ctx.fillStyle = '#1A6E94';
-      ctx.beginPath(); ctx.ellipse(px + TILE/2, py + TILE/2 + 4, 18, 8, 0, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#4FB3D9';
-      ctx.beginPath(); ctx.ellipse(px + TILE/2 + ripple * 0.3, py + TILE/2, 16, 7, 0, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#7DD3F5';
-      ctx.beginPath(); ctx.ellipse(px + TILE/2 - 4, py + TILE/2 - 1, 4, 2, 0, 0, Math.PI*2); ctx.fill();
-      if (pulse > 0.5) {
-        const sparklePhase = t / 240;
-        const positions = [
-          { dx: 12, dy: 12, phase: 0.0 },
-          { dx: TILE - 14, dy: 18, phase: 1.3 },
-          { dx: TILE/2,     dy: 8,  phase: 2.7 },
-        ];
-        positions.forEach(s => {
-          const a = 0.5 + 0.5 * Math.sin(sparklePhase + s.phase);
-          if (a > 0.6) {
-            ctx.fillStyle = `rgba(255,255,255,${0.7 * (a - 0.6) / 0.4})`;
-            ctx.fillRect(px + s.dx, py + s.dy, 1.5, 1.5);
-          }
-        });
-      }
-    } else if (type === 'farm') {
-      const active = state.reached.farm;
-      if (active) {
-        const pulse = 0.3 + 0.2 * Math.sin(t / 300);
-        ctx.fillStyle = `rgba(255,200,87,${0.22 * pulse})`;
-        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 32, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = `rgba(255,200,87,${0.32 * pulse})`;
-        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 22, 0, Math.PI*2); ctx.fill();
-      }
-      const shimmer = active ? 0.5 + 0.5 * Math.sin(t / 700) : 0;
-      const gr = Math.round(168 + (212 - 168) * shimmer);
-      const gg = Math.round(212 + (170 - 212) * shimmer);
-      const gb = Math.round(156 + ( 60 - 156) * shimmer);
-      ctx.fillStyle = `rgb(${gr},${gg},${gb})`;
-      ctx.fillRect(px + 6, py + 8, TILE - 12, TILE - 14);
-      const dotPulse = 1 + shimmer * 0.4;
-      ctx.fillStyle = active ? '#FFC857' : '#8B5A3C';
-      for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) {
-        const sz = (6 * dotPulse);
-        ctx.fillRect(px + 10 + c*10 - (sz-6)/2, py + 12 + r*10 - (sz-6)/2, sz, sz);
-      }
-      const barnSway = active ? Math.sin(t / 500) * 1.5 : 0;
-      ctx.fillStyle = '#F4D3A8';
-      ctx.fillRect(px + TILE - 18, py + 6, 12, 12);
-      ctx.fillStyle = '#B5533C';
-      ctx.beginPath();
-      ctx.moveTo(px + TILE - 19, py + 6);
-      ctx.lineTo(px + TILE - 12, py - barnSway);
-      ctx.lineTo(px + TILE - 5,  py + 6);
-      ctx.closePath();
-      ctx.fill();
-    } else if (type === 'village') {
-      ctx.fillStyle = '#3F8E4B'; ctx.fillRect(px + 4, py + TILE - 14, TILE - 8, 10);
-      const cottages = [
-        { ox: 6,  oy: 18, w: 18, h: 18, phase: 0.0 },
-        { ox: 28, oy: 12, w: 16, h: 22, phase: 1.7 },
-      ];
-      cottages.forEach(co => {
-        const bob = Math.sin(t / 600 + co.phase) * 0.6;
-        ctx.save();
-        ctx.translate(px + co.ox, py + co.oy + bob);
-        ctx.fillStyle = '#F4D3A8'; ctx.fillRect(0, 4, co.w, co.h - 4);
-        ctx.fillStyle = '#B5533C';
-        ctx.beginPath();
-        ctx.moveTo(-2, 4); ctx.lineTo(co.w/2, -1); ctx.lineTo(co.w + 2, 4);
-        ctx.closePath(); ctx.fill();
-        ctx.fillStyle = state.reached.village ? 'rgba(255,210,125,0.85)' : '#4D2F1A';
-        ctx.fillRect(co.w/2 - 3, co.h/2, 6, co.h/2 - 1);
-        ctx.restore();
-      });
+      // ===== Bubbling Cartoon Water Source =====
+      const pulse = 0.4 + 0.2 * Math.sin(t / 300);
+      
+      // Outer active ring
+      ctx.fillStyle = `rgba(56,211,255,${0.18 * pulse})`;
+      ctx.beginPath(); ctx.arc(cx, cy, 28, 0, Math.PI*2); ctx.fill();
+
+      // Rock boundary ring (Chubby stones)
+      ctx.fillStyle = '#8595A1';
+      ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+      // Sparkling Blue Fountain center
+      ctx.fillStyle = '#00A3FF';
+      ctx.beginPath(); ctx.arc(cx, cy, 13, 0, Math.PI*2); ctx.fill();
+
+      ctx.fillStyle = '#38D3FF';
+      ctx.beginPath(); ctx.arc(cx - 3, cy - 3, 8, 0, Math.PI*2); ctx.fill();
+
+      // Specular shine
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath(); ctx.ellipse(cx - 4, cy - 4, 3, 1.5, Math.PI/4, 0, Math.PI*2); ctx.fill();
+      
     } else if (type === 'wheel') {
-      const cx = px + TILE/2, cy = py + TILE/2;
-      ctx.fillStyle = '#1A6E94'; ctx.fillRect(px + 4, py + TILE - 10, TILE - 8, 6);
-      const halo = 0.4 + 0.2 * Math.sin(t / 250);
-      ctx.fillStyle = `rgba(125,211,245,${0.18 * halo})`;
-      ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = '#8B5E3C'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(cx, cy, 22, 0, Math.PI*2); ctx.stroke();
-      ctx.save(); ctx.translate(cx, cy);
-      if (state.reached.wheel) {
-        ctx.rotate((t / 200) % (Math.PI*2));
+      // ===== Bouncy Chubby Gristmill Waterwheel =====
+      ctx.fillStyle = '#005CB3'; 
+      ctx.fillRect(px + 4, py + TILE - 12, TILE - 8, 8);
+      ctx.strokeStyle = strokeColor; ctx.lineWidth = 2.5;
+      ctx.strokeRect(px + 4, py + TILE - 12, TILE - 8, 8);
+
+      // Active Glow
+      const active = state.reached.wheel;
+      if (active) {
+        const glowPulse = 0.3 + 0.2 * Math.sin(t / 200);
+        ctx.fillStyle = `rgba(56,211,255,${0.25 * glowPulse})`;
+        ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI*2); ctx.fill();
       }
-      ctx.fillStyle = '#C49A6C'; ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = '#5C3A24'; ctx.lineWidth = 2;
+
+      // Outer rim
+      ctx.fillStyle = '#D47A43';
+      ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, 21, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+      // Inner spokes
+      ctx.save(); ctx.translate(cx, cy);
+      if (active) {
+        ctx.rotate((t / 180) % (Math.PI*2)); // spin fast & juicy!
+      }
+      ctx.fillStyle = '#FFB347';
+      ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI*2); ctx.fill();
+      
+      ctx.strokeStyle = strokeColor; ctx.lineWidth = 2.5;
       for (let i = 0; i < 6; i++) {
         ctx.beginPath(); ctx.moveTo(0, 0);
         const a = (i * Math.PI) / 3;
-        ctx.lineTo(Math.cos(a) * 18, Math.sin(a) * 18); ctx.stroke();
+        ctx.lineTo(Math.cos(a) * 15, Math.sin(a) * 15); ctx.stroke();
       }
       ctx.restore();
-      ctx.fillStyle = '#5C3A24';
-      ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
+
+      // Center hub
+      ctx.fillStyle = '#8B4119';
+      ctx.strokeStyle = strokeColor; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+      // Spawning splash star elements when active
+      if (active && t % 300 < 50) {
+        spawnBurst(x, y, ['#FFFFFF', '#FFD23F', '#38D3FF'], 3, 20, 'spark');
+      }
     } else if (type === 'pond') {
+      // ===== Bouncy Cartoon Lake =====
       const active = state.reached.pond;
-      const pulse = 0.4 + 0.25 * Math.sin(t / 380);
-      ctx.fillStyle = active ? `rgba(125,211,245,${0.18 * pulse})` : `rgba(139,90,60,${0.12 * pulse})`;
-      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 28, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#7A7064';
-      ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 20, 0, Math.PI*2); ctx.fill();
+      const pulse = 0.4 + 0.2 * Math.sin(t / 350);
+      
+      ctx.fillStyle = active ? `rgba(56,211,255,${0.2 * pulse})` : `rgba(139,90,60,${0.15 * pulse})`;
+      ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI*2); ctx.fill();
+
+      // Stone ring (bouncy pebbles)
+      ctx.fillStyle = '#8595A1';
+      ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
       if (active) {
-        const ripple = Math.sin(t / 250) * 1.5;
-        ctx.fillStyle = '#1A6E94';
-        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 16, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#4FB3D9';
-        ctx.beginPath(); ctx.ellipse(px + TILE/2 + ripple * 0.3, py + TILE/2, 13, 10, 0, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#7DD3F5';
-        ctx.beginPath(); ctx.ellipse(px + TILE/2 - 2, py + TILE/2 - 2, 4, 2, 0, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#3F8E4B';
-        ctx.fillRect(px + TILE - 14, py + 8, 4, 12);
-        ctx.fillRect(px + 10, py + TILE - 16, 3, 10);
+        // Shimmering Pool
+        ctx.fillStyle = '#00A3FF';
+        ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#38D3FF';
+        ctx.beginPath(); ctx.ellipse(cx - 2, cy - 2, 10, 8, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath(); ctx.ellipse(cx - 4, cy - 4, 3, 1.5, 0, 0, Math.PI*2); ctx.fill();
+
+        // Little green cartoon reeds!
+        ctx.fillStyle = '#56AB12';
+        ctx.fillRect(px + TILE - 14, py + 10, 3, 10);
+        ctx.fillRect(px + 10, py + TILE - 16, 3, 8);
       } else {
-        ctx.fillStyle = '#5C3A24';
-        ctx.beginPath(); ctx.arc(px + TILE/2, py + TILE/2, 16, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#8B5A3C';
-        ctx.beginPath(); ctx.ellipse(px + TILE/2, py + TILE/2, 12, 8, 0, 0, Math.PI*2); ctx.fill();
+        // Dry Mud Pit
+        ctx.fillStyle = '#8B4119';
+        ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#A64E1D';
+        ctx.beginPath(); ctx.ellipse(cx, cy, 10, 6, 0, 0, Math.PI*2); ctx.fill();
       }
     }
   }
@@ -6586,92 +6668,82 @@ window.WaterSystem = WaterSystem;
   function drawBuild(x, y, build) {
     const px = x * TILE, py = y * TILE;
     if (!build) return;
+    
+    const strokeColor = '#2E1D11';
+    
     if (build.type === 'canal') {
-      // Draw background channel base
-      ctx.fillStyle = '#0A4A6B'; ctx.fillRect(px + 4, py + TILE/2 - 8, TILE - 8, 16);
-      ctx.fillStyle = '#1A6E94'; ctx.fillRect(px + 4, py + TILE/2 - 6, TILE - 8, 12);
-      
-      // Draw scrolling river ripples and active bubbles!
-      ctx.fillStyle = 'rgba(125,211,245,.5)';
-      const t = (Date.now() / 500 + x * 0.5 + y * 0.3) % 1;
-      for (let i = 0; i < 3; i++) {
-        const fx = px + 4 + ((t * (TILE - 8)) + i * 14) % (TILE - 8);
-        // Draw miniature chevron water current lines (indicates direction!)
-        ctx.beginPath();
-        ctx.moveTo(fx, py + TILE/2 - 4);
-        ctx.lineTo(fx + 3, py + TILE/2);
-        ctx.lineTo(fx, py + TILE/2 + 4);
-        ctx.strokeStyle = 'rgba(234,247,251,0.3)';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
+      // ===== Chubby Cartoon River path =====
+      // Thick outer border
+      ctx.fillStyle = strokeColor;
+      ctx.fillRect(px + 2, py + TILE/2 - 11, TILE - 4, 22);
 
-      // ===== Foam Particles Drifting =====
-      const sparkleT = (Date.now() / 800 + x * 1.3 + y * 0.7);
-      for (let i = 0; i < 2; i++) {
-        const phase = (sparkleT + i * 1.7) % 1;
-        const alpha = Math.max(0, Math.sin(phase * Math.PI));
-        if (alpha < 0.15) continue;
-        const fx = px + 6 + phase * (TILE - 12);
-        ctx.fillStyle = `rgba(255,255,255,${alpha * 0.6})`;
-        ctx.fillRect(fx, py + TILE/2 - 3, 2, 2); // flowing foam
-      }
-    } else if (build.type === 'dam') {
-      // Solid base
-      ctx.fillStyle = '#5C3A24';
-      ctx.fillRect(px + 4, py + 4, TILE - 8, TILE - 8);
-      // Draw logs
-      ctx.fillStyle = '#8B5A3C';
-      ctx.strokeStyle = '#3D2415';
-      ctx.lineWidth = 1.5;
-      // Log 1
-      ctx.fillRect(px + 6, py + 8, TILE - 12, 10);
-      ctx.strokeRect(px + 6, py + 8, TILE - 12, 10);
-      // Log 2
-      ctx.fillRect(px + 6, py + 22, TILE - 12, 10);
-      ctx.strokeRect(px + 6, py + 22, TILE - 12, 10);
-      // Rope bindings
-      ctx.strokeStyle = '#D9A86C';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(px + 12, py + 4); ctx.lineTo(px + 12, py + TILE - 4);
-      ctx.moveTo(px + TILE - 12, py + 4); ctx.lineTo(px + TILE - 12, py + TILE - 4);
-      ctx.stroke();
-    } else if (build.type === 'gate') {
-      // Draw Water Gate
-      const open = build.open;
-      // Frame
-      ctx.fillStyle = '#7A7064';
-      ctx.fillRect(px + 4, py + 4, TILE - 8, TILE - 8);
-      ctx.strokeStyle = '#5C3A24'; ctx.lineWidth = 2;
-      ctx.strokeRect(px + 4, py + 4, TILE - 8, TILE - 8);
+      // Channel bed
+      ctx.fillStyle = '#005CB3'; 
+      ctx.fillRect(px + 2, py + TILE/2 - 8, TILE - 4, 16);
+      ctx.fillStyle = '#00A3FF'; 
+      ctx.fillRect(px + 2, py + TILE/2 - 5, TILE - 4, 10);
       
-      if (!open) {
-        // Closed state: heavy solid door with iron cross-beams
-        ctx.fillStyle = '#C49A6C';
-        ctx.fillRect(px + 8, py + 8, TILE - 16, TILE - 16);
-        ctx.strokeStyle = '#3D2415'; ctx.lineWidth = 2;
-        ctx.strokeRect(px + 8, py + 8, TILE - 16, TILE - 16);
-        // Iron bars
-        ctx.strokeStyle = '#7A7064'; ctx.lineWidth = 2.5;
+      // spec light line
+      ctx.fillStyle = '#38D3FF';
+      ctx.fillRect(px + 2, py + TILE/2 - 5, TILE - 4, 2);
+
+      // Bouncy drifting bubbles
+      ctx.fillStyle = '#FFFFFF';
+      const t = (Date.now() / 600 + x * 0.4 + y * 0.2) % 1;
+      for (let i = 0; i < 2; i++) {
+        const bx = px + 4 + ((t * (TILE - 8)) + i * 20) % (TILE - 8);
         ctx.beginPath();
-        ctx.moveTo(px + 8, py + 8); ctx.lineTo(px + TILE - 8, py + TILE - 8);
-        ctx.moveTo(px + TILE - 8, py + 8); ctx.lineTo(px + 8, py + TILE - 8);
+        ctx.arc(bx, py + TILE/2 + (i % 2 === 0 ? 2 : -2), 2, 0, Math.PI*2);
+        ctx.fill();
+      }
+    } else if (build.type === 'dam' || build.type === 'gate') {
+      // ===== Bouncy Chubby Log Dam (Release water mechanical gate!) =====
+      const open = build.open;
+      
+      // Frame backing
+      ctx.fillStyle = strokeColor;
+      ctx.fillRect(px + 3, py + 3, TILE - 6, TILE - 6);
+
+      if (!open) {
+        // CLOSED STATE: Chubby orange wood log logs stacked vertically!
+        ctx.fillStyle = '#D47A43';
+        ctx.strokeStyle = strokeColor; ctx.lineWidth = 3;
+        
+        // Draw 3 nested chubby logs stacked
+        ctx.fillRect(px + 6, py + 8, TILE - 12, 10);
+        ctx.strokeRect(px + 6, py + 8, TILE - 12, 10);
+
+        ctx.fillRect(px + 6, py + 18, TILE - 12, 10);
+        ctx.strokeRect(px + 6, py + 18, TILE - 12, 10);
+
+        ctx.fillRect(px + 6, py + 28, TILE - 12, 10);
+        ctx.strokeRect(px + 6, py + 28, TILE - 12, 10);
+
+        // Rope binding cords
+        ctx.strokeStyle = '#FFD23F'; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px + 12, py + 4); ctx.lineTo(px + 12, py + TILE - 4);
+        ctx.moveTo(px + TILE - 12, py + 4); ctx.lineTo(px + TILE - 12, py + TILE - 4);
         ctx.stroke();
       } else {
-        // Open state: door slid up/open, rushing water showing!
-        ctx.fillStyle = '#0A4A6B';
-        ctx.fillRect(px + 8, py + 8, TILE - 16, TILE - 16);
-        ctx.fillStyle = '#1A6E94';
-        ctx.fillRect(px + 8, py + TILE/2 - 4, TILE - 16, 8);
-        // Water spray drops
-        ctx.fillStyle = '#EAF7FB';
-        const ripple = (Date.now() / 150) % 3;
-        ctx.fillRect(px + 10 + ripple * 4, py + TILE/2 - 2, 2, 2);
-        // Slid open door panels on the sides
-        ctx.fillStyle = '#A66E3F';
-        ctx.fillRect(px + 4, py + 8, 4, TILE - 16);
-        ctx.fillRect(px + TILE - 8, py + 8, 4, TILE - 16);
+        // OPEN STATE: Log gates sliding open, rushing blue water foam spraying!
+        ctx.fillStyle = '#00A3FF';
+        ctx.fillRect(px + 6, py + 6, TILE - 12, TILE - 12);
+
+        ctx.fillStyle = '#38D3FF';
+        ctx.fillRect(px + 6, py + TILE/2 - 6, TILE - 12, 12);
+
+        // Splashing white cartoon circles
+        ctx.fillStyle = '#FFFFFF';
+        const ripple = (Date.now() / 100) % 3;
+        ctx.beginPath();
+        ctx.arc(px + 10 + ripple * 8, py + TILE/2, 4, 0, Math.PI*2);
+        ctx.fill();
+
+        // Slid open wood panels on the sides
+        ctx.fillStyle = '#8B4119';
+        ctx.fillRect(px + 4, py + 6, 5, TILE - 12);
+        ctx.fillRect(px + TILE - 9, py + 6, 5, TILE - 12);
       }
     }
   }
@@ -7450,16 +7522,16 @@ window.WaterSystem = WaterSystem;
         if (window.updateWorldMap) window.updateWorldMap();
       } catch (e) {}
       const completed = Object.keys(PlayerData.data.levelsCompleted).length;
-      if (completed >= 5) unlockAchievement('five_levels');
+      if (completed >= 3) unlockAchievement('five_levels');
       // Speed demon: under 20 seconds
       if (elapsed > 0 && elapsed < 20) unlockAchievement('speed_demon');
       // Par beat
       if (level.par && state.dropsPlaced <= level.par.drops && elapsed <= level.par.time) {
         unlockAchievement('perfect_par');
       }
-      // Triple goal
-      if (state.reached.farm && state.reached.village && state.reached.wheel) {
-        unlockAchievement('three_goals');
+      // Double threat: Level 3 complete
+      if (state.levelIndex === 2) {
+        unlockAchievement('double_threat');
       }
     }
   }
@@ -7929,17 +8001,17 @@ window.WaterSystem = WaterSystem;
       render();
       return;
     }
-    if (state.buildTool === 'dam' || state.buildTool === 'canal') {
+    if (state.buildTool === 'dam' || state.buildTool === 'gate') {
       cell.terrain = 'grass';
       cell.feature = null;
-      cell.build = { type: state.buildTool };
+      cell.build = { type: 'gate', open: false }; // Set directly as a closed water-releasing gate!
       render();
       return;
     }
-    if (state.buildTool === 'gate') {
+    if (state.buildTool === 'canal') {
       cell.terrain = 'grass';
       cell.feature = null;
-      cell.build = { type: 'gate', open: false };
+      cell.build = { type: 'canal' }; // Set as River Path
       render();
       return;
     }
@@ -8272,14 +8344,12 @@ window.WaterSystem = WaterSystem;
     speed_demon:     { title: 'Speed Demon',         desc: 'Complete a level in under 20 seconds', icon: '⚡' },
     minimal:         { title: 'Less is More',         desc: 'Complete a level using the fewest drops possible', icon: '✨' },
     perfect_par:     { title: 'On Par',               desc: 'Beat a level at par or better',       icon: '🏆' },
-    five_levels:     { title: 'Veteran Builder',     desc: 'Complete 5 levels',                  icon: '⭐' },
+    five_levels:     { title: 'Veteran Builder',     desc: 'Complete 3 levels',                  icon: '⭐' },
     all_levels:      { title: 'Master of the Watershed', desc: 'Complete all levels',             icon: '👑' },
     undo:            { title: 'Second Thoughts',     desc: 'Use undo for the first time',         icon: '↩️' },
     explorer:        { title: 'Explorer',             desc: 'Switch ambient sound moods 3 times',  icon: '🌍' },
-    three_goals:     { title: 'Triple Threat',        desc: 'Reach farm + village + wheel in one level', icon: '🎯' },
+    double_threat:   { title: 'Double Threat',        desc: 'Complete Level 3 (Rivers & Wheels!)', icon: '⚙️' },
     undo_5:          { title: 'Perfectionist',        desc: 'Use undo 5 times in one level',       icon: '🎨' },
-    // Hidden/rare:
-    no_farm_par:     { title: 'Water Whisperer',     desc: 'Beat a farm level at exactly par drops', icon: '🤫' },
   };
 
   function unlockAchievement(id) {
@@ -8700,7 +8770,22 @@ window.WaterSystem = WaterSystem;
         } else {
           // All levels done! Achievement!
           unlockAchievement('all_levels');
-          showModalFeedback('🎉 You completed every level!');
+          // Congratulate them via Baxter's bubble!
+          const bubble = document.getElementById('baxterBubble');
+          const title = document.getElementById('baxterTitle');
+          const body = document.getElementById('baxterBody');
+          const advance = document.getElementById('baxterAdvance');
+          if (bubble && title && body && advance) {
+            title.textContent = "🏆 Master Engineer!";
+            body.textContent = "Amazing! You managed the River canals, operated the Dams flawlessly, and powered every Waterwheel in the valley. You are a Master of the Watershed!";
+            advance.style.display = 'none'; // no more advance
+            bubble.classList.remove('dismissed'); // show it!
+            bubble.style.display = '';
+            // Trigger baxter smile animation
+            baxterSmile();
+            // Scroll smoothly to Baxter bubble
+            bubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       });
     }
@@ -8727,6 +8812,15 @@ window.WaterSystem = WaterSystem;
         Sound.click();
       });
     }
+    // ---- Floating Exit Fullscreen button (inside stage-frame) ----
+    const exitFsBtn = document.getElementById('stageExitFullscreen');
+    if (exitFsBtn) {
+      exitFsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFullscreen();
+        Sound.click();
+      });
+    }
     // ---- Update undo button state ----
     setInterval(() => {
       if (undoBtn) undoBtn.disabled = !state.undoStack || state.undoStack.length === 0;
@@ -8744,14 +8838,12 @@ window.WaterSystem = WaterSystem;
     state.playTool = 'canal'; // default
     const playToolCanal = document.getElementById('playToolCanal');
     const playToolDam = document.getElementById('playToolDam');
-    const playToolGate = document.getElementById('playToolGate');
-    if (playToolCanal && playToolDam && playToolGate) {
+    if (playToolCanal && playToolDam) {
       playToolCanal.addEventListener('click', (e) => {
         e.stopPropagation();
         state.playTool = 'canal';
         playToolCanal.classList.add('active');
         playToolDam.classList.remove('active');
-        playToolGate.classList.remove('active');
         Sound.click();
       });
       playToolDam.addEventListener('click', (e) => {
@@ -8766,23 +8858,19 @@ window.WaterSystem = WaterSystem;
         }
         playToolDam.classList.add('active');
         playToolCanal.classList.remove('active');
-        playToolGate.classList.remove('active');
         Sound.click();
       });
-      playToolGate.addEventListener('click', (e) => {
+    }
+
+    // ---- Repeat / Restart Tool ----
+    const toolRepeat = document.getElementById('toolRepeat');
+    if (toolRepeat) {
+      toolRepeat.addEventListener('click', (e) => {
         e.stopPropagation();
-        state.playTool = 'gate';
-        // Auto-disable tutorial locks so player can place gates anywhere immediately!
-        state.tutorialActive = false;
-        const bubble = document.getElementById('baxterBubble');
-        if (bubble) {
-          bubble.classList.add('dismissed');
-          bubble.style.display = 'none';
-        }
-        playToolGate.classList.add('active');
-        playToolCanal.classList.remove('active');
-        playToolDam.classList.remove('active');
-        Sound.click();
+        loadLevelByIndex(state.levelIndex);
+        try {
+          if (window.SoundSystem) window.SoundSystem.place();
+        } catch (err) {}
       });
     }
 
@@ -8951,6 +9039,20 @@ window.WaterSystem = WaterSystem;
     if (resizeRaf) cancelAnimationFrame(resizeRaf);
     resizeRaf = requestAnimationFrame(() => { resizeCanvas(); render(); });
   });
+
+  // Bulletproof ResizeObserver on .stage-frame to resolve 0-dimension iframe caching!
+  try {
+    const frame = document.querySelector('.stage-frame');
+    if (frame && window.ResizeObserver) {
+      const ro = new ResizeObserver(() => {
+        if (resizeRaf) cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(() => { resizeCanvas(); render(); });
+      });
+      ro.observe(frame);
+    }
+  } catch (e) {
+    console.warn("ResizeObserver not supported:", e);
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
@@ -9707,7 +9809,7 @@ window.WaterSystem = WaterSystem;
   if (btnSociety) btnSociety.addEventListener('click', () => selectLesson('society'));
   if (btnTrivia) btnTrivia.addEventListener('click', () => {
     selectLesson('trivia');
-    typeMessage('"Let\'s test your engineering knowledge, Apprentice! Answer correctly to prove your scholarship of the flow!"');
+    typeMessage('"Let\'s test your water knowledge! Answer correctly to win a graduate hat!"');
   });
 
   // Trivia handling
@@ -9717,7 +9819,7 @@ window.WaterSystem = WaterSystem;
       optB.className = 'baxt-quiz-option';
       playSuccess();
       svg.classList.add('waving');
-      typeMessage('"Spot on, Scholar! That is the Venturi Effect — narrowing a channel forces water to flow faster! You have potential!"', () => {
+      typeMessage('"Super! That is correct! Gravity pulls water down, down, down to the big blue sea! You are so smart!"', () => {
         svg.classList.remove('waving');
         // Unlock achievement inside the main game if available
         try {
@@ -9744,7 +9846,7 @@ window.WaterSystem = WaterSystem;
       optB.className = 'baxt-quiz-option wrong';
       optA.className = 'baxt-quiz-option';
       playFail();
-      typeMessage('"Ah, not quite! Narrowing a channel actually speeds up the velocity of water to maintain mass continuity. Give it another think!"');
+      typeMessage('"Oops! Water cannot flow up the mountains by itself! Gravity always pulls it down. Try again!"');
     });
   }
 
@@ -9777,7 +9879,7 @@ window.WaterSystem = WaterSystem;
 
   // Constants
   const STORAGE_KEY = 'wb_player_data_v1';
-  const LEVEL_IDS = ['1-1', '1-2', '1-3', '1-4', '1-5'];
+  const LEVEL_IDS = ['1-1', '1-2', '1-3'];
 
   // DOM Elements
   const nodes = [
@@ -9990,5 +10092,5 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bb6e83e85a2bdc',t:'MTc4NDE0NjQ0Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bd17f03d91e5c9',t:'MTc4NDE2Mzg3Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
