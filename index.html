@@ -3178,6 +3178,55 @@ button,
   margin-top: 2px;
 }
 
+/* Discovery Progress Toast */
+.discovery-progress-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 32, 54, 0.92);
+  border: 3px solid #2E1D11;
+  border-radius: var(--r-md);
+  padding: 8px 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  animation: dpt-slide-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: none;
+  font-family: var(--f-body);
+}
+.discovery-progress-toast.hide {
+  animation: dpt-slide-out 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+}
+
+@keyframes dpt-slide-in {
+  0% { transform: translateY(100px) scale(0.8); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes dpt-slide-out {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(100px) scale(0.8); opacity: 0; }
+}
+
+.dpt-star {
+  font-size: 1.4rem;
+  animation: dpt-star-spin 2s linear infinite;
+}
+@keyframes dpt-star-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.dpt-text {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--cream);
+}
+.dpt-text b {
+  color: #FFD27D;
+}
+
   </style>
   <style>
   /* =========================================================
@@ -3235,23 +3284,38 @@ button,
 .intro-sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #050B14 0%, #0A1626 50%, #16304E 100%);
+  background: linear-gradient(180deg, #02060e 0%, #08111e 50%, #102035 100%);
   animation: sunrise 15s cubic-bezier(0.1, 0.5, 0.1, 1) forwards;
   z-index: 1;
 }
 
+/* Polished Golden Sunrise Glow behind the peaks */
+.intro-sky::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0; height: 180px;
+  background: radial-gradient(circle at 50% 120%, rgba(255, 210, 125, 0.22) 0%, rgba(125, 211, 245, 0.08) 50%, transparent 80%);
+  z-index: 2;
+  animation: sunrise-glow-pulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes sunrise-glow-pulse {
+  from { opacity: 0.6; transform: scale(0.98); }
+  to { opacity: 1.0; transform: scale(1.02); }
+}
+
 @keyframes sunrise {
   0% {
-    background: linear-gradient(180deg, #050B14 0%, #0A1626 50%, #16304E 100%);
+    background: linear-gradient(180deg, #02060e 0%, #08111e 50%, #102035 100%);
   }
   30% {
-    background: linear-gradient(180deg, #0A1626 0%, #1E3F60 40%, #5C3A24 100%);
+    background: linear-gradient(180deg, #061122 0%, #16304e 45%, #4a281a 100%);
   }
   70% {
-    background: linear-gradient(180deg, #102640 0%, #3B6FB5 50%, #FFA94D 100%);
+    background: linear-gradient(180deg, #0b1a33 0%, #2e5c9b 50%, #e68d3a 100%);
   }
   100% {
-    background: linear-gradient(180deg, #1E3F60 0%, #7DD3F5 60%, #FFD27D 100%);
+    background: linear-gradient(180deg, #142a4a 0%, #4facfe 55%, #fecfef 100%);
   }
 }
 
@@ -3603,10 +3667,10 @@ button,
 /* Water Wheel & Mill Container */
 .intro-mill-container {
   position: absolute;
-  bottom: 8vh;
+  bottom: 10vh; /* Moved slightly higher to clear river touch area */
   left: 5%;
-  width: 250px;
-  height: 200px;
+  width: 320px; /* Scaled up for easier child tapping! */
+  height: 256px; /* Scaled up proportionally */
   z-index: 9;
 }
 
@@ -9603,8 +9667,11 @@ window.WaterSystem = WaterSystem;
       playLocalSound('discover');
       setTimeout(() => playLocalSound('chime'), 150); // double layer happy sounds!
       
-      discoveredSecrets.add('baxter');
-      checkLivingWorldAchievement();
+      if (!discoveredSecrets.has('baxter')) {
+        discoveredSecrets.add('baxter');
+        showDiscoveryProgressToast(discoveredSecrets.size);
+        checkLivingWorldAchievement();
+      }
 
       setTimeout(() => {
         baxter.classList.remove('tapped');
@@ -9623,8 +9690,11 @@ window.WaterSystem = WaterSystem;
       setTimeout(() => playLocalSound('chime'), 80); // water wheel chime splash sound!
       spawnWheelSplashes();
 
-      discoveredSecrets.add('wheel');
-      checkLivingWorldAchievement();
+      if (!discoveredSecrets.has('wheel')) {
+        discoveredSecrets.add('wheel');
+        showDiscoveryProgressToast(discoveredSecrets.size);
+        checkLivingWorldAchievement();
+      }
 
       setTimeout(() => {
         wheel.classList.remove('speeding');
@@ -9656,8 +9726,11 @@ window.WaterSystem = WaterSystem;
         }, 400); // matches the 0.4s screenshake duration!
       }
 
-      discoveredSecrets.add('river');
-      checkLivingWorldAchievement();
+      if (!discoveredSecrets.has('river')) {
+        discoveredSecrets.add('river');
+        showDiscoveryProgressToast(discoveredSecrets.size);
+        checkLivingWorldAchievement();
+      }
 
       setTimeout(() => {
         if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
@@ -9678,8 +9751,11 @@ window.WaterSystem = WaterSystem;
         }, i * 150);
       }
 
-      discoveredSecrets.add('tree');
-      checkLivingWorldAchievement();
+      if (!discoveredSecrets.has('tree')) {
+        discoveredSecrets.add('tree');
+        showDiscoveryProgressToast(discoveredSecrets.size);
+        checkLivingWorldAchievement();
+      }
 
       setTimeout(() => {
         tree.classList.remove('rustling');
@@ -9697,8 +9773,11 @@ window.WaterSystem = WaterSystem;
         spawnButterfly(rect);
       }
 
-      discoveredSecrets.add('flowers');
-      checkLivingWorldAchievement();
+      if (!discoveredSecrets.has('flowers')) {
+        discoveredSecrets.add('flowers');
+        showDiscoveryProgressToast(discoveredSecrets.size);
+        checkLivingWorldAchievement();
+      }
 
       setTimeout(() => {
         flowers.classList.remove('glowing');
@@ -9711,8 +9790,11 @@ window.WaterSystem = WaterSystem;
       duck.classList.add('quacking');
       playLocalSound('quack');
 
-      discoveredSecrets.add('duck');
-      checkLivingWorldAchievement();
+      if (!discoveredSecrets.has('duck')) {
+        discoveredSecrets.add('duck');
+        showDiscoveryProgressToast(discoveredSecrets.size);
+        checkLivingWorldAchievement();
+      }
       
       setTimeout(() => {
         duck.classList.remove('quacking');
@@ -9983,6 +10065,31 @@ window.WaterSystem = WaterSystem;
         if (toast.parentNode) toast.parentNode.removeChild(toast);
       }, 500);
     }, 5000);
+  }
+
+  function showDiscoveryProgressToast(count) {
+    if (count >= 6) return;
+
+    let toast = document.getElementById('discoveryProgressToast');
+    if (toast) {
+      toast.parentNode.removeChild(toast);
+    }
+
+    toast = document.createElement('div');
+    toast.id = 'discoveryProgressToast';
+    toast.className = 'discovery-progress-toast';
+    toast.innerHTML = `
+      <span class="dpt-star">✨</span>
+      <span class="dpt-text">Secret Found! <b>${count} / 6</b></span>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 500);
+    }, 2500);
   }
 
   // Expose starting mechanism to preloader
@@ -10407,5 +10514,6 @@ window.WaterSystem = WaterSystem;
 
   </script>
 
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1be193edce505e8',t:'MTc4NDE3NDQxMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1be52b85fa4d6ef',t:'MTc4NDE3Njc2Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
 </html>
