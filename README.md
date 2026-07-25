@@ -1,5 +1,9 @@
-# GEI
+# GEI Playground
 
-Genesis Engineered Interpretations.
+A lightweight app for experimenting with GEI ideas, testing engine behavior, and prototyping learning interactions.
 
-This repository contains the GEI platform, engine, academy, studio, and supporting packages.
+## Purpose
+This app gives the GEI ecosystem a fast, simple place to try out new concepts before they move into Academy or Studio.
+
+## Status
+Starter app
