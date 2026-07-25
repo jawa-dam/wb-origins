@@ -1,0 +1,15 @@
+{
+  "name": "@gei/site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ./scripts/build-site.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@gei/engine": "0.1.0"
+  }
+}

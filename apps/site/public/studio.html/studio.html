@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GEI Studio</title>
+    <meta
+      name="description"
+      content="GEI Studio — build lessons, simulations, and GEI content."
+    />
+    <meta name="theme-color" content="#004d61" />
+    <link rel="stylesheet" href="/assets/site.css" />
+  </head>
+  <body>
+    <header class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div>
+            <h1>GEI</h1>
+            <p>Genesis Engineered Interpretations</p>
+          </div>
+        </div>
+        <nav aria-label="Primary">
+          <a href="/index.html">Home</a>
+          <a href="/academy.html">Academy</a>
+          <a href="/studio.html">Studio</a>
+          <a href="/playground.html">Playground</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <span class="badge">Creator workspace</span>
+            <h2>GEI Studio</h2>
+            <p class="lead">
+              Create and organize GEI content, lessons, simulations, and discovery experiences.
+              This workspace remembers your projects in the browser.
+            </p>
+            <div class="button-row">
+              <a class="button primary" href="/index.html">Back Home</a>
+              <a class="button secondary" href="/academy.html">Open Academy</a>
+              <a class="button secondary" href="/playground.html">Try Playground</a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Studio overview</h3>
+            <p>
+              Use the Studio to draft artifacts, organize content, and prepare learning experiences.
+            </p>
+            <div class="stats">
+              <div class="stat">
+                <strong>Edit</strong>
+                <span>Shape content</span>
+              </div>
+              <div class="stat">
+                <strong>Build</strong>
+                <span>Create experiences</span>
+              </div>
+              <div class="stat">
+                <strong>Organize</strong>
+                <span>Manage assets</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="studio-dashboard">
+        <h3>Workspace dashboard</h3>
+        <p id="studio-saved">Workspace saved in your browser.</p>
+        <p>Active project: <strong id="studio-active-project">No active project</strong></p>
+
+        <div class="button-row">
+          <button class="button primary" id="studio-add-project" type="button">Add project</button>
+          <button class="button secondary" id="studio-reset" type="button">Reset workspace</button>
+        </div>
+
+        <div id="studio-project-list" class="lesson-list"></div>
+      </section>
+
+      <section class="section">
+        <h3>Studio workflow</h3>
+        <div class="cards">
+          <div class="card">
+            <h4>Artifact Editor</h4>
+            <p>Draft and refine GEI content with structure.</p>
+          </div>
+          <div class="card">
+            <h4>Simulation Builder</h4>
+            <p>Create interactive learning and test experiences.</p>
+          </div>
+          <div class="card">
+            <h4>Content Registry</h4>
+            <p>Organize lessons, projects, and reusable assets.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h3>Studio workflow</h3>
+        <div class="cards">
+          <div class="card">
+            <h4>1. Design</h4>
+            <p>Start with an idea, lesson, or simulation target.</p>
+          </div>
+          <div class="card">
+            <h4>2. Build</h4>
+            <p>Create the content and connect it to GEI learning flows.</p>
+          </div>
+          <div class="card">
+            <h4>3. Refine</h4>
+            <p>Review, adjust, and prepare the experience for Academy or Playground.</p>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="studio-dashboard">
+  <h3>Workspace dashboard</h3>
+  <p id="studio-saved">Workspace saved in your browser.</p>
+  <p>Active project: <strong id="studio-active-project">No active project</strong></p>
+
+  <div class="button-row">
+    <button class="button primary" id="studio-add-project" type="button">Add project</button>
+    <button class="button secondary" id="studio-reset" type="button">Reset workspace</button>
+  </div>
+
+  <div id="studio-project-list" class="lesson-list"></div>
+</section>
+    </main>
+
+    <footer class="wrap">
+      <p>&copy; GEI. Built for discovery, learning, and creation.</p>
+    </footer>
+
+    <script src="/assets/studio.js" defer></script>
+  </body>
+</html>

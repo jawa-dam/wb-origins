@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GEI Academy</title>
+    <meta
+      name="description"
+      content="GEI Academy — learn observation, inquiry, knowledge, reasoning, and creation through guided discovery."
+    />
+    <meta name="theme-color" content="#004d61" />
+    <link rel="stylesheet" href="/assets/site.css" />
+  </head>
+  <body>
+    <header class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div>
+            <h1>GEI</h1>
+            <p>Genesis Engineered Interpretations</p>
+          </div>
+        </div>
+        <nav aria-label="Primary">
+          <a href="/index.html">Home</a>
+          <a href="/academy.html">Academy</a>
+          <a href="/studio.html">Studio</a>
+          <a href="/playground.html">Playground</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <span class="badge">Course portal</span>
+            <h2>GEI Academy</h2>
+            <p class="lead">
+              Learn the GEI method through observation, inquiry, knowledge, reasoning, learning,
+              and creation. This portal tracks your progress, awards XP, and helps you resume where
+              you left off.
+            </p>
+            <div class="button-row">
+              <a class="button primary" href="#dashboard">Open Dashboard</a>
+              <a class="button secondary" href="#course-path">View Lessons</a>
+              <a class="button secondary" href="/studio.html">Open Studio</a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Academy overview</h3>
+            <p>
+              The Academy turns discovery into a guided learning path with progress, badges, and
+              learning milestones.
+            </p>
+            <div class="stats">
+              <div class="stat">
+                <strong>XP</strong>
+                <span>Earn points as you learn</span>
+              </div>
+              <div class="stat">
+                <strong>Badges</strong>
+                <span>Unlock achievements</span>
+              </div>
+              <div class="stat">
+                <strong>Resume</strong>
+                <span>Pick up where you left off</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section journey-start" id="journey-start">
+  <div class="panel journey-panel">
+    <span class="badge">World One</span>
+
+    <h3>Your journey begins here.</h3>
+
+    <p>
+      Before you can build knowledge, you must first learn how to observe.
+      Your first mission is to slow down, look carefully, and notice what others may overlook.
+    </p>
+
+    <div class="journey-meta">
+      <span>🌍 World One</span>
+      <span>🔎 Lesson 1</span>
+      <span>⭐ +100 XP</span>
+    </div>
+
+    <div class="button-row">
+      <button
+        class="button primary"
+        id="begin-journey"
+        type="button"
+      >
+        Begin Your Journey
+      </button>
+
+      <button
+        class="button secondary"
+        id="resume-journey"
+        type="button"
+      >
+        Resume Journey
+      </button>
+    </div>
+
+    <p id="journey-status" class="journey-status">
+      Your journey has not started yet.
+    </p>
+  </div>
+</section>
+<section class="section" id="world-one">
+  <span class="badge">World One</span>
+
+  <h3>The First Observation</h3>
+
+  <p>
+    Every GEI journey begins with the same discipline:
+    observe carefully before reaching a conclusion.
+  </p>
+
+  <div class="world-progress">
+    <div class="world-progress-header">
+      <strong>World One Progress</strong>
+      <span id="world-one-progress-label">0 / 5 missions</span>
+    </div>
+
+    <div class="progress">
+      <span id="world-one-progress"></span>
+    </div>
+  </div>
+
+  <div id="world-one-missions" class="mission-list"></div>
+</section>
+<section class="section" id="active-mission">
+  <span class="badge" id="mission-label">Mission 1</span>
+
+  <h3 id="mission-title">Observe</h3>
+
+  <p id="mission-description"></p>
+
+  <div class="card mission-card">
+    <h4 id="mission-prompt"></h4>
+
+    <textarea
+      id="mission-response"
+      rows="7"
+      placeholder="Write your discovery here..."
+    ></textarea>
+
+    <div class="button-row">
+      <button
+        class="button primary"
+        id="complete-mission"
+        type="button"
+      >
+        Complete Mission
+      </button>
+    </div>
+
+    <p id="mission-feedback"></p>
+  </div>
+</section>
+
+    <p id="observation-result"></p>
+  </div>
+</section>
+
+      <section class="section" id="dashboard">
+        <h3>Dashboard</h3>
+        <p id="academy-resume-text">Resume your course here.</p>
+
+        <div class="cards">
+          <div class="card">
+            <h4>Progress</h4>
+            <p id="academy-progress-label">0% complete</p>
+            <div class="progress" aria-label="Course progress">
+              <span id="academy-progress"></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4>XP</h4>
+            <p><strong id="academy-xp">0</strong> XP earned</p>
+          </div>
+
+          <div class="card">
+            <h4>Badges</h4>
+            <p id="academy-badges">No badges yet</p>
+          </div>
+        </div>
+
+        <p id="academy-started-at"></p>
+
+        <div class="button-row">
+          <button class="button primary" id="complete-all" type="button">Mark all complete</button>
+          <button class="button secondary" id="clear-progress" type="button">Clear progress</button>
+          <button class="button secondary" id="resume-course" type="button">Resume course</button>
+        </div>
+      </section>
+
+      <section class="section" id="course-path">
+        <h3>Interactive course path</h3>
+        <div class="cards">
+          <div class="card">
+            <h4>1. Observation</h4>
+            <p>Notice details, patterns, repetitions, and relationships.</p>
+          </div>
+          <div class="card">
+            <h4>2. Inquiry</h4>
+            <p>Turn observation into questions. Ask what, how, why, and what follows next.</p>
+          </div>
+          <div class="card">
+            <h4>3. Knowledge</h4>
+            <p>Organize what you learn into clear structures, notes, and connected ideas.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="lessons">
+        <h3>Lesson modules</h3>
+        <p>Click a lesson to mark it complete. Your progress will save automatically in your browser.</p>
+
+        <div class="lesson-list">
+          <div class="lesson-item" id="lesson-1">
+            <h4>Lesson 1 — Spot the pattern</h4>
+            <p>Learn how to identify repeated ideas and meaningful structure.</p>
+          </div>
+          <div class="lesson-item" id="lesson-2">
+            <h4>Lesson 2 — Ask better questions</h4>
+            <p>Practice turning observations into useful and focused inquiry.</p>
+          </div>
+          <div class="lesson-item" id="lesson-3">
+            <h4>Lesson 3 — Build knowledge</h4>
+            <p>Connect facts, examples, and reasoning into an organized understanding.</p>
+          </div>
+          <div class="lesson-item" id="lesson-4">
+            <h4>Lesson 4 — Reason and revise</h4>
+            <p>Explain your logic and update your understanding as new evidence appears.</p>
+          </div>
+          <div class="lesson-item" id="lesson-5">
+            <h4>Lesson 5 — Create something new</h4>
+            <p>Turn your learning into a lesson, note, simulation, or project idea.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h3>Practice activities</h3>
+        <div class="cards">
+          <div class="card">
+            <h4>Observation drill</h4>
+            <p>Identify details in a short passage or image.</p>
+          </div>
+          <div class="card">
+            <h4>Inquiry challenge</h4>
+            <p>Write three questions from one observation.</p>
+          </div>
+          <div class="card">
+            <h4>Knowledge map</h4>
+            <p>Connect related ideas into one visual structure.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section faq">
+        <h3>Frequently asked questions</h3>
+
+        <details>
+          <summary>What is the GEI Academy for?</summary>
+          <p>
+            It is the learner experience for GEI. The Academy helps users study the method step by
+            step and apply it in practice.
+          </p>
+        </details>
+
+        <details>
+          <summary>How do I earn XP?</summary>
+          <p>
+            Complete lessons and use the course path. Your progress and quiz results update your
+            Academy dashboard.
+          </p>
+        </details>
+
+        <details>
+          <summary>What comes after knowledge?</summary>
+          <p>
+            After knowledge comes reasoning, learning, and creation. That is where GEI becomes a
+            living practice instead of just information.
+          </p>
+        </details>
+      </section>
+      <section class="section" id="dashboard">
+  <h3>Dashboard</h3>
+  <p id="academy-resume-text">Resume your course here.</p>
+
+  <div class="cards">
+    <div class="card">
+      <h4>Progress</h4>
+      <p id="academy-progress-label">0% complete</p>
+      <div class="progress" aria-label="Course progress">
+        <span id="academy-progress"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4>XP</h4>
+      <p><strong id="academy-xp">0</strong> XP earned</p>
+    </div>
+
+    <div class="card">
+      <h4>Badges</h4>
+      <p id="academy-badges">No badges yet</p>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="button primary" id="complete-all" type="button">Mark all complete</button>
+    <button class="button secondary" id="clear-progress" type="button">Clear progress</button>
+    <button class="button secondary" id="resume-course" type="button">Resume course</button>
+  </div>
+</section>
+    </main>
+
+    <footer class="wrap">
+      <p>&copy; GEI. Built for discovery, learning, and creation.</p>
+    </footer>
+
+    <script src="/assets/academy.js" defer></script>
+  </body>
+</html>
