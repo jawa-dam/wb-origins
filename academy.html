@@ -982,17 +982,22 @@
 
           <div class="button-row">
 
-            <button class="button primary" id="begin-journey" type="button">
+            <button
+  id="begin-journey"
+  class="button button-primary"
+>
+  Begin Your Journey
+  <span>→</span>
+</button>
 
-              Begin Your Journey
-
-            </button>
-
-            <button class="button secondary" id="resume-journey" type="button">
-
-              Resume Journey
-
-            </button>
+            <button
+  id="resume-journey"
+  class="button button-primary"
+  hidden
+>
+  Resume Journey
+  <span>→</span>
+</button>
 
           </div>
 
@@ -1041,6 +1046,36 @@
         <div id="world-one-missions" class="mission-list"></div>
 
       </section>
+      <section
+  id="current-mission"
+  class="mission-card"
+>
+
+  <span class="section-label">
+    CURRENT MISSION
+  </span>
+
+  <h2 id="current-mission-title">
+    Mission 1 — Observe
+  </h2>
+
+  <p id="current-mission-subtitle">
+    Notice before you interpret
+  </p>
+
+  <p id="current-mission-description">
+    Begin by slowing down and noticing what is actually present.
+  </p>
+
+  <button
+    id="complete-mission"
+    class="button button-primary"
+  >
+    Complete Mission
+    <span>✓</span>
+  </button>
+
+</section>
 
       <section class="section" id="active-mission">
 
@@ -1093,7 +1128,30 @@
           <div class="card">
 
             <h4>Progress</h4>
+<div class="academy-progress">
 
+  <div class="progress-label">
+
+    <span>
+      World One Progress
+    </span>
+
+    <strong id="academy-progress-label">
+      0 / 5
+    </strong>
+
+  </div>
+
+  <div class="progress">
+
+    <span
+      id="academy-progress"
+      style="width: 0%"
+    ></span>
+
+  </div>
+
+</div>
             <p id="academy-progress-label">0% complete</p>
 
             <div class="progress" aria-label="Course progress">
