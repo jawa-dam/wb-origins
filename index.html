@@ -1,132 +1,29 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GEI — Genesis Engineered Interpretations</title>
-    <meta
-      name="description"
-      content="GEI is a learning and discovery platform for inquiry, knowledge, guided understanding, and creative creation."
-    />
-    <meta name="theme-color" content="#004d61" />
-    <link rel="stylesheet" href="/assets/site.css" />
-  </head>
-  <body>
-    <header class="wrap">
-      <div class="topbar">
-        <div class="brand">
-          <div class="mark" aria-hidden="true"></div>
-          <div>
-            <h1>GEI</h1>
-            <p>Genesis Engineered Interpretations</p>
-          </div>
-        </div>
-        <nav aria-label="Primary">
-          <a href="/index.html">Home</a>
-          <a href="/academy.html">Academy</a>
-          <a href="/studio.html">Studio</a>
-          <a href="/playground.html">Playground</a>
-        </nav>
-      </div>
-    </header>
+/* =========================================
+   CLICKABLE JOURNEY CARD
+========================================= */
 
-    <main class="wrap">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <span class="badge">Interactive learning system</span>
-            <h2>Learn. Discover. Build.</h2>
-            <p class="lead">
-              GEI is a learning and discovery platform for inquiry, knowledge, guided understanding,
-              and creative creation. Start with the Academy, build in Studio, or experiment in the
-              Playground.
-            </p>
-            <div class="button-row">
-              <a class="button primary" href="/academy.html">Start GEI Academy</a>
-              <a class="button secondary" href="/studio.html">Open GEI Studio</a>
-              <a class="button secondary" href="/playground.html">Try the Playground</a>
-            </div>
-          </div>
+.journey-card {
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
 
-          <div class="panel">
-            <h3>What GEI helps you do</h3>
-            <p>
-              GEI gives structure to observation, questions, evidence, reasoning, knowledge, and
-              creation so ideas can move from discovery into real learning experiences.
-            </p>
-            <div class="stats">
-              <div class="stat">
-                <strong>Observe</strong>
-                <span>Notice patterns and details</span>
-              </div>
-              <div class="stat">
-                <strong>Inquire</strong>
-                <span>Ask focused questions</span>
-              </div>
-              <div class="stat">
-                <strong>Create</strong>
-                <span>Build lessons and simulations</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+.journey-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--gei-teal);
+  box-shadow:
+    0 20px 50px
+    rgba(11, 36, 48, 0.16);
+}
 
-      <section class="section" id="academy">
-        <h3>GEI Academy</h3>
-        <p>
-          The Academy is the learner-facing experience. It guides users through inquiry, lessons,
-          simulations, and progressive understanding.
-        </p>
-        <div class="button-row">
-          <a class="button primary" href="/academy.html">Enter Academy</a>
-        </div>
-      </section>
+.journey-card:focus-visible {
+  outline: 3px solid var(--gei-gold);
+  outline-offset: 5px;
+}
 
-      <section class="section" id="studio">
-        <h3>GEI Studio</h3>
-        <p>
-          The Studio is the creator workspace. It is where GEI content, simulations, and learning
-          experiences are authored and organized.
-        </p>
-        <div class="button-row">
-          <a class="button primary" href="/studio.html">Open Studio</a>
-        </div>
-      </section>
-
-      <section class="section" id="playground">
-        <h3>GEI Playground</h3>
-        <p>
-          The Playground is a lightweight space for experiments, prototypes, and quick discovery
-          tests before ideas move into the Academy or Studio.
-        </p>
-        <div class="button-row">
-          <a class="button primary" href="/playground.html">Try Playground</a>
-        </div>
-      </section>
-
-      <section class="section" id="about">
-        <h3>Why GEI exists</h3>
-        <div class="cards">
-          <div class="card">
-            <h4>Method</h4>
-            <p>Observation, inquiry, knowledge, reasoning, learning, and creation.</p>
-          </div>
-          <div class="card">
-            <h4>Platform</h4>
-            <p>Engine, Academy, Studio, Playground, and a growing ecosystem of packages.</p>
-          </div>
-          <div class="card">
-            <h4>Purpose</h4>
-            <p>Help people discover, understand, and build with structure.</p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="wrap">
-      <p>&copy; GEI. Built for discovery, learning, and creation.</p>
-    </footer>
-    <script type="module" src="/assets/router.js"></script>
-  </body>
-</html>
+.journey-card:hover
+.dashboard-resume {
+  color: var(--gei-teal);
+}
