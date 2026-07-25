@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GEI Playground</title>
-    <meta name="description" content="GEI Playground — test ideas and try GEI interactions." />
+    <meta
+      name="description"
+      content="GEI Playground — test ideas and try GEI interactions."
+    />
     <meta name="theme-color" content="#004d61" />
     <link rel="stylesheet" href="/assets/site.css" />
   </head>
@@ -19,10 +22,10 @@
           </div>
         </div>
         <nav aria-label="Primary">
-          <a href="index.html">Home</a>
-          <a href="academy.html">Academy</a>
-          <a href="studio.html">Studio</a>
-          <a href="playground.html">Playground</a>
+          <a href="/index.html">Home</a>
+          <a href="/academy.html">Academy</a>
+          <a href="/studio.html">Studio</a>
+          <a href="/playground.html">Playground</a>
         </nav>
       </div>
     </header>
@@ -31,15 +34,16 @@
       <section class="hero">
         <div class="hero-grid">
           <div>
+            <span class="badge">Prototype space</span>
             <h2>GEI Playground</h2>
             <p class="lead">
               Experiment with ideas, interactions, and discovery flows before they move into the
               Academy or Studio.
             </p>
             <div class="button-row">
-              <a class="button primary" href="index.html">Back Home</a>
-              <a class="button secondary" href="academy.html">Open Academy</a>
-              <a class="button secondary" href="studio.html">Open Studio</a>
+              <a class="button primary" href="/index.html">Back Home</a>
+              <a class="button secondary" href="/academy.html">Open Academy</a>
+              <a class="button secondary" href="/studio.html">Open Studio</a>
             </div>
           </div>
 
@@ -84,10 +88,49 @@
           </div>
         </div>
       </section>
+      <section class="section">
+  <h3>Prototype panel</h3>
+  <p>Counter: <strong id="playground-count">0</strong></p>
+
+  <div class="button-row">
+    <button class="button primary" id="playground-plus" type="button">+ Add</button>
+    <button class="button secondary" id="playground-minus" type="button">- Remove</button>
+    <button class="button secondary" id="playground-clear" type="button">Reset</button>
+  </div>
+
+  <div style="margin-top: 16px;">
+    <input id="playground-note" type="text" placeholder="Add a prototype note" style="padding: 12px; width: 100%; max-width: 420px;" />
+    <div class="button-row">
+      <button class="button primary" id="playground-add-note" type="button">Save note</button>
+    </div>
+  </div>
+
+  <div id="playground-notes" class="lesson-list" style="margin-top: 16px;"></div>
+</section>
+<section class="section">
+  <h3>Prototype panel</h3>
+  <p>Counter: <strong id="playground-count">0</strong></p>
+
+  <div class="button-row">
+    <button class="button primary" id="playground-plus" type="button">+ Add</button>
+    <button class="button secondary" id="playground-minus" type="button">- Remove</button>
+    <button class="button secondary" id="playground-clear" type="button">Reset</button>
+  </div>
+
+  <div style="margin-top: 16px;">
+    <input id="playground-note" type="text" placeholder="Add a prototype note" style="padding: 12px; width: 100%; max-width: 420px;" />
+    <div class="button-row">
+      <button class="button primary" id="playground-add-note" type="button">Save note</button>
+    </div>
+  </div>
+
+  <div id="playground-notes" class="lesson-list" style="margin-top: 16px;"></div>
+</section>
     </main>
 
     <footer class="wrap">
       <p>&copy; GEI. Built for discovery, learning, and creation.</p>
     </footer>
+    <script src="/assets/playground.js" defer></script>
   </body>
 </html>
