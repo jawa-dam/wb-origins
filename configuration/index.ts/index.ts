@@ -1,1 +1,1 @@
-export * from './ConfigurationKey';
+export * from './IConfiguration';
