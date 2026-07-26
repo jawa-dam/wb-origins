@@ -1048,32 +1048,195 @@
       </section>
       <section
   id="current-mission"
-  class="mission-card"
+  class="mission-card mission-experience"
 >
 
-  <span class="section-label">
-    CURRENT MISSION
-  </span>
+  <div class="mission-header">
 
-  <h2 id="current-mission-title">
-    Mission 1 — Observe
-  </h2>
+    <div>
 
-  <p id="current-mission-subtitle">
-    Notice before you interpret
-  </p>
+      <span class="section-label">
+        CURRENT MISSION
+      </span>
 
-  <p id="current-mission-description">
-    Begin by slowing down and noticing what is actually present.
-  </p>
+      <h2 id="current-mission-title">
+        Mission 1 — Observe
+      </h2>
 
-  <button
-    id="complete-mission"
-    class="button button-primary"
+      <p
+        id="current-mission-subtitle"
+        class="mission-subtitle"
+      >
+        Notice before you interpret.
+      </p>
+
+    </div>
+
+    <div class="mission-number">
+      01
+    </div>
+
+  </div>
+
+
+  <div class="mission-instruction">
+
+    <span class="mission-step">
+      STEP 1
+    </span>
+
+    <h3>
+      Look closely.
+    </h3>
+
+    <p
+      id="current-mission-description"
+    >
+      Before you explain what something means, describe what you can actually observe.
+    </p>
+
+  </div>
+
+
+  <!-- OBSERVATION CHALLENGE -->
+
+  <div
+    id="observation-challenge"
+    class="observation-challenge"
   >
-    Complete Mission
-    <span>✓</span>
-  </button>
+
+    <div class="observation-scene">
+
+      <div class="scene-water">
+      </div>
+
+      <div class="scene-land">
+      </div>
+
+      <div class="scene-structure">
+      </div>
+
+      <div class="scene-light">
+      </div>
+
+    </div>
+
+
+    <div class="observation-prompt">
+
+      <span class="mission-step">
+        YOUR OBSERVATION
+      </span>
+
+      <h3>
+        What do you notice?
+      </h3>
+
+      <p>
+        Write three things you can directly observe.
+        Do not explain what they mean yet.
+      </p>
+
+    </div>
+
+
+    <div class="observation-fields">
+
+      <label>
+
+        <span>
+          Observation 1
+        </span>
+
+        <textarea
+          id="observation-1"
+          rows="3"
+          placeholder="I notice..."
+        ></textarea>
+
+      </label>
+
+
+      <label>
+
+        <span>
+          Observation 2
+        </span>
+
+        <textarea
+          id="observation-2"
+          rows="3"
+          placeholder="I notice..."
+        ></textarea>
+
+      </label>
+
+
+      <label>
+
+        <span>
+          Observation 3
+        </span>
+
+        <textarea
+          id="observation-3"
+          rows="3"
+          placeholder="I notice..."
+        ></textarea>
+
+      </label>
+
+    </div>
+
+
+    <div
+      id="observation-feedback"
+      class="observation-feedback"
+      hidden
+    ></div>
+
+
+    <button
+      id="submit-observation"
+      class="button button-primary"
+    >
+
+      Submit Observation
+
+      <span>
+        →
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- FUTURE MISSION CONTENT -->
+
+  <div
+    id="generic-mission-content"
+    hidden
+  >
+
+    <p>
+      Complete the current mission to continue your journey.
+    </p>
+
+    <button
+      id="complete-mission"
+      class="button button-primary"
+    >
+
+      Complete Mission
+
+      <span>
+        ✓
+      </span>
+
+    </button>
+
+  </div>
 
 </section>
 
@@ -1371,7 +1534,133 @@
     </footer>
 
     <script src="assets/academy.js" defer></script>
+<!-- =========================================
+     GEI DISCOVERY MOMENT
+========================================= -->
 
+<div
+  id="discovery-moment"
+  class="discovery-overlay"
+  hidden
+  aria-hidden="true"
+>
+
+  <div
+    class="discovery-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="discovery-title"
+  >
+
+    <div class="discovery-celebration">
+      ✦
+    </div>
+
+
+    <span class="discovery-label">
+      DISCOVERY MOMENT
+    </span>
+
+
+    <h2 id="discovery-title">
+      Mission Complete
+    </h2>
+
+
+    <p
+      id="discovery-message"
+      class="discovery-message"
+    >
+      You completed the mission.
+    </p>
+
+
+    <div class="discovery-rewards">
+
+      <div class="discovery-reward">
+
+        <span class="reward-icon">
+          ★
+        </span>
+
+        <strong id="discovery-xp">
+          +100 XP
+        </strong>
+
+        <small>
+          EXPERIENCE EARNED
+        </small>
+
+      </div>
+
+
+      <div
+        class="discovery-reward"
+        id="discovery-badge-reward"
+      >
+
+        <span class="reward-icon">
+          ◈
+        </span>
+
+        <strong id="discovery-badge">
+          Badge Unlocked
+        </strong>
+
+        <small>
+          ACHIEVEMENT
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="discovery-next"
+      id="discovery-next"
+    >
+
+      <span class="next-label">
+        NEXT DISCOVERY
+      </span>
+
+
+      <h3 id="discovery-next-title">
+        Mission 2 — Question
+      </h3>
+
+
+      <p id="discovery-next-description">
+        Turn observation into inquiry.
+      </p>
+
+    </div>
+
+
+    <div class="discovery-actions">
+
+      <button
+        id="discovery-continue"
+        class="button button-primary"
+      >
+        Continue Journey
+        <span>→</span>
+      </button>
+
+
+      <button
+        id="discovery-close"
+        class="button button-secondary"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
   </body>
 
 </html>
