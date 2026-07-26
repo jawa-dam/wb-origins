@@ -1,1 +1,2 @@
-export * from './IDiagnostics';
+export * from './DependencyReport';
+export * from './GraphDiagnostics';
