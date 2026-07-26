@@ -1,1 +1,1 @@
-export * from './DiagnosticsService';
+export * from './ContributionReport';
