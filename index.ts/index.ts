@@ -1,1 +1,1 @@
-export * from './KnowledgeStore';
+export * from './ReasoningEngine';
