@@ -1,11 +1,7 @@
 // =========================================
-// GEI ACADEMY PAGE
+// GEI ACADEMY
+// JOURNEY + MISSION + OBSERVATION ENGINE
 // =========================================
-import {
-  saveObservations,
-  loadObservations,
-  validateObservations,
-} from './observation-engine.js';
 
 import {
   startJourney,
@@ -16,9 +12,15 @@ import {
   isWorldOneComplete,
 } from './academy-journey.js';
 
+import {
+  saveObservations,
+  loadObservations,
+  validateObservations,
+} from './observation-engine.js';
+
 
 // =========================================
-// ELEMENTS
+// PAGE ELEMENTS
 // =========================================
 
 const beginButton =
@@ -26,16 +28,19 @@ const beginButton =
     'begin-journey'
   );
 
-
 const resumeButton =
   document.getElementById(
     'resume-journey'
   );
 
-
 const completeButton =
   document.getElementById(
     'complete-mission'
+  );
+
+const submitObservationButton =
+  document.getElementById(
+    'submit-observation'
   );
 
 
@@ -43,27 +48,45 @@ const completeButton =
 // RENDER CURRENT MISSION
 // =========================================
 
-function handleCompleteMission() {
-
+function renderCurrentMission() {
   const mission =
     getCurrentMission();
 
 
-  completeMission(
-    mission.id
-  );
+  const title =
+    document.getElementById(
+      'current-mission-title'
+    );
 
 
-  renderCurrentMission();
+  const subtitle =
+    document.getElementById(
+      'current-mission-subtitle'
+    );
 
 
-  renderJourneyState();
+  const description =
+    document.getElementById(
+      'current-mission-description'
+    );
 
 
-  showDiscoveryMoment(
-    mission
-  );
+  if (title) {
+    title.textContent =
+      `Mission ${mission.number} — ${mission.title}`;
+  }
 
+
+  if (subtitle) {
+    subtitle.textContent =
+      mission.subtitle;
+  }
+
+
+  if (description) {
+    description.textContent =
+      mission.description;
+  }
 }
 
 
@@ -72,7 +95,6 @@ function handleCompleteMission() {
 // =========================================
 
 function renderJourneyState() {
-
   const started =
     isJourneyStarted();
 
@@ -85,35 +107,23 @@ function renderJourneyState() {
     getJourneyProgress();
 
 
-  if (
-    beginButton
-  ) {
-
+  if (beginButton) {
     beginButton.hidden =
       started;
-
   }
 
 
-  if (
-    resumeButton
-  ) {
-
+  if (resumeButton) {
     resumeButton.hidden =
       !started ||
       complete;
-
   }
 
 
-  if (
-    completeButton
-  ) {
-
+  if (completeButton) {
     completeButton.hidden =
       !started ||
       complete;
-
   }
 
 
@@ -123,13 +133,9 @@ function renderJourneyState() {
     );
 
 
-  if (
-    progressLabel
-  ) {
-
+  if (progressLabel) {
     progressLabel.textContent =
       `${progress.completed} / ${progress.total}`;
-
   }
 
 
@@ -139,15 +145,10 @@ function renderJourneyState() {
     );
 
 
-  if (
-    progressBar
-  ) {
-
+  if (progressBar) {
     progressBar.style.width =
       `${progress.percentage}%`;
-
   }
-
 }
 
 
@@ -156,23 +157,8 @@ function renderJourneyState() {
 // =========================================
 
 function handleBeginJourney() {
-
   startJourney();
 
-
-  renderCurrentMission();
-
-
-  renderJourneyState();
-
-}
-
-
-// =========================================
-// RESUME JOURNEY
-// =========================================
-
-function handleResumeJourney() {
 
   renderCurrentMission();
 
@@ -188,87 +174,31 @@ function handleResumeJourney() {
       behavior:
         'smooth',
     });
-
 }
 
 
 // =========================================
-// COMPLETE MISSION
+// RESUME JOURNEY
 // =========================================
 
-function handleCompleteMission() {
-
-  const mission =
-    getCurrentMission();
-
-
-  completeMission(
-    mission.id
-  );
-
-
+function handleResumeJourney() {
   renderCurrentMission();
 
 
   renderJourneyState();
 
 
-  alert(
-    `Mission complete! +${mission.xp} XP earned.`
-  );
-
+  document
+    .getElementById(
+      'current-mission'
+    )
+    ?.scrollIntoView({
+      behavior:
+        'smooth',
+    });
 }
 
 
-// =========================================
-// EVENT LISTENERS
-// =========================================
-
-if (
-  beginButton
-) {
-
-  beginButton.addEventListener(
-    'click',
-    handleBeginJourney
-  );
-
-}
-
-
-if (
-  resumeButton
-) {
-
-  resumeButton.addEventListener(
-    'click',
-    handleResumeJourney
-  );
-
-}
-
-
-if (
-  completeButton
-) {
-
-  completeButton.addEventListener(
-    'click',
-    handleCompleteMission
-  );
-
-}
-
-
-// =========================================
-// INITIALIZE
-// =========================================
-
-renderCurrentMission();
-
-renderJourneyState();
-
-initializeObservationMission();
 // =========================================
 // DISCOVERY MOMENT
 // =========================================
@@ -281,69 +211,80 @@ function showDiscoveryMoment(
       'discovery-moment'
     );
 
-  const title =
-    document.getElementById(
-      'discovery-title'
-    );
-
-  const message =
-    document.getElementById(
-      'discovery-message'
-    );
-
-  const xp =
-    document.getElementById(
-      'discovery-xp'
-    );
-
-  const badge =
-    document.getElementById(
-      'discovery-badge'
-    );
-
-  const next =
-    document.getElementById(
-      'discovery-next'
-    );
-
-  const nextTitle =
-    document.getElementById(
-      'discovery-next-title'
-    );
-
-  const nextDescription =
-    document.getElementById(
-      'discovery-next-description'
-    );
-
-  const badgeReward =
-    document.getElementById(
-      'discovery-badge-reward'
-    );
-
-  const currentMission =
-    getCurrentMission();
-
 
   if (!overlay) {
     return;
   }
 
 
-  title.textContent =
-    'Mission Complete';
+  const title =
+    document.getElementById(
+      'discovery-title'
+    );
 
 
-  message.textContent =
-    `You completed Mission ${completedMission.number} — ${completedMission.title}. Your observation has become a new step in your journey.`;
+  const message =
+    document.getElementById(
+      'discovery-message'
+    );
 
 
-  xp.textContent =
-    `+${completedMission.xp} XP`;
+  const xp =
+    document.getElementById(
+      'discovery-xp'
+    );
 
 
-  badge.textContent =
-    completedMission.badge;
+  const badge =
+    document.getElementById(
+      'discovery-badge'
+    );
+
+
+  const next =
+    document.getElementById(
+      'discovery-next'
+    );
+
+
+  const nextTitle =
+    document.getElementById(
+      'discovery-next-title'
+    );
+
+
+  const nextDescription =
+    document.getElementById(
+      'discovery-next-description'
+    );
+
+
+  if (title) {
+    title.textContent =
+      'Mission Complete';
+  }
+
+
+  if (message) {
+    message.textContent =
+      `You completed Mission ${completedMission.number} — ${completedMission.title}. Your observation has become a new step in your journey.`;
+  }
+
+
+  if (xp) {
+    xp.textContent =
+      `+${completedMission.xp} XP`;
+  }
+
+
+  if (badge) {
+    badge.textContent =
+      completedMission.badge;
+  }
+
+
+  const currentMission =
+    getCurrentMission();
 
 
   if (
@@ -351,31 +292,40 @@ function showDiscoveryMoment(
     currentMission.id !==
       completedMission.id
   ) {
-
-    next.hidden =
-      false;
-
-
-    nextTitle.textContent =
-      `Mission ${currentMission.number} — ${currentMission.title}`;
+    if (next) {
+      next.hidden =
+        false;
+    }
 
 
-    nextDescription.textContent =
-      currentMission.description;
+    if (nextTitle) {
+      nextTitle.textContent =
+        `Mission ${currentMission.number} — ${currentMission.title}`;
+    }
+
+
+    if (nextDescription) {
+      nextDescription.textContent =
+        currentMission.description;
+    }
 
   } else {
-
-    next.hidden =
-      false;
-
-
-    nextTitle.textContent =
-      'World One Complete';
+    if (next) {
+      next.hidden =
+        false;
+    }
 
 
-    nextDescription.textContent =
-      'You have completed the first GEI creative journey. A new world awaits.';
+    if (nextTitle) {
+      nextTitle.textContent =
+        'World One Complete';
+    }
 
+
+    if (nextDescription) {
+      nextDescription.textContent =
+        'You have completed the first GEI creative journey. A new world awaits.';
+    }
   }
 
 
@@ -399,13 +349,19 @@ function showDiscoveryMoment(
       'discovery-continue'
     )
     ?.focus();
-
 }
+
+
+// =========================================
+// CLOSE DISCOVERY MOMENT
+// =========================================
+
 function closeDiscoveryMoment() {
   const overlay =
     document.getElementById(
       'discovery-moment'
     );
+
 
   if (!overlay) {
     return;
@@ -426,12 +382,13 @@ function closeDiscoveryMoment() {
     'discovery-open'
   );
 }
+
+
 // =========================================
 // MISSION 1 — OBSERVE
 // =========================================
 
 function initializeObservationMission() {
-
   const submitButton =
     document.getElementById(
       'submit-observation'
@@ -441,13 +398,10 @@ function initializeObservationMission() {
   if (!submitButton) {
     return;
   }
-submitButton.addEventListener(
-    'click',
-    handleObservationSubmit
-  );
-}
+
 
   const observationFields = [
+
     document.getElementById(
       'observation-1'
     ),
@@ -459,6 +413,7 @@ submitButton.addEventListener(
     document.getElementById(
       'observation-3'
     ),
+
   ];
 
 
@@ -473,12 +428,10 @@ submitButton.addEventListener(
     ) => {
 
       if (field) {
-
         field.value =
           savedObservations[
             index
           ] || '';
-
       }
 
     }
@@ -489,10 +442,14 @@ submitButton.addEventListener(
     'click',
     handleObservationSubmit
   );
-
 }
-function handleObservationSubmit() {
 
+
+// =========================================
+// SUBMIT OBSERVATION
+// =========================================
+
+function handleObservationSubmit() {
   const observations = [
 
     document.getElementById(
@@ -527,25 +484,28 @@ function handleObservationSubmit() {
     )
   ) {
 
+    if (feedback) {
+      feedback.hidden =
+        false;
+
+
+      feedback.textContent =
+        'Take another look. Mission 1 requires three observations. Describe what you can see, hear, notice, or identify without explaining what it means yet.';
+    }
+
+
+    return;
+  }
+
+
+  if (feedback) {
     feedback.hidden =
       false;
 
 
     feedback.textContent =
-      'Take another look. Mission 1 requires three observations. Describe what you can see, hear, notice, or identify without explaining what it means yet.';
-
-
-    return;
-
+      'Excellent. You slowed down, looked closely, and recorded what you observed before interpreting it.';
   }
-
-
-  feedback.hidden =
-    false;
-
-
-  feedback.textContent =
-    'Excellent. You slowed down, looked closely, and recorded what you observed before interpreting it.';
 
 
   const mission =
@@ -566,5 +526,134 @@ function handleObservationSubmit() {
   showDiscoveryMoment(
     mission
   );
-
 }
+
+
+// =========================================
+// GENERIC MISSION COMPLETION
+// =========================================
+
+function handleCompleteMission() {
+  const mission =
+    getCurrentMission();
+
+
+  completeMission(
+    mission.id
+  );
+
+
+  renderCurrentMission();
+
+
+  renderJourneyState();
+
+
+  showDiscoveryMoment(
+    mission
+  );
+}
+
+
+// =========================================
+// EVENT LISTENERS
+// =========================================
+
+if (beginButton) {
+  beginButton.addEventListener(
+    'click',
+    handleBeginJourney
+  );
+}
+
+
+if (resumeButton) {
+  resumeButton.addEventListener(
+    'click',
+    handleResumeJourney
+  );
+}
+
+
+if (completeButton) {
+  completeButton.addEventListener(
+    'click',
+    handleCompleteMission
+  );
+}
+
+
+// =========================================
+// DISCOVERY MOMENT BUTTONS
+// =========================================
+
+const discoveryContinue =
+  document.getElementById(
+    'discovery-continue'
+  );
+
+
+const discoveryClose =
+  document.getElementById(
+    'discovery-close'
+  );
+
+
+if (discoveryContinue) {
+  discoveryContinue.addEventListener(
+    'click',
+    () => {
+
+      closeDiscoveryMoment();
+
+
+      document
+        .getElementById(
+          'current-mission'
+        )
+        ?.scrollIntoView({
+          behavior:
+            'smooth',
+        });
+
+    }
+  );
+}
+
+
+if (discoveryClose) {
+  discoveryClose.addEventListener(
+    'click',
+    closeDiscoveryMoment
+  );
+}
+
+
+// =========================================
+// ESCAPE KEY
+// =========================================
+
+document.addEventListener(
+  'keydown',
+  (event) => {
+
+    if (
+      event.key ===
+      'Escape'
+    ) {
+      closeDiscoveryMoment();
+    }
+
+  }
+);
+
+
+// =========================================
+// INITIALIZE ACADEMY
+// =========================================
+
+renderCurrentMission();
+
+renderJourneyState();
+
+initializeObservationMission();
