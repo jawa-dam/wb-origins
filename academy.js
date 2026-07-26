@@ -1,359 +1,566 @@
+// =========================================
+// GEI ACADEMY PAGE
+// =========================================
 import {
-  loadAppState,
-  saveAppState,
-  addBadge,
-} from './app.js';
+  saveObservations,
+  loadObservations,
+  validateObservations,
+} from './observation-engine.js';
 
 import {
-  WORLD_ONE_MISSIONS,
-} from './world-one.js';
+  startJourney,
+  getCurrentMission,
+  completeMission,
+  getJourneyProgress,
+  isJourneyStarted,
+  isWorldOneComplete,
+} from './academy-journey.js';
 
-function getCurrentMission(state) {
-  return (
-    WORLD_ONE_MISSIONS.find(
-      (mission) =>
-        !state.student.completedLessons.includes(mission.id)
-    ) || null
-  );
-}
 
-function getMissionById(id) {
-  return WORLD_ONE_MISSIONS.find(
-    (mission) => mission.id === id
-  );
-}
+// =========================================
+// ELEMENTS
+// =========================================
 
-function updateWorldProgress(state) {
-  const completed =
-    state.student.completedLessons.filter((id) =>
-      WORLD_ONE_MISSIONS.some(
-        (mission) => mission.id === id
-      )
-    ).length;
-
-  const total = WORLD_ONE_MISSIONS.length;
-  const percent = Math.round((completed / total) * 100);
-
-  const progress = document.getElementById(
-    'world-one-progress'
+const beginButton =
+  document.getElementById(
+    'begin-journey'
   );
 
-  const label = document.getElementById(
-    'world-one-progress-label'
+
+const resumeButton =
+  document.getElementById(
+    'resume-journey'
   );
 
-  if (progress) {
-    progress.style.width = `${percent}%`;
-  }
 
-  if (label) {
-    label.textContent = `${completed} / ${total} missions`;
-  }
-}
-
-function renderMissionList(state) {
-  const container = document.getElementById(
-    'world-one-missions'
+const completeButton =
+  document.getElementById(
+    'complete-mission'
   );
 
-  if (!container) return;
 
-  container.innerHTML = '';
+// =========================================
+// RENDER CURRENT MISSION
+// =========================================
 
-  WORLD_ONE_MISSIONS.forEach((mission, index) => {
-    const completed =
-      state.student.completedLessons.includes(
-        mission.id
-      );
-
-    const previousMission =
-      WORLD_ONE_MISSIONS[index - 1];
-
-    const previousComplete =
-      !previousMission ||
-      state.student.completedLessons.includes(
-        previousMission.id
-      );
-
-    const unlocked =
-      completed || previousComplete;
-
-    const card = document.createElement('button');
-
-    card.type = 'button';
-
-    card.className = 'mission-item';
-
-    if (completed) {
-      card.classList.add('completed');
-    }
-
-    if (!unlocked) {
-      card.classList.add('locked');
-      card.disabled = true;
-    }
-
-    card.innerHTML = `
-      <span class="mission-number">
-        ${completed ? '✓' : mission.number}
-      </span>
-
-      <span class="mission-content">
-        <strong>${mission.title}</strong>
-        <small>${mission.subtitle}</small>
-      </span>
-
-      <span class="mission-status">
-        ${
-          completed
-            ? 'Completed'
-            : unlocked
-              ? 'Begin'
-              : 'Locked'
-        }
-      </span>
-    `;
-
-    if (unlocked) {
-      card.addEventListener('click', () => {
-        openMission(state, mission.id);
-      });
-    }
-
-    container.appendChild(card);
-  });
-}
-
-function openMission(state, missionId) {
-  const mission = getMissionById(missionId);
-
-  if (!mission) return;
-
-  state.student.currentLesson = mission.id;
-
-  saveAppState(state);
-
-  const label = document.getElementById(
-    'mission-label'
-  );
-
-  const title = document.getElementById(
-    'mission-title'
-  );
-
-  const description = document.getElementById(
-    'mission-description'
-  );
-
-  const prompt = document.getElementById(
-    'mission-prompt'
-  );
-
-  const response = document.getElementById(
-    'mission-response'
-  );
-
-  const feedback = document.getElementById(
-    'mission-feedback'
-  );
-
-  if (label) {
-    label.textContent =
-      `Mission ${mission.number} · ${mission.xp} XP`;
-  }
-
-  if (title) {
-    title.textContent = mission.title;
-  }
-
-  if (description) {
-    description.textContent =
-      mission.description;
-  }
-
-  if (prompt) {
-    prompt.textContent =
-      getMissionPrompt(mission.id);
-  }
-
-  if (response) {
-    response.value = '';
-  }
-
-  if (feedback) {
-    feedback.textContent = '';
-  }
-
-  document
-    .getElementById('active-mission')
-    ?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-}
-
-function getMissionPrompt(missionId) {
-  switch (missionId) {
-    case 'mission-1':
-      return 'What is one thing you genuinely notice?';
-
-    case 'mission-2':
-      return 'What questions does your observation create?';
-
-    case 'mission-3':
-      return 'What other idea, object, or pattern connects to your observation?';
-
-    case 'mission-4':
-      return 'What is your reasoned explanation of the connection you discovered?';
-
-    case 'mission-5':
-      return 'What can you create from what you have learned?';
-
-    default:
-      return 'What did you discover?';
-  }
-}
-
-function completeCurrentMission(state) {
-  const currentId =
-    state.student.currentLesson;
+function handleCompleteMission() {
 
   const mission =
-    getMissionById(currentId);
+    getCurrentMission();
 
-  if (!mission) return;
 
-  const response =
-    document.getElementById(
-      'mission-response'
-    );
-
-  const feedback =
-    document.getElementById(
-      'mission-feedback'
-    );
-
-  if (!response?.value.trim()) {
-    if (feedback) {
-      feedback.textContent =
-        'Write your discovery before completing the mission.';
-    }
-
-    return;
-  }
-
-  if (
-    state.student.completedLessons.includes(
-      mission.id
-    )
-  ) {
-    return;
-  }
-
-  state.student.completedLessons.push(
+  completeMission(
     mission.id
   );
 
-  state.student.xp += mission.xp;
 
-  addBadge(
-    state,
-    mission.badge
+  renderCurrentMission();
+
+
+  renderJourneyState();
+
+
+  showDiscoveryMoment(
+    mission
   );
 
-  const nextMission =
-    WORLD_ONE_MISSIONS.find(
-      (item) =>
-        !state.student.completedLessons.includes(
-          item.id
-        )
-    );
-
-  if (nextMission) {
-    state.student.currentLesson =
-      nextMission.id;
-  }
-
-  saveAppState(state);
-
-  if (feedback) {
-    feedback.textContent =
-      `Mission complete! +${mission.xp} XP earned.`;
-  }
-
-  updateWorldProgress(state);
-
-  renderMissionList(state);
-
-  if (nextMission) {
-    setTimeout(() => {
-      openMission(
-        state,
-        nextMission.id
-      );
-    }, 700);
-  } else {
-    showWorldComplete();
-  }
 }
 
-function showWorldComplete() {
-  const feedback =
+
+// =========================================
+// RENDER JOURNEY STATE
+// =========================================
+
+function renderJourneyState() {
+
+  const started =
+    isJourneyStarted();
+
+
+  const complete =
+    isWorldOneComplete();
+
+
+  const progress =
+    getJourneyProgress();
+
+
+  if (
+    beginButton
+  ) {
+
+    beginButton.hidden =
+      started;
+
+  }
+
+
+  if (
+    resumeButton
+  ) {
+
+    resumeButton.hidden =
+      !started ||
+      complete;
+
+  }
+
+
+  if (
+    completeButton
+  ) {
+
+    completeButton.hidden =
+      !started ||
+      complete;
+
+  }
+
+
+  const progressLabel =
     document.getElementById(
-      'mission-feedback'
+      'academy-progress-label'
     );
 
-  if (feedback) {
-    feedback.textContent =
-      '🏆 World One complete! You are ready for the next world.';
-  }
-}
 
-function wireMissionControls(state) {
-  const completeButton =
+  if (
+    progressLabel
+  ) {
+
+    progressLabel.textContent =
+      `${progress.completed} / ${progress.total}`;
+
+  }
+
+
+  const progressBar =
     document.getElementById(
-      'complete-mission'
+      'academy-progress'
     );
 
-  if (completeButton) {
-    completeButton.addEventListener(
-      'click',
-      () => {
-        completeCurrentMission(state);
-      }
-    );
+
+  if (
+    progressBar
+  ) {
+
+    progressBar.style.width =
+      `${progress.percentage}%`;
+
   }
+
 }
 
-function initialize() {
-  const state = loadAppState();
 
-  state.student.journeyStarted ??= false;
+// =========================================
+// BEGIN JOURNEY
+// =========================================
 
-  state.student.currentWorld ??=
-    'world-1';
+function handleBeginJourney() {
 
-  state.student.currentLesson ??=
-    'mission-1';
+  startJourney();
 
-  renderMissionList(state);
 
-  updateWorldProgress(state);
+  renderCurrentMission();
 
-  wireMissionControls(state);
+
+  renderJourneyState();
+
+}
+
+
+// =========================================
+// RESUME JOURNEY
+// =========================================
+
+function handleResumeJourney() {
+
+  renderCurrentMission();
+
+
+  renderJourneyState();
+
+
+  document
+    .getElementById(
+      'current-mission'
+    )
+    ?.scrollIntoView({
+      behavior:
+        'smooth',
+    });
+
+}
+
+
+// =========================================
+// COMPLETE MISSION
+// =========================================
+
+function handleCompleteMission() {
+
+  const mission =
+    getCurrentMission();
+
+
+  completeMission(
+    mission.id
+  );
+
+
+  renderCurrentMission();
+
+
+  renderJourneyState();
+
+
+  alert(
+    `Mission complete! +${mission.xp} XP earned.`
+  );
+
+}
+
+
+// =========================================
+// EVENT LISTENERS
+// =========================================
+
+if (
+  beginButton
+) {
+
+  beginButton.addEventListener(
+    'click',
+    handleBeginJourney
+  );
+
+}
+
+
+if (
+  resumeButton
+) {
+
+  resumeButton.addEventListener(
+    'click',
+    handleResumeJourney
+  );
+
+}
+
+
+if (
+  completeButton
+) {
+
+  completeButton.addEventListener(
+    'click',
+    handleCompleteMission
+  );
+
+}
+
+
+// =========================================
+// INITIALIZE
+// =========================================
+
+renderCurrentMission();
+
+renderJourneyState();
+
+initializeObservationMission();
+// =========================================
+// DISCOVERY MOMENT
+// =========================================
+
+function showDiscoveryMoment(
+  completedMission
+) {
+  const overlay =
+    document.getElementById(
+      'discovery-moment'
+    );
+
+  const title =
+    document.getElementById(
+      'discovery-title'
+    );
+
+  const message =
+    document.getElementById(
+      'discovery-message'
+    );
+
+  const xp =
+    document.getElementById(
+      'discovery-xp'
+    );
+
+  const badge =
+    document.getElementById(
+      'discovery-badge'
+    );
+
+  const next =
+    document.getElementById(
+      'discovery-next'
+    );
+
+  const nextTitle =
+    document.getElementById(
+      'discovery-next-title'
+    );
+
+  const nextDescription =
+    document.getElementById(
+      'discovery-next-description'
+    );
+
+  const badgeReward =
+    document.getElementById(
+      'discovery-badge-reward'
+    );
 
   const currentMission =
-    getCurrentMission(state);
+    getCurrentMission();
 
-  if (currentMission) {
-    openMission(
-      state,
-      currentMission.id
-    );
+
+  if (!overlay) {
+    return;
   }
-}
 
-document.addEventListener(
-  'DOMContentLoaded',
-  initialize
-);
+
+  title.textContent =
+    'Mission Complete';
+
+
+  message.textContent =
+    `You completed Mission ${completedMission.number} — ${completedMission.title}. Your observation has become a new step in your journey.`;
+
+
+  xp.textContent =
+    `+${completedMission.xp} XP`;
+
+
+  badge.textContent =
+    completedMission.badge;
+
+
+  if (
+    currentMission &&
+    currentMission.id !==
+      completedMission.id
+  ) {
+
+    next.hidden =
+      false;
+
+
+    nextTitle.textContent =
+      `Mission ${currentMission.number} — ${currentMission.title}`;
+
+
+    nextDescription.textContent =
+      currentMission.description;
+
+  } else {
+
+    next.hidden =
+      false;
+
+
+    nextTitle.textContent =
+      'World One Complete';
+
+
+    nextDescription.textContent =
+      'You have completed the first GEI creative journey. A new world awaits.';
+
+  }
+
+
+  overlay.hidden =
+    false;
+
+
+  overlay.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+
+  document.body.classList.add(
+    'discovery-open'
+  );
+
+
+  document
+    .getElementById(
+      'discovery-continue'
+    )
+    ?.focus();
+
+}
+function closeDiscoveryMoment() {
+  const overlay =
+    document.getElementById(
+      'discovery-moment'
+    );
+
+  if (!overlay) {
+    return;
+  }
+
+
+  overlay.hidden =
+    true;
+
+
+  overlay.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+
+  document.body.classList.remove(
+    'discovery-open'
+  );
+}
+// =========================================
+// MISSION 1 — OBSERVE
+// =========================================
+
+function initializeObservationMission() {
+
+  const submitButton =
+    document.getElementById(
+      'submit-observation'
+    );
+
+
+  if (!submitButton) {
+    return;
+  }
+
+
+  const observationFields = [
+    document.getElementById(
+      'observation-1'
+    ),
+
+    document.getElementById(
+      'observation-2'
+    ),
+
+    document.getElementById(
+      'observation-3'
+    ),
+  ];
+
+
+  const savedObservations =
+    loadObservations();
+
+
+  observationFields.forEach(
+    (
+      field,
+      index
+    ) => {
+
+      if (field) {
+
+        field.value =
+          savedObservations[
+            index
+          ] || '';
+
+      }
+
+    }
+  );
+
+
+  submitButton.addEventListener(
+    'click',
+    handleObservationSubmit
+  );
+
+}
+function handleObservationSubmit() {
+
+  const observations = [
+
+    document.getElementById(
+      'observation-1'
+    )?.value || '',
+
+    document.getElementById(
+      'observation-2'
+    )?.value || '',
+
+    document.getElementById(
+      'observation-3'
+    )?.value || '',
+
+  ];
+
+
+  const feedback =
+    document.getElementById(
+      'observation-feedback'
+    );
+
+
+  saveObservations(
+    observations
+  );
+
+
+  if (
+    !validateObservations(
+      observations
+    )
+  ) {
+
+    feedback.hidden =
+      false;
+
+
+    feedback.textContent =
+      'Take another look. Mission 1 requires three observations. Describe what you can see, hear, notice, or identify without explaining what it means yet.';
+
+
+    return;
+
+  }
+
+
+  feedback.hidden =
+    false;
+
+
+  feedback.textContent =
+    'Excellent. You slowed down, looked closely, and recorded what you observed before interpreting it.';
+
+
+  const mission =
+    getCurrentMission();
+
+
+  completeMission(
+    mission.id
+  );
+
+
+  renderCurrentMission();
+
+
+  renderJourneyState();
+
+
+  showDiscoveryMoment(
+    mission
+  );
+
+}
