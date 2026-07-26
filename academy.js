@@ -441,7 +441,11 @@ function initializeObservationMission() {
   if (!submitButton) {
     return;
   }
-
+submitButton.addEventListener(
+    'click',
+    handleObservationSubmit
+  );
+}
 
   const observationFields = [
     document.getElementById(
