@@ -1,1 +1,1 @@
-export * from './IdentifierFactory';
+export * from './Identifier';
